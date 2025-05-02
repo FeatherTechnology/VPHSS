@@ -1,5 +1,5 @@
 <?php
-$URLPATH="http://".$_SERVER['HTTP_HOST']."/"; 
+$URLPATH="https://localhost/VPHSS/"; 
 
 $HOSTPATH = $URLPATH;
 $ROOTPATH = $_SERVER['DOCUMENT_ROOT']."/";

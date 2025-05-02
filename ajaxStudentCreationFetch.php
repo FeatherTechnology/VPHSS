@@ -14,8 +14,18 @@ if(isset($_SESSION["academic_year"])){
 $column = array(
     'student_id',
     'student_name',
+    'admission_number',
     'standard',
+    'section',
     'gender',
+    'category',
+    'date_of_birth',
+    'father_name',
+    'father_mobile_no',
+    'mother_tongue',
+    'blood_group',
+    'student_id',
+    'religion',
     'flat_no',
     'status'
 );
@@ -76,10 +86,31 @@ foreach ($result as $row) {
     }
     
     $sub_array[] = $row['student_name'];
+    $sub_array[] = $row['admission_number'];
     $sub_array[] = $row['std_name'];
+    $sub_array[] = $row['section'];
     $sub_array[] = $row['gender'];
-    $sub_array[] = $row['flat_no'];
+    $sub_array[] = $row['category'];
+    $sub_array[] = !empty($row['date_of_birth']) ? date('d-m-Y', strtotime($row['date_of_birth'])) : '';
+    $sub_array[] = $row['father_name'];
+    $sub_array[] = $row['father_mobile_no'];
+    $sub_array[] = $row['mother_tongue'];
+    $sub_array[] = !empty($row['blood_group']) && $row['blood_group'] !== 'NULL' ? $row['blood_group'] : '';
+
+
     $facility = $row['facility'];
+          
+    if($facility == 'Transport'){
+        $trans = 'Yes';
+    }
+    else{
+        $trans = 'No';
+    }
+    $sub_array[] =  $trans;
+    $sub_array[] = !empty($row['religion']) && $row['religion'] !== 'NULL' ? $row['religion'] : '';;
+    $sub_array[] = $row['flat_no'];
+ 
+  
     
     $status      = $row['status'];
     if($status == 1)
@@ -93,6 +124,7 @@ foreach ($result as $row) {
 
 	$id   = $row['student_id'];
 	$admissionNo   = $row['admission_number'];
+
 	
 	$action="<div class='bd-example'>
     <div class='btn-group dropstart'>
@@ -118,6 +150,7 @@ foreach ($result as $row) {
         // <li><a class='dropdown-item' href='#'><span class='icon-attachment1'></span> Attachments</a></li>
 
 	$sub_array[] = $action;
+	
     $data[]      = $sub_array;
     $sno = $sno + 1;
 }

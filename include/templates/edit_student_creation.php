@@ -99,8 +99,18 @@
 							<tr>
 								<th>S. No.</th>
 								<th>Student Name</th>
+								<th>Admission Number</th>
 								<th>Standard</th>
+								<th>Section</th>
 								<th>Gender</th>
+								<th>Category</th>
+								<th>Date of Birth</th>
+								<th>Father Name</th>
+								<th>Father Number</th>
+								<th>Mother Tongue</th>
+								<th>Blood Group</th>
+								<th>Transport</th>
+								<th>Religion</th>
 								<th>Address</th>
 								<th>Status</th>
 								<th>Action</th>

@@ -207,11 +207,18 @@
 					collectionLayout: 'fixed four-column',
 				}
 
-			],	
+			],
+			columnDefs: [
+        {
+            targets: [2,4,6,7,8,9,10,11,12,13],  // This will hide the 7th column (index starts at 0)
+            visible: false
+        }
+    ],	
 			"lengthMenu": [
 				[10, 25, 50, -1],
 				[10, 25, 50, "All"]
 			]
+			
 		});
 
 		// Staff Creation

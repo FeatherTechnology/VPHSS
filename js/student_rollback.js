@@ -172,7 +172,7 @@ $(function () {
 
 
 function getStandardList() { //Getting standard list from database.
-  var hrCls = ['13', '19', '20', '21', '22', '23'];
+  var hrCls = ['13', '19', '20', '21', '22', '23','25'];
   $.ajax({
     type: 'POST',
     data: {},
