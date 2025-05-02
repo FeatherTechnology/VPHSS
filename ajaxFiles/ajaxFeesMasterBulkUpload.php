@@ -95,24 +95,30 @@ if(in_array($_FILES["file"]["type"],$allowedFileType)){
                         $standard_list = "13";
                     }else if($standard_name == 'XI_Maths_Biology'){
                         $standard_list = "14";
-                    }else if($standard_name == 'XI_Maths_ComputerScience'){
+                    }else if($standard_name == 'XI_Maths_Csc'){
                         $standard_list = "15";
-                    }else if($standard_name == 'XI_Biology_ComputerScience'){
+                    }else if($standard_name == 'XI_Biology_Csc'){
                         $standard_list = "16";
-                    }else if($standard_name == 'XI_Commerce_ComputerScience'){
+                    }else if($standard_name == 'XI_Commerce_Csc'){
                         $standard_list = "17";
                     }else if($standard_name == 'XI_All'){
                         $standard_list = "18";
                     }else if($standard_name == 'XII_Maths_Biology'){
                         $standard_list = "19";
-                    }else if($standard_name == 'XII_Maths_ComputerScience'){
+                    }else if($standard_name == 'XII_Maths_Csc'){
                         $standard_list = "20";
-                    }else if($standard_name == 'XII_Biology_ComputerScience'){
+                    }else if($standard_name == 'XII_Biology_Csc'){
                         $standard_list = "21";
-                    }else if($standard_name == 'XII_Commerce_ComputerScience'){
+                    }else if($standard_name == 'XII_Commerce_Csc'){
                         $standard_list = "22";
-                    }else{
+                    }else if($standard_name == 'XII_All'){
                         $standard_list = "23";
+                    }
+                    else if($standard_name == 'XI_Com_BusinessMaths'){
+                        $standard_list = "24";
+                    }
+                    else if($standard_name == 'XII_Com_BusinessMaths'){
+                        $standard_list = "25";
                     }
                 }
                 

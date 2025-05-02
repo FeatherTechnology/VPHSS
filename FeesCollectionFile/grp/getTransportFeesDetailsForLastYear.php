@@ -22,17 +22,8 @@ if(isset($_POST['standard'])){
     $standardId = $_POST['standard'];
 }
 
-// $CheckReceiptQry = $connect->query("SELECT id FROM `transport_admission_fees` WHERE admission_id = '$admissionFormId' && academic_year = '$academicYear' order by id desc limit 1");
-// if($CheckReceiptQry->rowCount() > 0){
-//     $get_temp_fees_id = $CheckReceiptQry->fetch()['id'];
-//     $feeDetailsQry = $connect->query("SELECT  COALESCE(SUM(tafd.fee_received),0) as due_amount, tafd.area_creation_id as fees_id, tafd.area_creation_particulars_id as particulars_id, ac.area_name, acp.particulars, acp.due_amount AS ovrlAllAmnt
-//     FROM `transport_admission_fees` taf 
-//     JOIN transport_admission_fees_details tafd ON taf.id = tafd.admission_fees_ref_id 
-//     JOIN area_creation ac ON tafd.area_creation_id = ac.area_id
-//     JOIN area_creation_particulars acp ON tafd.area_creation_particulars_id = acp.particulars_id 
-//     WHERE taf.admission_id = '$get_temp_fees_id' && taf.academic_year = '$academicYear' AND ac.status = '0' GROUP BY tafd.area_creation_id ");
-
-// }else{
+$CheckReceiptQry1 = $connect->query("SELECT sc.id FROM `student_history` sc WHERE sc.academic_year = '$academicYear' AND sc.student_id = '$admissionFormId' ");
+if($CheckReceiptQry1->rowCount() > 0){
     $feeDetailsQry = $connect->query("SELECT ac.area_id as fees_id, acp.particulars_id as particulars_id, ac.area_name, acp.particulars, acp.due_amount, acp.due_amount AS ovrlAllAmnt  
     FROM student_creation sc  
     JOIN student_history sh ON sh.student_id = sc.student_id AND sh.academic_year = '$academicYear'
@@ -40,13 +31,10 @@ if(isset($_POST['standard'])){
     JOIN area_creation_particulars acp ON ac.area_id = acp.area_creation_id
     WHERE sc.student_id = '$admissionFormId' AND ac.status = '0' AND ac.year_id ='$academicYear' ");
 
-// }
-// $CheckLastReceiptQry = $connect->query("SELECT lf.id FROM `last_year_fees` lf JOIN last_year_fees_details lfd ON lf.id = lfd.admission_fees_ref_id WHERE lf.admission_id = '$admissionFormId' && lf.academic_year = '$nextAcademicYear' && lfd.fees_table_name = 'transport' ORDER BY lf.id DESC LIMIT 1");
-// if($CheckLastReceiptQry->rowCount() > 0){
-//     $get_temp_fees_id = $CheckLastReceiptQry->fetch()['id'];
-//     $lastfeeDetailsQry = $connect->query("SELECT lfd.balance_tobe_paid as due_amount, lfd.fees_master_id as fees_id, lfd.fees_id as particulars_id, acp.particulars_id as particulars_id,acp.due_amount AS ovrlAllAmnt ,acp.particulars FROM `last_year_fees` lf JOIN last_year_fees_details lfd ON lf.id = lfd.admission_fees_ref_id JOIN area_creation_particulars acp ON lfd.fees_id = acp.particulars_id WHERE lf.id = '$get_temp_fees_id' && lf.academic_year = '$nextAcademicYear' && lfd.fees_table_name = 'transport'");
-
-// }
+}else{
+    echo ''; // no data to return
+    exit;
+}
 $feeQueryToUse = $feeDetailsQry;
 $i=0;
 while($transportFeeDetailsInfo = $feeQueryToUse->fetch()){

@@ -153,52 +153,58 @@ if (isset($_FILES["file"]["type"])) {
                 if (isset($Row[24])) {
                     $standard_name = mysqli_real_escape_string($mysqli, $Row[24]);
 
-                    if ($standard_name == 'PRE.K.G') {
-                        $standard = "1";
-                    } else if ($standard_name == 'L.K.G') {
-                        $standard = "2";
-                    } else if ($standard_name == 'U.K.G') {
-                        $standard = "3";
-                    } else if ($standard_name == 'I') {
-                        $standard = "4";
-                    } else if ($standard_name == 'II') {
-                        $standard = "5";
-                    } else if ($standard_name == 'III') {
-                        $standard = "6";
-                    } else if ($standard_name == 'IV') {
-                        $standard = "7";
-                    } else if ($standard_name == 'V') {
-                        $standard = "8";
-                    } else if ($standard_name == 'VI') {
-                        $standard = "9";
-                    } else if ($standard_name == 'VII') {
-                        $standard = "10";
-                    } else if ($standard_name == 'VIII') {
-                        $standard = "11";
-                    } else if ($standard_name == 'IX') {
-                        $standard = "12";
-                    } else if ($standard_name == 'X') {
-                        $standard = "13";
-                    } else if ($standard_name == 'XI_Maths_Biology') {
-                        $standard = "14";
-                    } else if ($standard_name == 'XI_Maths_ComputerScience') {
-                        $standard = "15";
-                    } else if ($standard_name == 'XI_Biology_ComputerScience') {
-                        $standard = "16";
-                    } else if ($standard_name == 'XI_Commerce_ComputerScience') {
-                        $standard = "17";
-                    } else if ($standard_name == 'XI_All') {
-                        $standard = "18";
-                    } else if ($standard_name == 'XII_Maths_Biology') {
-                        $standard = "19";
-                    } else if ($standard_name == 'XII_Maths_ComputerScience') {
-                        $standard = "20";
-                    } else if ($standard_name == 'XII_Biology_ComputerScience') {
-                        $standard = "21";
-                    } else if ($standard_name == 'XII_Commerce_ComputerScience') {
-                        $standard = "22";
-                    } else {
-                        $standard = "23";
+                    if($standard_name == 'PRE.K.G'){
+                        $standard_list = "1";
+                    }else if($standard_name == 'L.K.G'){
+                        $standard_list = "2";
+                    }else if($standard_name == 'U.K.G'){
+                        $standard_list = "3";
+                    }else if($standard_name == 'I'){
+                        $standard_list = "4";
+                    }else if($standard_name == 'II'){
+                        $standard_list = "5";
+                    }else if($standard_name == 'III'){
+                        $standard_list = "6";
+                    }else if($standard_name == 'IV'){
+                        $standard_list = "7";
+                    }else if($standard_name == 'V'){
+                        $standard_list = "8";
+                    }else if($standard_name == 'VI'){
+                        $standard_list = "9";
+                    }else if($standard_name == 'VII'){
+                        $standard_list = "10";
+                    }else if($standard_name == 'VIII'){
+                        $standard_list = "11";
+                    }else if($standard_name == 'IX'){
+                        $standard_list = "12";
+                    }else if($standard_name == 'X'){
+                        $standard_list = "13";
+                    }else if($standard_name == 'XI_Maths_Biology'){
+                        $standard_list = "14";
+                    }else if($standard_name == 'XI_Maths_Csc'){
+                        $standard_list = "15";
+                    }else if($standard_name == 'XI_Biology_Csc'){
+                        $standard_list = "16";
+                    }else if($standard_name == 'XI_Commerce_Csc'){
+                        $standard_list = "17";
+                    }else if($standard_name == 'XI_All'){
+                        $standard_list = "18";
+                    }else if($standard_name == 'XII_Maths_Biology'){
+                        $standard_list = "19";
+                    }else if($standard_name == 'XII_Maths_Csc'){
+                        $standard_list = "20";
+                    }else if($standard_name == 'XII_Biology_Csc'){
+                        $standard_list = "21";
+                    }else if($standard_name == 'XII_Commerce_Csc'){
+                        $standard_list = "22";
+                    }else if($standard_name == 'XII_All'){
+                        $standard_list = "23";
+                    }
+                    else if($standard_name == 'XI_Com_BusinessMaths'){
+                        $standard_list = "24";
+                    }
+                    else if($standard_name == 'XII_Com_BusinessMaths'){
+                        $standard_list = "25";
                     }
                 }
 
@@ -509,7 +515,7 @@ if (isset($_FILES["file"]["type"])) {
 
                     $insresult = $mysqli->query($StudentInsert) or die("Error " . $mysqli->error);
                     $stdLastInsertId = $mysqli->insert_id;
-                    $StudentHistoryInsert = "INSERT INTO student_history (`student_id`, `standard`, `section`,`studentstype` ,`extra_curricular`, `transportarearefid`, `academic_year`,`insert_login_id`,`created_on`)VALUES('$stdLastInsertId','" . strip_tags($standard) . "','" . strip_tags($section) . "','" . strip_tags($studentstype) . "','" . strip_tags($extra_curricular) . "','" . strip_tags($transportarearefid) . "','" . strip_tags($year_id) . "','$userid',now())";
+                    $StudentHistoryInsert = "INSERT INTO student_history (`student_id`, `standard`, `section`,`studentstype` ,`extra_curricular`, `transportarearefid`, `academic_year`,`insert_login_id`,`created_on`)VALUES('$stdLastInsertId','" . strip_tags($standard) . "','" . strip_tags($section) . "','" . strip_tags($getStudentType) . "','" . strip_tags($extra_curricular) . "','" . strip_tags($transport_area_ref_id) . "','" . strip_tags($academic_year) . "','$userid',now())";
                     $result = $mysqli->query($StudentHistoryInsert) or die("Error " . $mysqli->error);
                 }
             } //foreach

@@ -112,7 +112,11 @@ if (!in_array($standard, $particular_std_id)) { //these under 9 std. so jst add 
     } else if ($standard == '23') { //all
         $lastyr_std_id = '18';
     }
+    else if ($standard == '25') { //all
+        $lastyr_std_id = '24';
+    }
 }
+
 //Group fees
 // $getOldStudCntQry = $connect->query(" SELECT * FROM `student_creation` WHERE studentstype ='2' AND YEAR(created_date) <= YEAR(CURDATE()) AND student_id = '$student_id' ");
 // if ($getOldStudCntQry->rowCount() > 0) {
@@ -306,7 +310,6 @@ if ($CheckLastyrReceiptQry->rowCount() > 0) {
    
     //Close DB connection
     $lastyr_extraFeeDetailsQry->closeCursor();
-
     $lastyr_amenityFeeDetailsQry = $connect->query("SELECT (SUM(afd.fee_received)) as paid_amenity_amount 
     FROM `admission_fees` afs 
     JOIN admission_fees_details afd ON afs.id = afd.admission_fees_ref_id 
@@ -330,12 +333,12 @@ $CheckLastyrTransReceiptQry = $connect->query("SELECT id FROM `transport_admissi
 $lastyr_transpaid_amount = 0;
 if ($CheckLastyrTransReceiptQry->rowCount() > 0) {
     $get_lastyr_fees_id = $CheckLastyrTransReceiptQry->fetch()['id'];
-    $lastyr_grpfeeDetailsQry = $connect->query("SELECT (SUM(acp.due_amount) - SUM(afd.balance_tobe_paid)) as paid_grp_amount 
+    $lastyr_grpfeeDetailsQry = $connect->query("SELECT COALESCE(SUM(afd.fee_received), 0) as paid_grp_amount 
     FROM `transport_admission_fees` af 
     JOIN transport_admission_fees_details afd ON af.id = afd.admission_fees_ref_id 
      JOIN area_creation ac ON afd.area_creation_id = ac.area_id
     JOIN area_creation_particulars acp ON afd.area_creation_particulars_id = acp.particulars_id 
-    WHERE af.id = '$get_lastyr_fees_id' && af.academic_year = '$last_year'");
+    WHERE af.admission_id = '$student_id' && af.academic_year = '$last_year'");
     if ($lastyr_grpfeeDetailsQry->rowCount() > 0) {
         $lastyr_overallpaid_grp_amount = $lastyr_grpfeeDetailsQry->fetch()['paid_grp_amount'];
     } else {
@@ -450,7 +453,6 @@ if ($CheckConcessionReceiptQry->rowCount() > 0) {
         $get_concession_fees_ids[] = $CheckConcessionInfo['id'];
     }
     $get_concession_fees_id = implode(',', $get_concession_fees_ids);
-
     $grpfeeConcessionDetailsQry = $connect->query("SELECT SUM(afd.scholarship) as grp_concession_amount  
     FROM `admission_fees` af 
     JOIN admission_fees_details afd ON af.id = afd.admission_fees_ref_id 
@@ -527,6 +529,7 @@ if ($CheckTransportConcessionReceiptQry->rowCount() > 0) {
 } else {
     $overall_trans_concession_amount = '0';
 }
+
 $CheckTransportConcessionReceiptQry = $connect->query("SELECT SUM(scholarship) as overall_transport_concession FROM `transport_admission_fees` WHERE admission_id = '$student_id' && academic_year = '$academic_year' ");
 if ($CheckTransportConcessionReceiptQry->rowCount() > 0) {
     $overall_transp_concession_amount = $CheckTransportConcessionReceiptQry->fetch()['overall_transport_concession'];
@@ -536,12 +539,17 @@ if ($CheckTransportConcessionReceiptQry->rowCount() > 0) {
        $overall_transport_concession_amount=intval($overall_trans_concession_amount + $overall_transp_concession_amount);
 //Close DB connection
 $CheckTransportConcessionReceiptQry->closeCursor();
-
 $CheckLastyrConcessionQry = $connect->query("SELECT SUM(scholarship) as overall_lastyr_concession FROM `admission_fees` WHERE admission_id = '$student_id' && academic_year = '$last_year' ");
 if ($CheckLastyrConcessionQry->rowCount() > 0) {
     $lastyr_concession_amount = $CheckLastyrConcessionQry->fetch()['overall_lastyr_concession'];
 } else {
     $lastyr_concession_amount = '0';
+}
+$CheckLastyrConcessionQry = $connect->query("SELECT SUM(scholarship) as overall_lastyr_concession FROM `transport_admission_fees` WHERE admission_id = '$student_id' && academic_year = '$last_year' ");
+if ($CheckLastyrConcessionQry->rowCount() > 0) {
+    $lastyr_trnsconcession_amount = $CheckLastyrConcessionQry->fetch()['overall_lastyr_concession'];
+} else {
+    $lastyr_trnsconcession_amount = '0';
 }
 
 //Close DB connection
@@ -564,7 +572,7 @@ if ($CheckLastyrEntryConcessionQry->rowCount() > 0) {
 //Close DB connection
 $CheckLastyrEntryConcessionQry->closeCursor();
 
-$overall_lastyr_concession_amount = $lastyr_concession_amount + $lastyr_entry_concession_amount + $lastyrfees_concession_amount;
+$overall_lastyr_concession_amount = $lastyr_concession_amount + $lastyr_entry_concession_amount + $lastyrfees_concession_amount +$lastyr_trnsconcession_amount;
 
 //Fee Details /// Concession///  Group/ extra cur/ amenity/ transport/ Last year/ ////////////////////////////END////////////////////////////////////////////////////////
 $netPaySchoolFees = (($overallGrpAmount) - (($overallpaid_grp_amount) + ($overall_grp_concession_amount)));
