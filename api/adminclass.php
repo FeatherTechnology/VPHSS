@@ -141,6 +141,26 @@ class admin
 		} else {
 			$transfer = 1;
 		}
+		if (isset($_POST['exam_module']) &&    $_POST['exam_module'] == 'Yes') {
+			$exam_module = 0;
+		} else {
+			$exam_module = 1;
+		}
+		if (isset($_POST['exam_creation']) &&    $_POST['exam_creation'] == 'Yes') {
+			$exam_creation = 0;
+		} else {
+			$exam_creation = 1;
+		}
+		if (isset($_POST['student_mark_entry']) &&    $_POST['student_mark_entry'] == 'Yes') {
+			$student_mark_entry = 0;
+		} else {
+			$student_mark_entry = 1;
+		}
+		if (isset($_POST['staff_subject_allocation']) &&    $_POST['staff_subject_allocation'] == 'Yes') {
+			$staff_subject_allocation = 0;
+		} else {
+			$staff_subject_allocation = 1;
+		}
 		if (isset($_POST['collection_module']) &&    $_POST['collection_module'] == 'Yes') {
 			$collection_module = 0;
 		} else {
@@ -263,7 +283,7 @@ class admin
 			$monthwise_fees_summary = 1;
 		}
 
-		$userInsert = "INSERT INTO `user`(`firstname`, `lastname`, `fullname`, `title`, `school_id`, `emailid`, `user_name`, `user_password`, `role`, `status`, `dashboard`, `administration_module`, `trust_creation`, `school_update`, `fees_master`, `holiday_creation`, `manage_users`, `master_module`, `area_master`, `syllabus_sub_module`, `allocation`, `allocation_view`, `staff_module`, `staff_creation`, `student_module`, `temp_admission_form`, `student_creation`, `student_rollback`, `delete_student`, `certificate_sub_module`, `transfer`, `collection_module`, `fees_concession`, `fees_collection`, `sms_module`, `birthday_wishes`, `tamil_birthday_wishes`, `student_general_message`, `staff_general_message`, `report_module`, `student_report_sub_module`, `student_caste_report`, `class_wise_list`, `register_of_admission`, `student_transport_list`, `fee_details_sub_module`, `daily_fees_collection`, `day_end_report`, `overall_scholarship_fee_details`, `pending_fee_details`, `all_type_pending_fee_details`, `classwise_overall_pending`, `fees_summary`, `monthwise_fees_summary`, `insert_login_id`) VALUES ('$first_name','$last_name','$full_name','$title','$school_name','$email_id','$user_name','$password','$user_role','0','$dashboard_module','$administration_module','$trust_creation','$school_update','$fees_master','$holiday_creation','$manage_users','$master_module','$area_master','$syllabus_sub_module','$allocation','$allocation_view','$staff_module','$staff_creation','$student_module','$temp_admission_form','$student_creation','$student_rollback','$delete_student','$certificate_sub_module','$transfer','$collection_module','$fees_concession','$fees_collection', '$sms_module', '$birthday_wishes', '$tamil_birthday_wishes', '$student_general_message', '$staff_general_message', '$report_module','$student_report_sub_module','$student_caste_report','$class_wise_list','$register_of_admission','$student_transport_list','$fee_details_sub_module','$daily_fees_collection','$day_end_report','$overall_scholarship_fee_details','$pending_fee_details','$all_type_pending_fee_details','$classwise_overall_pending','$fees_summary','$monthwise_fees_summary', '$userid')";
+		$userInsert = "INSERT INTO `user`(`firstname`, `lastname`, `fullname`, `title`, `school_id`, `emailid`, `user_name`, `user_password`, `role`, `status`, `dashboard`, `administration_module`, `trust_creation`, `school_update`, `fees_master`, `holiday_creation`, `manage_users`, `master_module`, `area_master`, `syllabus_sub_module`, `allocation`, `allocation_view`, `staff_module`, `staff_creation`, `student_module`, `temp_admission_form`, `student_creation`, `student_rollback`, `delete_student`, `certificate_sub_module`, `transfer`,`exam_module`,`exam_creation`,`student_mark_entry`,`staff_subject_allocation`, `collection_module`, `fees_concession`, `fees_collection`, `sms_module`, `birthday_wishes`, `tamil_birthday_wishes`, `student_general_message`, `staff_general_message`, `report_module`, `student_report_sub_module`, `student_caste_report`, `class_wise_list`, `register_of_admission`, `student_transport_list`, `fee_details_sub_module`, `daily_fees_collection`, `day_end_report`, `overall_scholarship_fee_details`, `pending_fee_details`, `all_type_pending_fee_details`, `classwise_overall_pending`, `fees_summary`, `monthwise_fees_summary`, `insert_login_id`) VALUES ('$first_name','$last_name','$full_name','$title','$school_name','$email_id','$user_name','$password','$user_role','0','$dashboard_module','$administration_module','$trust_creation','$school_update','$fees_master','$holiday_creation','$manage_users','$master_module','$area_master','$syllabus_sub_module','$allocation','$allocation_view','$staff_module','$staff_creation','$student_module','$temp_admission_form','$student_creation','$student_rollback','$delete_student','$certificate_sub_module','$transfer','$exam_module','$exam_creation','$student_mark_entry','$staff_subject_allocation','$collection_module','$fees_concession','$fees_collection', '$sms_module', '$birthday_wishes', '$tamil_birthday_wishes', '$student_general_message', '$staff_general_message', '$report_module','$student_report_sub_module','$student_caste_report','$class_wise_list','$register_of_admission','$student_transport_list','$fee_details_sub_module','$daily_fees_collection','$day_end_report','$overall_scholarship_fee_details','$pending_fee_details','$all_type_pending_fee_details','$classwise_overall_pending','$fees_summary','$monthwise_fees_summary', '$userid')";
 		$insresult = $mysqli->query($userInsert) or die("Error " . $mysqli->error);
 	}
 
@@ -405,6 +425,26 @@ class admin
 		} else {
 			$transfer = 1;
 		}
+		if (isset($_POST['exam_module']) &&    $_POST['exam_module'] == 'Yes') {
+			$exam_module = 0;
+		} else {
+			$exam_module = 1;
+		}
+		if (isset($_POST['exam_creation']) &&    $_POST['exam_creation'] == 'Yes') {
+			$exam_creation = 0;
+		} else {
+			$exam_creation = 1;
+		}
+		if (isset($_POST['student_mark_entry']) &&    $_POST['student_mark_entry'] == 'Yes') {
+			$student_mark_entry = 0;
+		} else {
+			$student_mark_entry = 1;
+		}
+		if (isset($_POST['staff_subject_allocation']) &&    $_POST['staff_subject_allocation'] == 'Yes') {
+			$staff_subject_allocation = 0;
+		} else {
+			$staff_subject_allocation = 1;
+		}
 		if (isset($_POST['collection_module']) &&    $_POST['collection_module'] == 'Yes') {
 			$collection_module = 0;
 		} else {
@@ -527,7 +567,7 @@ class admin
 			$monthwise_fees_summary = 1;
 		}
 
-		$updateUserQry = "UPDATE `user` SET `firstname`='$first_name',`lastname`='$last_name',`fullname`='$full_name',`title`='$title',`school_id`='$school_name',`emailid`='$email_id',`user_name`='$user_name',`user_password`='$password',`role`='$user_role',`status`='0',`dashboard`='$dashboard_module',`administration_module`='$administration_module',`trust_creation`='$trust_creation',`school_update`='$school_update',`fees_master`='$fees_master',`holiday_creation`='$holiday_creation',`manage_users`='$manage_users',`master_module`='$master_module',`area_master`='$area_master',`syllabus_sub_module`='$syllabus_sub_module',`allocation`='$allocation',`allocation_view`='$allocation_view',`staff_module`='$staff_module',`staff_creation`='$staff_creation',`student_module`='$student_module',`temp_admission_form`='$temp_admission_form',`student_creation`='$student_creation',`student_rollback`='$student_rollback',`delete_student`='$delete_student',`certificate_sub_module`='$certificate_sub_module',`transfer`='$transfer',`collection_module`='$collection_module',`fees_concession`='$fees_concession',`fees_collection`='$fees_collection', `sms_module`='$sms_module',`birthday_wishes`='$birthday_wishes',`tamil_birthday_wishes`='$tamil_birthday_wishes',`student_general_message`='$student_general_message',`staff_general_message`='$staff_general_message',`report_module`='$report_module',`student_report_sub_module`='$student_report_sub_module',`student_caste_report`='$student_caste_report',`class_wise_list`='$class_wise_list',`register_of_admission`='$register_of_admission',`student_transport_list`='$student_transport_list',`fee_details_sub_module`='$fee_details_sub_module',`daily_fees_collection`='$daily_fees_collection',`day_end_report`='$day_end_report',`overall_scholarship_fee_details`='$overall_scholarship_fee_details',`pending_fee_details`='$pending_fee_details',`all_type_pending_fee_details`='$all_type_pending_fee_details',`classwise_overall_pending`='$classwise_overall_pending',`fees_summary`='$fees_summary',`monthwise_fees_summary`='$monthwise_fees_summary', `update_login_id`='$userid', `updated_date`=now() WHERE `user_id`='$manage_user_id'";
+		$updateUserQry = "UPDATE `user` SET `firstname`='$first_name',`lastname`='$last_name',`fullname`='$full_name',`title`='$title',`school_id`='$school_name',`emailid`='$email_id',`user_name`='$user_name',`user_password`='$password',`role`='$user_role',`status`='0',`dashboard`='$dashboard_module',`administration_module`='$administration_module',`trust_creation`='$trust_creation',`school_update`='$school_update',`fees_master`='$fees_master',`holiday_creation`='$holiday_creation',`manage_users`='$manage_users',`master_module`='$master_module',`area_master`='$area_master',`syllabus_sub_module`='$syllabus_sub_module',`allocation`='$allocation',`allocation_view`='$allocation_view',`staff_module`='$staff_module',`staff_creation`='$staff_creation',`student_module`='$student_module',`temp_admission_form`='$temp_admission_form',`student_creation`='$student_creation',`student_rollback`='$student_rollback',`delete_student`='$delete_student',`certificate_sub_module`='$certificate_sub_module',`transfer`='$transfer',`exam_module`='$exam_module',`exam_creation`='$exam_creation',`student_mark_entry`='$student_mark_entry',`staff_subject_allocation`='$staff_subject_allocation',`collection_module`='$collection_module',`fees_concession`='$fees_concession',`fees_collection`='$fees_collection', `sms_module`='$sms_module',`birthday_wishes`='$birthday_wishes',`tamil_birthday_wishes`='$tamil_birthday_wishes',`student_general_message`='$student_general_message',`staff_general_message`='$staff_general_message',`report_module`='$report_module',`student_report_sub_module`='$student_report_sub_module',`student_caste_report`='$student_caste_report',`class_wise_list`='$class_wise_list',`register_of_admission`='$register_of_admission',`student_transport_list`='$student_transport_list',`fee_details_sub_module`='$fee_details_sub_module',`daily_fees_collection`='$daily_fees_collection',`day_end_report`='$day_end_report',`overall_scholarship_fee_details`='$overall_scholarship_fee_details',`pending_fee_details`='$pending_fee_details',`all_type_pending_fee_details`='$all_type_pending_fee_details',`classwise_overall_pending`='$classwise_overall_pending',`fees_summary`='$fees_summary',`monthwise_fees_summary`='$monthwise_fees_summary', `update_login_id`='$userid', `updated_date`=now() WHERE `user_id`='$manage_user_id'";
 		$insresult = $mysqli->query($updateUserQry) or die("Error " . $mysqli->error);
 	}
 
@@ -571,6 +611,10 @@ class admin
 			$detailrecords['delete_student']                  = $row->delete_student;
 			$detailrecords['certificate_sub_module']                  = $row->certificate_sub_module;
 			$detailrecords['transfer']                  = $row->transfer;
+			$detailrecords['exam_module']                  = $row->exam_module;
+			$detailrecords['exam_creation']                  = $row->exam_creation;
+			$detailrecords['student_mark_entry']                  = $row->student_mark_entry;
+			$detailrecords['staff_subject_allocation']                  = $row->staff_subject_allocation;
 			$detailrecords['collection_module']                  = $row->collection_module;
 			$detailrecords['fees_concession']                  = $row->fees_concession;
 			$detailrecords['fees_collection']                  = $row->fees_collection;

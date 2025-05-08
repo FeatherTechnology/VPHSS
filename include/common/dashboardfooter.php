@@ -671,7 +671,15 @@ if($current_page == 'delete_student') { ?>
 if($current_page == 'student_rollback') { ?>
 <script src="js/student_rollback.js"></script>
 <?php }
-
+if($current_page == 'exam_creation') { ?>
+	<script src="js/exam_creation.js"></script>
+	<?php }
+if($current_page == 'student_mark_entry') { ?>
+	<script src="js/student_mark_entry.js"></script>
+	<?php }
+if($current_page == 'staff_subject_allocation') { ?>
+	<script src="js/staff_subject_allocation.js"></script>
+	<?php }
 if($current_page == 'covid_concession') { ?>
 <script src="js/covid_concession.js"></script>
 <?php }

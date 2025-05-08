@@ -57,11 +57,6 @@ if (isset($_POST['standard'])) {
     // You can now use $prevstandardId as needed
 }
 
-if ($studentType == "1" || $studentType == "2") {
-    $student_type_cndtn = "(fm.student_type = '$studentType' || fm.student_type = '4')";
-} else {
-    $student_type_cndtn = "(fm.student_type = '$studentType')";
-}
 $CheckReceiptQry1 = $connect->query("SELECT sc.id, sc.studentstype FROM `student_history` sc WHERE sc.academic_year = '$academicYear' AND sc.student_id = '$admissionFormId' ");
 if ($CheckReceiptQry1->rowCount() > 0) {
     $studentData = $CheckReceiptQry1->fetch(PDO::FETCH_ASSOC);

@@ -26,6 +26,10 @@ if (sizeof($getmanageuserdetails)>0) {
 	$delete_student                  = $getmanageuserdetails['delete_student']; 
 	$certificate_sub_module                  = $getmanageuserdetails['certificate_sub_module']; 
 	$transfer                  = $getmanageuserdetails['transfer']; 
+	$exam_module                  = $getmanageuserdetails['exam_module']; 
+	$exam_creation                  = $getmanageuserdetails['exam_creation']; 
+	$student_mark_entry                  = $getmanageuserdetails['student_mark_entry']; 
+	$staff_subject_allocation                  = $getmanageuserdetails['staff_subject_allocation']; 
 	$collection_module                  = $getmanageuserdetails['collection_module']; 
 	$fees_concession                  = $getmanageuserdetails['fees_concession']; 
 	$fees_collection                  = $getmanageuserdetails['fees_collection']; 
@@ -304,7 +308,33 @@ if (sizeof($getmanageuserdetails)>0) {
 						</ul>
 					</div>
 				</li>
-			<?php } if(isset($collection_module) && $collection_module ==0){ ?>
+				<?php }
+			 if(isset($exam_module) && $exam_module ==0){ ?>
+				<li class="sidebar-dropdown">
+					<a href="javascript:void(0)">
+						<i class="icon-wallet"></i>
+						<span class="menu-text"> Exam </span>
+					</a>
+					<div class="sidebar-submenu">
+						<ul>
+						<?php if(isset($exam_creation) && $exam_creation ==0){ ?>
+							<li>
+								<a href="exam_creation"><i class="icon-attach_money"></i>Exam Creation</a>
+							</li>
+						<?php }if(isset($student_mark_entry) && $student_mark_entry ==0){ ?>
+							<li>
+								<a href="student_mark_entry"><i class="icon-file"></i>Stuent Mark Entry</a>
+							</li>
+						<?php } if(isset($staff_subject_allocation) && $staff_subject_allocation ==0){ ?>
+							<li>
+								<a href="staff_subject_allocation"><i class="icon-file"></i>Staff Subject Allocation</a>
+							</li>
+						<?php }?>
+						</ul>
+					</div>
+				</li>
+			<?php }
+			 if(isset($collection_module) && $collection_module ==0){ ?>
 				<li class="sidebar-dropdown">
 					<a href="javascript:void(0)">
 						<i class="icon-wallet"></i>

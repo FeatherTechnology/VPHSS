@@ -217,7 +217,19 @@ if($current_page == 'vendorcreation' || $current_page == 'auction_details') {
 			if($current_page == 'covid_concession') { 
 			include "include/templates/covid_concession.php"; 
 			} 
-			
+			//Exam Creation
+			if($current_page == 'exam_creation') { 
+				include "include/templates/exam_creation.php"; 
+				} 
+	//Student Mark Enty
+	if($current_page == 'student_mark_entry') { 
+		include "include/templates/student_mark_entry.php"; 
+		} 
+	//Staff Subject Allocation 
+	if($current_page == 'staff_subject_allocation') { 
+		include "include/templates/staff_subject_allocation.php"; 
+		} 
+
 			//Fees Concession 
 			if($current_page == 'fees_concession') { 
 			include "include/templates/fees_concession.php"; 
