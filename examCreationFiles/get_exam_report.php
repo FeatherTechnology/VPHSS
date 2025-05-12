@@ -1,12 +1,14 @@
 <?php
 include '../ajaxconfig.php';
-
+@session_start();
 $standard = $_POST['standard'];
-
+if(isset($_SESSION["academic_year"])){
+    $academic_year = $_SESSION["academic_year"];
+} 
 $qry = $connect->query("SELECT et.exam_type, ec.paper_name, ec.out_of_marks, ec.pass 
                         FROM exam_creation ec 
                         JOIN exam_type et ON ec.exam_type = et.id 
-                        WHERE ec.standard = '$standard' 
+                        WHERE ec.standard = '$standard' AND ec.academic_year = '$academic_year'
                         ORDER BY et.exam_type, ec.paper_name");
 
 $data = [];

@@ -11,7 +11,7 @@ $(document).ready(function () {
             dataType: 'json',
             success: function (response) {
                 $('#section').empty();
-                $('#section').append("<option value=''>Select option</option>");
+                $('#section').append("<option value=''>Select Option</option>");
                 for (var i = 0; i < response.length; i++) {
                     $('#section').append("<option value='" + response[i] + "'>" + response[i] + "</option>");
                 }
@@ -21,15 +21,15 @@ $(document).ready(function () {
     //////////////////////////////////////////view Student List////////////////////////////////////////////////////
     $('#view_subject').click(function (event) {
         event.preventDefault();
-    
+
         let section = $('#section').val().trim();
         let standard = $('#standard').val().trim();
-    
+
         if (section === '' || standard === '') {
             alert("Please Select all the fields");
             return;
         }
-    
+
         $.post('examCreationFiles/paper_allocate.php', { standard: standard, section: section }, function (response) {
             if (!response.subjects || response.subjects.length === 0) {
                 let html = `
@@ -44,19 +44,19 @@ $(document).ready(function () {
                 $('.subject_card').hide();
                 return;
             }
-    
+
             $('.subject_allocate').hide();
             $('.subject_card').show();
-    
+
             let html = '';
             let sno = 1;
             let staffList = response.staff_list;
-    
+
             $.each(response.subjects, function (index, value) {
                 html += '<tr>';
                 html += '<td>' + sno + '</td>';
                 html += '<td>' + value.paper_name + '</td>';
-    
+
                 // Always show the dropdown, pre-select if allocated
                 html += '<td>';
                 html += '<select name="staff[' + value.paper_name + ']" class="form-control staff-select">';
@@ -67,21 +67,21 @@ $(document).ready(function () {
                 });
                 html += '</select>';
                 html += '</td>';
-    
+
                 html += '</tr>';
                 sno++;
             });
-    
+
             $('#subject_info tbody').html(html);
         }, 'json');
     });
-    
+
 
     /////////////////////////////////////////////////////view student List End/////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////Staff Allocation Mapping Start///////////////////////////////////////////////
     $('#submit_staff_create').click(function (event) {
         event.preventDefault();
-
+        $(this).attr('disabled', true);
         let section = $('#section').val().trim();
         let standard = $('#standard').val().trim();
         let subjectData = [];
@@ -108,6 +108,7 @@ $(document).ready(function () {
                 dataType: 'json'
             },
             success: function (response) {
+                $('#submit_staff_create').attr('disabled', false);
                 const res = JSON.parse(response);
                 alert(res.message);
             }

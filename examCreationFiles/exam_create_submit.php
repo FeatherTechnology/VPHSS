@@ -5,6 +5,9 @@ include '../ajaxconfig.php';
 $user_id =  $_SESSION["userid"];
 $standard = $_POST['standard'];
 $exam = $_POST['exam'];
+if(isset($_SESSION["academic_year"])){
+    $academic_year = $_SESSION["academic_year"];
+} 
 $subjectData = ($_POST['subjectData']);
 
 foreach ($subjectData as $subject) {
@@ -13,7 +16,7 @@ foreach ($subjectData as $subject) {
     $pass = $subject['pass_percent'];
 
     // Check if record exists
-    $checkQuery = "SELECT id FROM exam_creation WHERE standard = '$standard' AND exam_type = '$exam' AND paper_name = '$paper'";
+    $checkQuery = "SELECT id FROM exam_creation WHERE standard = '$standard' AND exam_type = '$exam' AND paper_name = '$paper' AND academic_year = '$academic_year'";
     $checkResult = $connect->query($checkQuery);
 
     if ($checkResult->rowCount() > 0) {
@@ -21,16 +24,17 @@ foreach ($subjectData as $subject) {
         $updateQuery = "UPDATE exam_creation SET 
             out_of_marks = '$marks', 
             pass = '$pass', 
+            academic_year = '$academic_year'
             update_login_id = '$user_id', 
             updated_on = NOW() 
-            WHERE standard = '$standard' AND exam_type = '$exam' AND paper_name = '$paper'";
+            WHERE standard = '$standard' AND exam_type = '$exam' AND paper_name = '$paper' AND academic_year = '$academic_year'";
         $connect->query($updateQuery);
     } else {
         // Insert new
         $insertQuery = "INSERT INTO exam_creation 
-            (standard, exam_type, paper_name, out_of_marks, pass, insert_login_id, created_on) 
+            (standard, exam_type, paper_name, out_of_marks, pass,academic_year, insert_login_id, created_on) 
             VALUES 
-            ('$standard', '$exam', '$paper', '$marks', '$pass', '$user_id', NOW())";
+            ('$standard', '$exam', '$paper', '$marks', '$pass', '$academic_year','$user_id', NOW())";
         $connect->query($insertQuery);
     }
 }

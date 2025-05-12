@@ -434,6 +434,9 @@ if($current_page == 'vendorcreation' || $current_page == 'auction_details') {
 				include "include/templates/edit_staff_general_message.php";
 			}
 
+			if($current_page == 'send_sms_mark') { 
+				include "include/templates/send_sms_mark.php";
+			}
 			if($current_page == 'edit_home_work') { 
 				include "include/templates/edit_home_work.php";
 			}

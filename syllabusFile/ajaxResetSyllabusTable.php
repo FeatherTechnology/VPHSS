@@ -4,7 +4,9 @@ include '../ajaxconfig.php';
 if(isset($_SESSION["userid"])){
     $school_id = $_SESSION["school_id"];
 } 
-
+if(isset($_SESSION["academic_year"])){
+    $academic_year = $_SESSION["academic_year"];
+} 
 if(isset($_POST["class_id"])){
 	$class_id  = $_POST["class_id"]; 
 } 
@@ -21,7 +23,7 @@ if(isset($_POST["class_id"])){
     </thead>
     <tbody>
         <?php
-        $ctselect="SELECT * FROM subject_details WHERE class_id = '".$class_id."' AND status=0 AND school_id ='$school_id'"; 
+        $ctselect="SELECT * FROM subject_details WHERE class_id = '".$class_id."' AND status=0 AND school_id ='$school_id' AND academic_year = '$academic_year'"; 
         $ctresult=$mysqli->query($ctselect);
         if($ctresult->num_rows>0){
         $i=1;

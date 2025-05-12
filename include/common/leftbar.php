@@ -38,6 +38,7 @@ if (sizeof($getmanageuserdetails)>0) {
 	$tamil_birthday_wishes                  = $getmanageuserdetails['tamil_birthday_wishes']; 
 	$student_general_message                  = $getmanageuserdetails['student_general_message']; 
 	$staff_general_message                  = $getmanageuserdetails['staff_general_message']; 
+	$send_sms_mark                  = $getmanageuserdetails['send_sms_mark']; 
 	$home_work                  = $getmanageuserdetails['home_work']; 
 	$report_module                  = $getmanageuserdetails['report_module']; 
 	$student_report_sub_module                  = $getmanageuserdetails['student_report_sub_module']; 
@@ -312,24 +313,24 @@ if (sizeof($getmanageuserdetails)>0) {
 			 if(isset($exam_module) && $exam_module ==0){ ?>
 				<li class="sidebar-dropdown">
 					<a href="javascript:void(0)">
-						<i class="icon-wallet"></i>
+						<i class="icon-local_library"></i>
 						<span class="menu-text"> Exam </span>
 					</a>
 					<div class="sidebar-submenu">
 						<ul>
 						<?php if(isset($exam_creation) && $exam_creation ==0){ ?>
 							<li>
-								<a href="exam_creation"><i class="icon-attach_money"></i>Exam Creation</a>
+								<a href="exam_creation"><i class="icon-rate_review"></i>Exam Creation</a>
+							</li>
+						<?php }if(isset($staff_subject_allocation) && $staff_subject_allocation ==0){ ?>
+							<li>
+								<a href="staff_subject_allocation"><i class="icon-person_pin"></i>Staff Subject Allocation</a>
 							</li>
 						<?php }if(isset($student_mark_entry) && $student_mark_entry ==0){ ?>
 							<li>
-								<a href="student_mark_entry"><i class="icon-file"></i>Stuent Mark Entry</a>
+								<a href="student_mark_entry"><i class="icon-edit1"></i>Student Mark Entry</a>
 							</li>
-						<?php } if(isset($staff_subject_allocation) && $staff_subject_allocation ==0){ ?>
-							<li>
-								<a href="staff_subject_allocation"><i class="icon-file"></i>Staff Subject Allocation</a>
-							</li>
-						<?php }?>
+						<?php } ?>
 						</ul>
 					</div>
 				</li>
@@ -379,7 +380,11 @@ if (sizeof($getmanageuserdetails)>0) {
 							<li>
 								<a href="edit_staff_general_message"><i class="icon-user-check"></i>Staff General Message</a>
 							</li>
-						<?php } if(isset($home_work) && $home_work ==0){ ?>
+						<?php }if(isset($send_sms_mark) && $send_sms_mark ==0){ ?>
+							<li>
+								<a href="send_sms_mark"><i class="icon-contact_mail"></i>Student SMS Mark</a>
+							</li>
+						<?php }  if(isset($home_work) && $home_work ==0){ ?>
 							<!-- <li>
 								<a href="edit_home_work"><i class="icon-pencil"></i>Home Work</a>
 							</li> -->

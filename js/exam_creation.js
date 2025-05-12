@@ -17,6 +17,7 @@ $(document).ready(function () {
   /////////////////////////////////////////////////////////// Exam Modal START ///////////////////////////////////////////////////////////////////////
   $('#submit_exam').click(function (event) {
     event.preventDefault();
+         $(this).attr('disabled', true);
     let exam_type = $('#exam_type').val(); let id = $('#exam_id').val();
 
     if (exam_type == '') {
@@ -25,6 +26,7 @@ $(document).ready(function () {
       return;
     }
     $.post('examCreationFiles/submit_exam.php', { exam_type, id }, function (response) {
+      $('#submit_exam').attr('disabled', false);
       if (response == '0') {
         alert('Exam Type Already Exists!');
       } else if (response == '1') {
@@ -92,10 +94,14 @@ $(document).ready(function () {
           html += '<tr>';
           html += '<td>' + sno + '</td>';
           html += '<td>' + value.paper_name + '</td>';
-          html += `<td><input type="number" name="max_mark[]" class="out-of-mark" value="${value.max_mark}" data-max="${value.max_mark || 0}">`;
-          html += `<input type="hidden" name="hidden_max_mark[]" value="${value.mrk}">`; // Hidden field for comparison
-          html += `</td>`;
-          html += `<td><input type="number" name="pass[]" class="pass-mark" value="${value.pass_mark}"></td>`;
+          html += `<td style="text-align: center;">
+            <input type="number" name="max_mark[]" class="form-control out-of-mark" 
+                   style="width: 80px; margin: 0 auto;" value="${value.max_mark}" 
+                   data-max="${value.max_mark || 0}">
+            <input type="hidden" name="hidden_max_mark[]" value="${value.mrk}">
+         </td>`;
+
+          html += `<td style="text-align: center;"><input type="number" name="pass[]" class=" form-control pass-mark" style="width: 80px; margin: 0 auto;" value="${value.pass_mark}"></td>`;
           html += '</tr>';
           sno++;
         });
@@ -140,7 +146,7 @@ $(document).ready(function () {
 
   $('#submit_exam_create').click(function (event) {
     event.preventDefault();
-
+     $(this).attr('disabled', true);
     let exam = $('#exam').val().trim();
     let standard = $('#standard').val().trim();
     let subjectData = [];
@@ -169,6 +175,7 @@ $(document).ready(function () {
         dataType: 'json'
       },
       success: function (response) {
+      $('#submit_exam_create').attr('disabled', false);
         const res = JSON.parse(response);
         alert(res.message);
       }
@@ -181,26 +188,26 @@ $(document).ready(function () {
 
   /////////////////////////////////////////////////////////// Exam Creation END ///////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////Report///////////////////////////////////////////////////////////////////////
-    $('#view_report').on('click', function () {
-      let standard = $('#standard_id').val();
-      if (!standard || $.trim(standard) === '') {
-        alert("Please Select all the fields");
-        return;
+  $('#view_report').on('click', function () {
+    let standard = $('#standard_id').val();
+    if (!standard || $.trim(standard) === '') {
+      alert("Please Select all the fields");
+      return;
+    }
+    $.ajax({
+      url: 'examCreationFiles/get_exam_report.php',
+      type: 'POST',
+      data: { standard: standard },
+      dataType: 'html',
+      success: function (response) {
+        $('.sub_report').show();
+        $('#report_info_table_div').html(response);
+      },
+      error: function (xhr, status, error) {
+        console.error('AJAX Error:', status, error);
       }
-      $.ajax({
-        url: 'examCreationFiles/get_exam_report.php',
-        type: 'POST',
-        data: { standard: standard },
-        dataType: 'html',
-        success: function (response) {
-          $('.sub_report').show();
-          $('#report_info_table_div').html(response);
-        },
-        error: function (xhr, status, error) {
-          console.error('AJAX Error:', status, error);
-        }
-      });
     });
+  });
 });
 /////////////////////////////////////////////////////////////////Report End/////////////////////////////////////////////////////////////////
 $(function () {

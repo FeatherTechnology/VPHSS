@@ -1,11 +1,14 @@
 <?php
 include '../ajaxconfig.php';
-
+@session_start();
+if(isset($_SESSION["academic_year"])){
+    $academic_year = $_SESSION["academic_year"];
+} 
 $exam = $_POST['exam'];
 $standard = $_POST['standard'];
 
 // Step 1: Fetch all subject names for this standard
-$subjectQry = $connect->query("SELECT * FROM `subject_details` WHERE class_id = '$standard'");
+$subjectQry = $connect->query("SELECT * FROM `subject_details` WHERE class_id = '$standard' AND academic_year = '$academic_year'");
 $subjects = [];
 
 if ($subjectQry->rowCount() > 0) {
@@ -21,7 +24,7 @@ if ($subjectQry->rowCount() > 0) {
 }
 
 // Step 2: Fetch existing exam papers
-$examQry = $connect->query("SELECT * FROM `exam_creation` WHERE standard = '$standard' AND exam_type = '$exam'");
+$examQry = $connect->query("SELECT * FROM `exam_creation` WHERE standard = '$standard' AND exam_type = '$exam' AND academic_year = '$academic_year'");
 if ($examQry->rowCount() > 0) {
     while ($row = $examQry->fetch()) {
         $subjects[$row['paper_name']] = [

@@ -1,6 +1,9 @@
 <?php
 include '../ajaxconfig.php';
-
+@session_start();
+if(isset($_SESSION["academic_year"])){
+    $academic_year = $_SESSION["academic_year"];
+} 
 $section = $_POST['section'];
 $standard = $_POST['standard'];
 
@@ -19,7 +22,7 @@ if ($staffQry->rowCount() > 0) {
 }
 
 // Fetch all subjects
-$subjectQry = $connect->query("SELECT paper_name FROM subject_details WHERE class_id = '$standard'");
+$subjectQry = $connect->query("SELECT paper_name FROM subject_details WHERE class_id = '$standard' AND academic_year = '$academic_year'");
 if ($subjectQry->rowCount() > 0) {
     while ($row = $subjectQry->fetch()) {
         $response[$row['paper_name']] = [
@@ -36,7 +39,7 @@ $examQry = $connect->query("
     SELECT sta.paper_name, sta.staff, CONCAT(sc.first_name, ' ', sc.last_name) AS staff_name 
     FROM staff_subject_allocation sta  
     JOIN staff_creation sc ON sta.staff = sc.id 
-    WHERE sta.standard = '$standard' AND sta.section = '$section'
+    WHERE sta.standard = '$standard' AND sta.section = '$section' AND academic_year = '$academic_year'
 ");
 
 if ($examQry->rowCount() > 0) {

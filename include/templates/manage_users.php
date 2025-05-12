@@ -74,6 +74,7 @@ if ($idupd > 0) {
         $tamil_birthday_wishes                  = $getmanageuserdetails['tamil_birthday_wishes'];
         $student_general_message                  = $getmanageuserdetails['student_general_message'];
         $staff_general_message                  = $getmanageuserdetails['staff_general_message'];
+        $send_sms_mark                  = $getmanageuserdetails['send_sms_mark'];
         $home_work                  = $getmanageuserdetails['home_work'];
         $report_module                  = $getmanageuserdetails['report_module'];
         $student_report_sub_module                  = $getmanageuserdetails['student_report_sub_module'];
@@ -456,20 +457,21 @@ if ($del > 0) {
                 </div>
                 <div class="col-sm-6 col-md-6 col-lg-4 col-xl-3 col-12">
                     <div class="custom-control custom-checkbox">
-                        <input type="checkbox" value="Yes" <?php if (isset($student_mark_entry) && $student_mark_entry == 0) {
-                                                                echo 'checked';
-                                                            } ?> tabindex="24" class="custom-control-input exam-checkbox" id="student_mark_entry" name="student_mark_entry">
-                        <label class="custom-control-label" for="student_mark_entry">Student Mark Entry</label>
-                    </div>
-                </div>
-                <div class="col-sm-6 col-md-6 col-lg-4 col-xl-3 col-12">
-                    <div class="custom-control custom-checkbox">
                         <input type="checkbox" value="Yes" <?php if (isset($staff_subject_allocation) && $staff_subject_allocation == 0) {
                                                                 echo 'checked';
                                                             } ?> tabindex="24" class="custom-control-input exam-checkbox" id="staff_subject_allocation" name="staff_subject_allocation">
                         <label class="custom-control-label" for="staff_subject_allocation">Staff Subject Allocation</label>
                     </div>
                 </div>
+                <div class="col-sm-6 col-md-6 col-lg-4 col-xl-3 col-12">
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" value="Yes" <?php if (isset($student_mark_entry) && $student_mark_entry == 0) {
+                                                                echo 'checked';
+                                                            } ?> tabindex="24" class="custom-control-input exam-checkbox" id="student_mark_entry" name="student_mark_entry">
+                        <label class="custom-control-label" for="student_mark_entry">Student Mark Entry</label>
+                    </div>
+                </div>
+              
             </div>
             <!-- exam module end -->
             <hr>
@@ -553,7 +555,14 @@ if ($del > 0) {
                         <label class="custom-control-label" for="staff_general_message">Staff General Message</label>
                     </div>
                 </div>
-
+                <div class="col-sm-6 col-md-6 col-lg-4 col-xl-3 col-12">
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" value="Yes" <?php if (isset($send_sms_mark) && $send_sms_mark == 0) {
+                                                                echo 'checked';
+                                                            } ?> tabindex="35" class="custom-control-input sms-checkbox" id="send_sms_mark" name="send_sms_mark">
+                        <label class="custom-control-label" for="send_sms_mark">Send SMS Mark</label>
+                    </div>
+                </div>
                 <!-- <div class="col-sm-6 col-md-6 col-lg-4 col-xl-3 col-12">
                     <div class="custom-control custom-checkbox">
                         <input type="checkbox" value="Yes" <?php if (isset($home_work) && $home_work == 0) {
