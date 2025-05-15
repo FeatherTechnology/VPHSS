@@ -39,6 +39,7 @@ if (sizeof($getmanageuserdetails)>0) {
 	$student_general_message                  = $getmanageuserdetails['student_general_message']; 
 	$staff_general_message                  = $getmanageuserdetails['staff_general_message']; 
 	$send_sms_mark                  = $getmanageuserdetails['send_sms_mark']; 
+	$sms_delivery_report                  = $getmanageuserdetails['sms_delivery_report']; 
 	$home_work                  = $getmanageuserdetails['home_work']; 
 	$report_module                  = $getmanageuserdetails['report_module']; 
 	$student_report_sub_module                  = $getmanageuserdetails['student_report_sub_module']; 
@@ -383,6 +384,10 @@ if (sizeof($getmanageuserdetails)>0) {
 						<?php }if(isset($send_sms_mark) && $send_sms_mark ==0){ ?>
 							<li>
 								<a href="send_sms_mark"><i class="icon-contact_mail"></i>Student SMS Mark</a>
+							</li>
+						<?php }if(isset($sms_delivery_report) && $sms_delivery_report ==0){ ?>
+							<li>
+								<a href="sms_delivery_report"><i class="icon-assignment_turned_in"></i>SMS Delivery Report</a>
 							</li>
 						<?php }  if(isset($home_work) && $home_work ==0){ ?>
 							<!-- <li>

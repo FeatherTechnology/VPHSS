@@ -48,8 +48,7 @@ $(document).ready(function () {
   $(document).on('click', '#sendSelectedSMS', function (event) {
     event.preventDefault();
 
-    let $button = $(this);
-    $button.attr('disabled', true);
+    $(this).attr('disabled', true);
 
     let exam = $('#exam').val().trim();
     let standard = $('#standard').val();
@@ -57,71 +56,63 @@ $(document).ready(function () {
     let selectedStudents = [];
 
     $('.student-check:checked').each(function () {
-       var $checkbox = $(this);
-    var $row = $checkbox.closest('tr');
-        var student_id = $checkbox.data('student-id');
-        let admissionNo = $row.find('td:eq(1)').text().trim();
-        let studentName = $row.find('td:eq(2)').text().trim();
-        let smsNo = $row.data('sms');
+      var checkbox = $(this);
+      var row = checkbox.closest('tr');
+      var student_id = checkbox.data('student-id');
+      let admissionNo = row.find('td:eq(1)').text().trim();
+      let studentName = row.find('td:eq(2)').text().trim();
+      let smsNo = row.data('sms');
 
-        let marks = {};
-        $row.find('td[data-paper]').each(function () {
-            let subject = $(this).data('paper');
-            let mark = $(this).data('mark');
-            marks[subject] = mark;
-        });
+      let marks = {};
+      row.find('td[data-paper]').each(function () {
+        let subject = $(this).data('paper');
+        let mark = $(this).data('mark');
+        marks[subject] = mark;
+      });
 
-        let total = 0;
-        const $totalTd = $row.find('td[data-total]');
-        if ($totalTd.length) {
-            total = $totalTd.data('total');
-        }
-
-        selectedStudents.push({
-          student_id:student_id,
-            admission_no: admissionNo,
-            student_name: studentName,
-            smsNo: smsNo,
-            marks: marks,
-            total: total
-        });
+      let total = 0;
+      const totalTd = row.find('td[data-total]');
+      total = totalTd.data('total');
+      selectedStudents.push({
+        student_id: student_id,
+        admission_no: admissionNo,
+        student_name: studentName,
+        smsNo: smsNo,
+        marks: marks,
+        total: total
+      });
     });
 
     if (selectedStudents.length === 0) {
-        alert('Please select at least one student to send SMS.');
-        $button.attr('disabled', false);
-        return;
+      alert('Please select at least one student to send SMS.');
+      $('#sendSelectedSMS').attr('disabled', false);
+      return;
     }
-
-    console.log(selectedStudents);
-
     $.ajax({
-        url: 'examCreationFiles/sendSMSMark.php',
-        type: 'POST',
-        data: {
-            standard: standard,
-            section: section,
-            exam: exam,
-            selectedStudents: selectedStudents
-        },
-        dataType: 'json',
-        success: function (response) {
-            $button.attr('disabled', false);
-            if (response.status === 200) {
-                alert('Message sent successfully. ' + response.message);
-            } else {
-                alert('Message failed!');
-            }
-        },
-        error: function (xhr, status, error) {
-            $button.attr('disabled', false);
-            console.error('Error:', error);
-            alert('An error occurred while sending the message.');
+      url: 'examCreationFiles/sendSMSMark.php',
+      type: 'POST',
+      data: {
+        standard: standard,
+        section: section,
+        exam: exam,
+        selectedStudents: selectedStudents
+      },
+      dataType: 'json',
+      success: function (response) {
+        $('#sendSelectedSMS').attr('disabled', false);
+        if (response.status === 200) {
+          alert('Message sent successfully. ' + response.message);
+        } else {
+          alert('Message failed!');
         }
+      },
+      error: function (xhr, status, error) {
+         $('#sendSelectedSMS').attr('disabled', false);
+        console.error('Error:', error);
+        alert('An error occurred while sending the message.');
+      }
     });
-});
-
-
+  });
 
   /////////////////////////////////////////////////////View Student List End ///////////////////////////////////////////////
   ///Document End

@@ -6,7 +6,6 @@ $(document).ready(function () {
       $('#exam_creation_form').show(); $('#exam_report_form').hide(); $('.subject_allocate').hide(); $('.subject_card').hide();
       $('#standard').val($('#standard option:first').val());
       $('#exam').val($('#exam option:first').val());
-
     } else if (examType == 'mark_report') {
       $('#exam_creation_form').hide(); $('#exam_report_form').show(); $('.sub_report').hide()
       getStandardList('standard_id');

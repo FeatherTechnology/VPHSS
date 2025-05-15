@@ -11,7 +11,7 @@ $(document).ready(function () {
       dataType: 'json',
       success: function (response) {
         $('#section').empty();
-        $('#section').append("<option value=''>Select Option</option>");
+        $('#section').append("<option value=''>Select Section</option>");
         for (var i = 0; i < response.length; i++) {
           $('#section').append("<option value='" + response[i] + "'>" + response[i] + "</option>");
         }
@@ -88,27 +88,24 @@ $(document).ready(function () {
 
     // Validate if input is numeric and not NaN
     if (isNaN(mark)) {
-        $(this).removeClass('text-danger');
-        return;
+      $(this).removeClass('text-danger');
+      return;
     }
-
     if (mark > outOf) {
-        alert('Entered mark should not exceed ' + outOf);
-        $(this).val('');
-        return;
+      alert('Entered mark should not exceed ' + outOf);
+      $(this).val('');
+      return;
     }
-
     if (mark < pass) {
-        $(this).addClass('text-danger');
+      $(this).addClass('text-danger');
     } else {
-        $(this).removeClass('text-danger');
+      $(this).removeClass('text-danger');
     }
-});
+  });
 
   $(document).on('click', '#saveMark', function (event) {
     event.preventDefault();
     $(this).attr('disabled', true);
-     $(this).attr('disabled', true);
     let exam = $('#exam').val().trim();
     let standard = $('#standard').val().trim();
     let section = $('#section').val().trim();
@@ -118,29 +115,26 @@ $(document).ready(function () {
 
     $('.mark-input').each(function () {
       let markVal = $(this).val().trim();
-  
+
       // Skip if mark is empty or not a number
       if (markVal === '') return;
-     if (!$.isNumeric(markVal) && markVal.toUpperCase() !== 'A') {
+      if (!$.isNumeric(markVal) && markVal.toUpperCase() !== 'A') {
         hasError = true;
         return;
-    }
+      }
       let studentId = $(this).data('student');
       let subject = $(this).data('subject');
       let staff_id = $(this).data('staff');
-       let mark = markVal.toUpperCase() === 'A' ? 'A' : parseFloat(markVal);
-  
+      let mark = markVal.toUpperCase() === 'A' ? 'A' : parseFloat(markVal);
+
       marksData.push({
-          student_id: studentId,
-          staff_id: staff_id,
-          subject: subject,
-          mark: mark
+        student_id: studentId,
+        staff_id: staff_id,
+        subject: subject,
+        mark: mark
       });
-  });
-  
-
+    });
     if (hasError) return; // stop if any validation error
-
     if (marksData.length === 0) {
       alert('No marks entered to save.');
       $('#saveMark').attr('disabled', false);
@@ -159,7 +153,7 @@ $(document).ready(function () {
         dataType: 'json'
       },
       success: function (res) {
-              $('#saveMark').attr('disabled', false);
+        $('#saveMark').attr('disabled', false);
         const response = typeof res === 'string' ? JSON.parse(res) : res;
         if (response.status === 'success') {
           alert('Marks saved successfully!');

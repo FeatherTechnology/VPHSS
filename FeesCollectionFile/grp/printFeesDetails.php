@@ -234,9 +234,9 @@ while ($schoolInfo = $getbrc->fetch_assoc()) {
     </div>
 </div>
 
-<button type="button" name="printpurchase" onclick="poprint()" id="printpurchase" class="btn btn-primary">Print</button>
+<button type="button" name="printpurchase" onclick="poprint()" id="printpurchase" class="btn btn-primary" style="display: none;">Print</button>
 
-<script type="text/javascript">
+<!--<script type="text/javascript">
     function poprint() {
         var Bill = document.getElementById("dettable").innerHTML;
         var printWindow = window.open('', '', 'height=400,width=800');
@@ -246,4 +246,4 @@ while ($schoolInfo = $getbrc->fetch_assoc()) {
         printWindow.close();
     }
     document.getElementById("printpurchase").click()
-</script>
+</script> -->

@@ -16,9 +16,11 @@ foreach ($selectedStudents as $students) {
     $student_name = $students['student_name'];
     $smsNo = $students['smsNo'];
     $marks = $students['marks'];
-  print_r($marks);
     $total = $students['total'];
 
+}
+foreach ($selectedStudents as $students){
+    $stuent_id = $students['student_id'];
 }
 
 echo json_encode([

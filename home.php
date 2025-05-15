@@ -437,6 +437,9 @@ if($current_page == 'vendorcreation' || $current_page == 'auction_details') {
 			if($current_page == 'send_sms_mark') { 
 				include "include/templates/send_sms_mark.php";
 			}
+			if($current_page == 'sms_delivery_report') { 
+				include "include/templates/sms_delivery_report.php";
+			}
 			if($current_page == 'edit_home_work') { 
 				include "include/templates/edit_home_work.php";
 			}

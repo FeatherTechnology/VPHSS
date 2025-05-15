@@ -843,6 +843,9 @@ if($current_page == 'edit_home_work') { ?>
 if($current_page == 'send_sms_mark') { ?>
 	<script src="js/send_sms_mark.js"></script>
 	<?php }
+if($current_page == 'sms_delivery_report') { ?>
+	<script src="js/sms_delivery_report.js"></script>
+	<?php }
 
 if($current_page == 'index' || $current_page == '' || $current_page == 'index.php'){ ?>
 	<script src="js/logincreation.js"></script>

@@ -6,8 +6,6 @@ if (isset($_SESSION["userid"])) {
     $year_id = $_SESSION["academic_year"];
     $academic_year = $_SESSION["academic_year"];
 }
-
-$StudentList = $userObj->getStudentList($mysqli, $school_id, $year_id);
 ?>
 
 <!-- Page header start -->
@@ -22,11 +20,8 @@ $StudentList = $userObj->getStudentList($mysqli, $school_id, $year_id);
 <div class="main-container">
     <!--form start-->
     <form id="exam_creation_form" name="exam_creation_form" action="" method="post" enctype="multipart/form-data">
-        <input type="hidden" class="form-control" value="<?php if (isset($fees_id)) echo $fees_id; ?>" id="id" name="id">
-        <input type="hidden" class="form-control" name="admission_form_id" id="admission_form_id" value="<?php if (isset($_GET['studid'])) echo $_GET['studid']; ?>">
         <!-- Row start -->
         <div class="row gutters">
-
             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                 <div class="card">
                     <div class="card-body">
@@ -91,7 +86,6 @@ $StudentList = $userObj->getStudentList($mysqli, $school_id, $year_id);
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </form>

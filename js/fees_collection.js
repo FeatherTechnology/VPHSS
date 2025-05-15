@@ -199,7 +199,7 @@ $(document).ready(function () {
       data: { "feesid": feesid },
       url: "FeesCollectionFile/feesCollection/deletePayFeesDetails.php",
       success: function (response) {
-        console.log(response);
+
         if(response == '1'){
           alert("Successfully fees deleted!")
           getPaidDetails(studentid);//call paid details function
@@ -223,7 +223,6 @@ $(document).ready(function () {
       data: { "feesid": feesid },
       url: "FeesCollectionFile/feesCollection/deleteLastPayFeesDetails.php",
       success: function (response) {
-        console.log(response);
         if(response == '1'){
           alert("Successfully fees deleted!")
           getPaidDetails(studentid);//call paid details function
@@ -248,7 +247,6 @@ $(document).ready(function () {
       data: { "feesid": feesid },
       url: "FeesCollectionFile/feesCollection/deleteTransportFeesDetails.php",
       success: function (response) {
-        console.log(response);
         if(response == '1'){
           alert("Successfully fees deleted!")
           getPaidDetails(studentid);//call paid details function

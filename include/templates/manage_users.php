@@ -75,6 +75,7 @@ if ($idupd > 0) {
         $student_general_message                  = $getmanageuserdetails['student_general_message'];
         $staff_general_message                  = $getmanageuserdetails['staff_general_message'];
         $send_sms_mark                  = $getmanageuserdetails['send_sms_mark'];
+        $sms_delivery_report                  = $getmanageuserdetails['sms_delivery_report'];
         $home_work                  = $getmanageuserdetails['home_work'];
         $report_module                  = $getmanageuserdetails['report_module'];
         $student_report_sub_module                  = $getmanageuserdetails['student_report_sub_module'];
@@ -560,7 +561,15 @@ if ($del > 0) {
                         <input type="checkbox" value="Yes" <?php if (isset($send_sms_mark) && $send_sms_mark == 0) {
                                                                 echo 'checked';
                                                             } ?> tabindex="35" class="custom-control-input sms-checkbox" id="send_sms_mark" name="send_sms_mark">
-                        <label class="custom-control-label" for="send_sms_mark">Send SMS Mark</label>
+                        <label class="custom-control-label" for="send_sms_mark">Student SMS Mark</label>
+                    </div>
+                </div>
+                  <div class="col-sm-6 col-md-6 col-lg-4 col-xl-3 col-12">
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" value="Yes" <?php if (isset($sms_delivery_report) && $sms_delivery_report == 0) {
+                                                                echo 'checked';
+                                                            } ?> tabindex="35" class="custom-control-input sms-checkbox" id="sms_delivery_report" name="sms_delivery_report">
+                        <label class="custom-control-label" for="sms_delivery_report">SMS Delivery Report</label>
                     </div>
                 </div>
                 <!-- <div class="col-sm-6 col-md-6 col-lg-4 col-xl-3 col-12">
