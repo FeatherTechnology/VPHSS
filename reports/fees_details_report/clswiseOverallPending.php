@@ -15,6 +15,12 @@ if (isset($_POST['stdMedium'])) {
 // if(isset($_POST['studentType'])){
 //     $studentType = $_POST['studentType'];
 // }
+$getbrc = $mysqli->query("SELECT sc.school_name, sc.district, sc.pincode FROM school_creation sc WHERE sc.status = 0 AND school_id = '$school_id'");
+while ($schoolInfo = $getbrc->fetch_assoc()) {
+    $school_name     = $schoolInfo["school_name"];
+    $district  = $schoolInfo["district"];
+    $pincode  = $schoolInfo["pincode"];
+}
 ?>
 
 <table class="table table-bordered" id="show_student_allPending_list">
@@ -306,14 +312,29 @@ FROM (
 
 <script>
     $(document).ready(function() {
+         var schoolName = "<?php echo $school_name . ' - ' . $district . ' - ' . $pincode; ?>";
+
+        var feeHeading = " Class Wise Overall Pending Report";
         $('#show_student_allPending_list').DataTable({
             // order: [[0, "asc"]],
             // columnDefs: [
             //     { type: 'natural', targets: 0 }
             // ],
             dom: 'Bfrtip',
-            buttons: [
-                'copy', 'csv', 'excel', 'pdf', 'print'
+           buttons: [
+                'copy', 'csv', 'excel', 'pdf',
+                {
+                    extend: 'print',
+                    text: 'Print',
+                    title: '',
+                    customize: function(win) {
+                        $(win.document.body)
+                            .prepend(
+                                '<h2 style="text-align:center;">' + schoolName + '</h2>' +
+                                '<h4 style="text-align:center;">' + feeHeading + '</h4><br>'
+                            );
+                    }
+                }
             ],
             paging: false, // Disable paging
             sort: false,

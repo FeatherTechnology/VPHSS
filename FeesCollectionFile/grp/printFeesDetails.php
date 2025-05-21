@@ -133,7 +133,7 @@ while ($schoolInfo = $getbrc->fetch_assoc()) {
             <tr>
 
                 <td><img src="uploads/school_creation/<?php echo $school_logo; ?>" height="50px" width="50px" alt="LOGO"></td>
-                <td style="text-align: center;"> <?php if (isset($school_name)) echo $school_name; ?> </br>
+                <td style="text-align: center;"> <b><?php if (isset($school_name)) echo $school_name; ?></b><br>
                     <?php if (isset($address1)) echo $address1, ', ';
                     if (isset($address2)) echo $address2, ', ';
                     if (isset($district)) echo $district, ', </br>';

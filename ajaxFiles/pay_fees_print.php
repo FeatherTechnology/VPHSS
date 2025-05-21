@@ -27,6 +27,7 @@ $getPayFees = $connect->query("SELECT
 stdc.admission_number, 
 stdc.student_name, 
 sc.standard, 
+stdc.section, 
 af.receipt_no, 
 af.receipt_date
 FROM 
@@ -114,7 +115,7 @@ function AmountInWords($amount)
     <table class="table table-bordered table-responsive">
     <tr>
         <td style="text-align: center;"> <img src="uploads/school_creation/<?php echo $school_logo; ?>" height="100px" width="100px" alt="Logo"> </td>
-        <td style="text-align: center;"> <?php if(isset($school_name)) echo $school_name; ?> </br>
+        <td style="text-align: center;"> <b><?php if(isset($school_name)) echo $school_name; ?> </b> </br>
         <?php if(isset($address1)) echo $address1,', '; if(isset($address2)) echo $address2,', '; if(isset($district)) echo $district,', </br>'; if(isset($state)) echo $state,'-'; if(isset($pincode)) echo $pincode; ?> </br>
             <span style="margin-right: 5px;">&#x260E;</span> - <?php if(isset($contact_number)) echo $contact_number; ?>  <span style="margin-right: 5px;">&#x1F4E7;</span>- <?php if(isset($email_id)) echo $email_id; ?>
         </td>
@@ -135,8 +136,8 @@ function AmountInWords($amount)
         <td colspan='2' style="border-top: none; border-right: none;">
             Student Name: <?php echo $payfeesDetails['student_name'];?>
         </td>
-        <td style="border-top: none; border-left: none;">
-            Standard: <?php echo $payfeesDetails['standard'];?>
+        <td style="border-top: none; border-left: none; white-space: nowrap;">
+            Standard / Section : <?php echo $payfeesDetails['standard']; ?> - <?php echo $payfeesDetails['section']; ?>
         </td>
     </tr>
     <tr>
