@@ -15,4 +15,7 @@ if(isset($_POST["mail"])){
     }
 
     echo json_encode($response);
+$mysqli->close();
+$connect = null;
+
 ?>

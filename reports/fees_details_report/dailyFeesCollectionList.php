@@ -69,7 +69,6 @@ while ($schoolInfo = $getbrc->fetch_assoc()) {
         while ($startdate <= $feesToDate) {
             $from_date = $startdate->format('Y-m-d');
 
-
             $getFeeCollectionQry = $connect->query("SELECT 
             receipt_no,
             admission_number,
@@ -145,8 +144,6 @@ while ($schoolInfo = $getbrc->fetch_assoc()) {
         FROM admission_fees af
         JOIN admission_fees_details afd 
             ON af.id = afd.admission_fees_ref_id
-        JOIN admission_fees_denomination afd_deno 
-            ON af.id = afd_deno.admission_fees_ref_id
         JOIN student_creation sc 
             ON af.admission_id = sc.student_id
         JOIN student_history sh 
@@ -186,8 +183,6 @@ while ($schoolInfo = $getbrc->fetch_assoc()) {
             transport_admission_fees taf
         JOIN transport_admission_fees_details tafd 
             ON taf.id = tafd.admission_fees_ref_id
-            JOIN transport_admission_fees_denomination tafd_deno 
-            ON taf.id = tafd_deno.admission_fees_ref_id
         JOIN student_creation sc 
             ON taf.admission_id = sc.student_id
         JOIN student_history sh 

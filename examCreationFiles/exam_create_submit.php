@@ -24,7 +24,7 @@ foreach ($subjectData as $subject) {
         $updateQuery = "UPDATE exam_creation SET 
             out_of_marks = '$marks', 
             pass = '$pass', 
-            academic_year = '$academic_year'
+            academic_year = '$academic_year',
             update_login_id = '$user_id', 
             updated_on = NOW() 
             WHERE standard = '$standard' AND exam_type = '$exam' AND paper_name = '$paper' AND academic_year = '$academic_year'";
