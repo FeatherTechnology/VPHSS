@@ -10,9 +10,16 @@ if (isset($_SESSION['userid'])) {
 require_once('../vendor/csvreader/php-excel-reader/excel_reader2.php');
 require_once('../vendor/csvreader/SpreadsheetReader.php');
 include("../ajaxconfig.php");
-
 if (isset($_FILES["file"]["type"])) {
-    $allowedFileType = ['application/vnd.ms-excel', 'text/xls', 'text/xlsx', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
+    $allowedFileType = [
+    'application/vnd.ms-excel',                             // .xls
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // .xlsx
+    'application/vnd.ms-office',                            // sometimes used for .xlsx
+    'application/octet-stream',                             // fallback for unknown
+    'text/csv',                                              // for .csv files
+    'text/xls',
+    'text/xlsx'
+];
     if (in_array($_FILES["file"]["type"], $allowedFileType)) {
         //set the directory path name
         $new_directory = ("../uploads/bulkimport/" . $school_name);
@@ -152,59 +159,58 @@ if (isset($_FILES["file"]["type"])) {
                 $standard = "";
                 if (isset($Row[24])) {
                     $standard_name = mysqli_real_escape_string($mysqli, $Row[24]);
-
                     if($standard_name == 'PRE.K.G'){
-                        $standard_list = "1";
+                        $standard = "1";
                     }else if($standard_name == 'L.K.G'){
-                        $standard_list = "2";
+                        $standard = "2";
                     }else if($standard_name == 'U.K.G'){
-                        $standard_list = "3";
+                        $standard = "3";
                     }else if($standard_name == 'I'){
-                        $standard_list = "4";
+                        $standard = "4";
                     }else if($standard_name == 'II'){
-                        $standard_list = "5";
+                        $standard = "5";
                     }else if($standard_name == 'III'){
-                        $standard_list = "6";
+                        $standard = "6";
                     }else if($standard_name == 'IV'){
-                        $standard_list = "7";
+                        $standard = "7";
                     }else if($standard_name == 'V'){
-                        $standard_list = "8";
+                        $standard = "8";
                     }else if($standard_name == 'VI'){
-                        $standard_list = "9";
+                        $standard = "9";
                     }else if($standard_name == 'VII'){
-                        $standard_list = "10";
+                        $standard = "10";
                     }else if($standard_name == 'VIII'){
-                        $standard_list = "11";
+                        $standard = "11";
                     }else if($standard_name == 'IX'){
-                        $standard_list = "12";
+                        $standard = "12";
                     }else if($standard_name == 'X'){
-                        $standard_list = "13";
+                        $standard = "13";
                     }else if($standard_name == 'XI_Maths_Biology'){
-                        $standard_list = "14";
+                        $standard = "14";
                     }else if($standard_name == 'XI_Maths_Csc'){
-                        $standard_list = "15";
+                        $standard = "15";
                     }else if($standard_name == 'XI_Biology_Csc'){
-                        $standard_list = "16";
+                        $standard = "16";
                     }else if($standard_name == 'XI_Commerce_Csc'){
-                        $standard_list = "17";
+                        $standard = "17";
                     }else if($standard_name == 'XI_All'){
-                        $standard_list = "18";
+                        $standard = "18";
                     }else if($standard_name == 'XII_Maths_Biology'){
-                        $standard_list = "19";
+                        $standard = "19";
                     }else if($standard_name == 'XII_Maths_Csc'){
-                        $standard_list = "20";
+                        $standard = "20";
                     }else if($standard_name == 'XII_Biology_Csc'){
-                        $standard_list = "21";
+                        $standard = "21";
                     }else if($standard_name == 'XII_Commerce_Csc'){
-                        $standard_list = "22";
+                        $standard = "22";
                     }else if($standard_name == 'XII_All'){
-                        $standard_list = "23";
+                        $standard = "23";
                     }
                     else if($standard_name == 'XI_Com_BusinessMaths'){
-                        $standard_list = "24";
+                        $standard = "24";
                     }
                     else if($standard_name == 'XII_Com_BusinessMaths'){
-                        $standard_list = "25";
+                        $standard = "25";
                     }
                 }
 
@@ -508,9 +514,8 @@ if (isset($_FILES["file"]["type"])) {
                     $any_extra_curricular = mysqli_real_escape_string($mysqli, $Row[78]);
                 }
 
-
-                if ($admission_no != "" && $student_name != "" && $gender != "" && $mother_tongue != "" && $standard != "" && $section != "" && $getMedium != "" && $student_rollno != "" && $getStudentType != "" && $sms_sent_no != "") {
-                    $StudentInsert = "INSERT INTO student_creation(admission_number, student_name, sur_name, date_of_birth, gender, mother_tongue, aadhar_number,blood_group, category, castename, sub_caste, nationality, religion, filltoo, flat_no, flat_no1, street, street1, area_locatlity, area_locatlity1, district, district1, pincode, pincode1, standard, previouschoolname, previousplace, strpreviousdoj, strpreviousdol, timeoftchandedover, previousclassattended, section, medium, studentrollno, emisno, studentstype, referencecat, refstaffid, refstudentid, refoldstudentid, referencecatname, concession_type, concessiontypedetails, facility, roomcatogoryfeeid, advancefee, roomrent, transportarearefid, transportstopping, busno, father_name, mother_name, father_aadhar_number, mother_aadhar_number, occupation, monthly_income, nature_business, position_held, telephone_number, lives_gaurdian, gaurdian_name, gaurdian_mobile, gaurdian_aadhar_number, gaurdian_email_id, father_mobile_no, mother_mobile_no, father_email_id, sms_sent_no, extra_curricular, sibling_name, sibling_school_name, sibling_standard, sibling_name2, sibling_school_name2, sibling_standard2, sibling_name3, sibling_school_name3, sibling_standard3, anyextracurricular, insert_login_id, school_id,year_id) 
+                if ($admission_no != "" && $student_name != "" && $gender != "" && $mother_tongue != "" && $standard != "" && $section != "" && $getMedium != ""  && $student_rollno != "" && $getStudentType != "" && $sms_sent_no != "") {
+                     $StudentInsert = "INSERT INTO student_creation(admission_number, student_name, sur_name, date_of_birth, gender, mother_tongue, aadhar_number,blood_group, category, castename, sub_caste, nationality, religion, filltoo, flat_no, flat_no1, street, street1, area_locatlity, area_locatlity1, district, district1, pincode, pincode1, standard, previouschoolname, previousplace, strpreviousdoj, strpreviousdol, timeoftchandedover, previousclassattended, section, medium, studentrollno, emisno, studentstype, referencecat, refstaffid, refstudentid, refoldstudentid, referencecatname, concession_type, concessiontypedetails, facility, roomcatogoryfeeid, advancefee, roomrent, transportarearefid, transportstopping, busno, father_name, mother_name, father_aadhar_number, mother_aadhar_number, occupation, monthly_income, nature_business, position_held, telephone_number, lives_gaurdian, gaurdian_name, gaurdian_mobile, gaurdian_aadhar_number, gaurdian_email_id, father_mobile_no, mother_mobile_no, father_email_id, sms_sent_no, extra_curricular, sibling_name, sibling_school_name, sibling_standard, sibling_name2, sibling_school_name2, sibling_standard2, sibling_name3, sibling_school_name3, sibling_standard3, anyextracurricular, insert_login_id, school_id,year_id) 
                     VALUES('" . strip_tags($admission_no) . "', '" . strip_tags($student_name) . "', '" . strip_tags($sur_name) . "', '" . strip_tags($dob) . "', '" . strip_tags($gender) . "', '" . strip_tags($mother_tongue) . "', '" . strip_tags($aadhar_number) . "', '" . strip_tags($blood_group) . "', '" . strip_tags($category) . "', '" . strip_tags($caste_name) . "', '" . strip_tags($sub_caste) . "', '" . strip_tags($nationality) . "', '" . strip_tags($religion) . "', '" . strip_tags($filltoo) . "', '" . strip_tags($flat_no) . "',	'" . strip_tags($flat_no1) . "', '" . strip_tags($street) . "', '" . strip_tags($street1) . "', '" . strip_tags($area_locality) . "', '" . strip_tags($area_locality1) . "', '" . strip_tags($district) . "', '" . strip_tags($district1) . "', '" . strip_tags($pincode) . "', '" . strip_tags($pincode1) . "', '" . strip_tags($standard) . "', '" . strip_tags($previous_school_name) . "', '" . strip_tags($previous_school_place) . "', '" . strip_tags($previous_doj) . "', '" . strip_tags($previous_dol) . "', '" . strip_tags($time_of_tc_handed_over) . "', '" . strip_tags($previous_school_class_attended) . "', '" . strip_tags($section) . "', '" . strip_tags($getMedium) . "', '" . strip_tags($student_rollno) . "', '" . strip_tags($emis_no) . "', '" . strip_tags($getStudentType) . "', '" . strip_tags($reference_category) . "', '" . strip_tags($ref_staff_id) . "', '" . strip_tags($ref_student_id) . "', '" . strip_tags($ref_old_student_id) . "', '" . strip_tags($reference_category_name) . "', '" . strip_tags($concession_type) . "',  '" . strip_tags($concession_type_details) . "', '" . strip_tags($getFacility) . "', '" . strip_tags($room_category_fee_id) . "', '" . strip_tags($advance_fee) . "', '" . strip_tags($room_rent) . "', '" . strip_tags($transport_area_ref_id) . "', '" . strip_tags($transport_stopping) . "', '" . strip_tags($bus_no) . "', '" . strip_tags($father_name) . "', '" . strip_tags($mother_name) . "', '" . strip_tags($father_aadhar_number) . "', '" . strip_tags($mother_aadhar_number) . "', '" . strip_tags($occupation) . "', '" . strip_tags($monthly_income) . "', '" . strip_tags($nature_business) . "', '" . strip_tags($position_held) . "', '" . strip_tags($telephone_number) . "', '" . strip_tags($getLivesGuardian) . "', '" . strip_tags($guardian_name) . "', '" . strip_tags($guardian_mobile) . "', '" . strip_tags($guardian_aadhar_number) . "', '" . strip_tags($guardian_email_id) . "', '" . strip_tags($father_mobile_no) . "', '" . strip_tags($mother_mobile_no) . "', '" . strip_tags($father_email_id) . "', '" . strip_tags($sms_sent_no) . "',  '" . strip_tags($extra_curricular) . "', '" . strip_tags($sibling_name) . "', '" . strip_tags($sibling_school_name) . "', '" . strip_tags($sibling_standard) . "', '" . strip_tags($sibling_name2) . "', '" . strip_tags($sibling_school_name2) . "', '" . strip_tags($sibling_standard2) . "', '" . strip_tags($sibling_name3) . "', '" . strip_tags($sibling_school_name3) . "', '" . strip_tags($sibling_standard3) . "', '" . strip_tags($any_extra_curricular) . "', '" . strip_tags($userid) . "', '" . strip_tags($school_id) . "', '" . strip_tags($academic_year) . "' ) ";
 
                     $insresult = $mysqli->query($StudentInsert) or die("Error " . $mysqli->error);

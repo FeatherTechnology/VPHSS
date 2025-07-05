@@ -46,7 +46,7 @@ if($current_page == 'vendorcreation' || $current_page == 'auction_details') {
 	<!-- Page wrapper start -->
 	<div class="page-wrapper">
 		<?php 
-		if($_SESSION['userid']=="")
+		if(!isset($_SESSION['userid']) || $_SESSION['userid']=="")
 		{
 			echo "<script>location.href='index.php'</script>"; 
 		}
@@ -384,6 +384,10 @@ if($current_page == 'vendorcreation' || $current_page == 'auction_details') {
 			//Student transport List.
 			if($current_page == 'student_transport_list') { 
 				include "reports/student_transport_report/student_transport_list.php";
+			}
+			//Student Mark List.
+			if($current_page == 'student_mark_list') { 
+				include "reports/student_mark_report/student_mark_list.php";
 			}
 			//Student Fees Details.
 

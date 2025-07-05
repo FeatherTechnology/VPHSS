@@ -60,7 +60,7 @@ if ($dateSelect == 'singledate') {
 
         FROM admission_fees af 
         JOIN admission_fees_details afd ON af.id = afd.admission_fees_ref_id 
-        JOIN group_course_fee gcf ON afd.fees_id = gcf.grp_course_id
+       LEFT  JOIN group_course_fee gcf ON afd.fees_id = gcf.grp_course_id
         JOIN student_creation sc ON af.admission_id = sc.student_id 
         JOIN student_history sh ON sh.student_id = sc.student_id AND af.academic_year = sh.academic_year
         JOIN standard_creation std ON sh.standard = std.standard_id 
@@ -310,7 +310,7 @@ if ($dateSelect == 'singledate') {
             sh.section, 
 
             SUM(CASE 
-                WHEN afd.fees_table_name = 'grptable' AND gcf.grp_particulars LIKE '%I%'     AND gcf.grp_particulars NOT LIKE '%II%' 
+                WHEN afd.fees_table_name = 'grptable' AND gcf.grp_particulars LIKE '%I%' AND gcf.grp_particulars NOT LIKE '%II%' 
                 AND gcf.grp_particulars NOT LIKE '%III%' THEN afd.fee_received 
                 ELSE 0 
             END) AS first_term_grp_fee,

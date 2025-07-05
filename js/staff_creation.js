@@ -28,9 +28,9 @@ $('#staff_pan').keyup(function () {
 });
 
 // Create new bidder
-$("#SubmitStaffCreation").click(function(){ 
-    validatepan();    
-});
+// $("#SubmitStaffCreation").click(function(){ 
+//     validatepan();    
+// });
 
 $('input[type="checkbox"]').change(function() {
     checkbox();
@@ -48,7 +48,7 @@ $(function(){
 })
 
 function staffSubmit(){
-var first_name = $('#staff_first_name').val(); var lastName = $('#staff_last_name').val(); var dsgn = $('#staff_designation').val(); var gen = $('#male').val(); var gender = $('#female').val(); var qualification = $('#qualification').val(); var pan = $('#staff_pan').val(); var aadhar = $('#aadhar_number').val(); var contactNo = $('#contact_number').val(); var  doj = $('#staff_doj').val();  
+var first_name = $('#staff_first_name').val(); var lastName = $('#staff_last_name').val(); var dsgn = $('#staff_designation').val(); var gen = $('#male').val(); var gender = $('#female').val(); var qualification = $('#qualification').val(); var aadhar = $('#aadhar_number').val(); var contactNo = $('#contact_number').val(); var  doj = $('#staff_doj').val();  
 // var contactPerson = $('#emg_contact_person').val();var emgcontactNo = $('#emg_contact_no').val();
 if(first_name == ''){
     event.preventDefault();
@@ -76,13 +76,6 @@ if(qualification == ''){
     $('#qualificationCheck').show();
 }else{
     $('#qualificationCheck').hide();
-}
-
-if(pan == ''){
-    event.preventDefault();
-    $('#panCheck').show();
-}else{
-    $('#panCheck').hide();
 }
 
 if(aadhar == ''){

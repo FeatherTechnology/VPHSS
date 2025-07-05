@@ -151,7 +151,7 @@ while ($schoolInfo = $getbrc->fetch_assoc()) {
             AND af.academic_year = sh.academic_year
         JOIN standard_creation std 
             ON sh.standard = std.standard_id
-        JOIN group_course_fee gcf 
+        LEFT JOIN group_course_fee gcf 
             ON afd.fees_id = gcf.grp_course_id
         WHERE af.receipt_date = '$from_date' AND afd.fees_table_name != 'extratable'
             AND afd.fee_received > 0 

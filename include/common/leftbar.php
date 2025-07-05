@@ -47,6 +47,7 @@ if (sizeof($getmanageuserdetails)>0) {
 	$class_wise_list                  = $getmanageuserdetails['class_wise_list']; 
 	$register_of_admission                  = $getmanageuserdetails['register_of_admission']; 
 	$student_transport_list                  = $getmanageuserdetails['student_transport_list']; 
+	$student_mark_list                  = $getmanageuserdetails['student_mark_list']; 
 	$fee_details_sub_module                  = $getmanageuserdetails['fee_details_sub_module']; 
 	$daily_fees_collection                  = $getmanageuserdetails['daily_fees_collection']; 
 	$day_end_report                  = $getmanageuserdetails['day_end_report']; 
@@ -432,7 +433,11 @@ if (sizeof($getmanageuserdetails)>0) {
 										<li>
 											<a href="student_transport_list"><i class="icon-airport_shuttle"></i>Student Transport List</a>	
 										</li>
-									<?php } ?>
+									<?php } if(isset($student_mark_list) && $student_mark_list ==0){ ?>
+										<li>
+											<a href="student_mark_list"><i class="icon-assignment"></i>Student Mark List</a>	
+										</li>
+									<?php }  ?>
 									</ul>
 								</div>	
 							</li>

@@ -245,7 +245,7 @@ if ($idupd > 0) {
 
                                     <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-12">
                                         <div class="form-group">
-                                            <label for="staff_pan"> PAN </label> <span class="required">*</span>
+                                            <label for="staff_pan"> PAN </label> 
                                             <input name="staff_pan" tabindex="9"  placeholder="Enter PAN" id="staff_pan" class="form-control" maxLength="10" type="text"  value="<?php if(isset($pan)) echo $pan; ?>">
                                             <span id="panCheck" class="text-danger"></span>
                                         </div>

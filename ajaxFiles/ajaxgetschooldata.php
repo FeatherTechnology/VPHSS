@@ -26,5 +26,4 @@ echo json_encode($getschool_list);
 
 $mysqli->close();
 $connect = null;
-
 ?>

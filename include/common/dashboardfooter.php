@@ -779,6 +779,9 @@ if($current_page == 'register_of_admission') { ?>
 if($current_page == 'student_transport_list') { ?>
 <script src="js/student_transport_list.js"></script>
 <?php }
+if($current_page == 'student_mark_list') { ?>
+<script src="js/student_mark_list.js"></script>
+<?php }
 
 if($current_page == 'daily_fees_collection') { ?>
 <script src="js/daily_fees_collection.js"></script>

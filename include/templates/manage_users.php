@@ -83,6 +83,7 @@ if ($idupd > 0) {
         $class_wise_list                  = $getmanageuserdetails['class_wise_list'];
         $register_of_admission                  = $getmanageuserdetails['register_of_admission'];
         $student_transport_list                  = $getmanageuserdetails['student_transport_list'];
+        $student_mark_list                  = $getmanageuserdetails['student_mark_list'];
         $fee_details_sub_module                  = $getmanageuserdetails['fee_details_sub_module'];
         $daily_fees_collection                  = $getmanageuserdetails['daily_fees_collection'];
         $day_end_report                  = $getmanageuserdetails['day_end_report'];
@@ -472,7 +473,7 @@ if ($del > 0) {
                         <label class="custom-control-label" for="student_mark_entry">Student Mark Entry</label>
                     </div>
                 </div>
-              
+
             </div>
             <!-- exam module end -->
             <hr>
@@ -564,7 +565,7 @@ if ($del > 0) {
                         <label class="custom-control-label" for="send_sms_mark">Student SMS Mark</label>
                     </div>
                 </div>
-                  <div class="col-sm-6 col-md-6 col-lg-4 col-xl-3 col-12">
+                <div class="col-sm-6 col-md-6 col-lg-4 col-xl-3 col-12">
                     <div class="custom-control custom-checkbox">
                         <input type="checkbox" value="Yes" <?php if (isset($sms_delivery_report) && $sms_delivery_report == 0) {
                                                                 echo 'checked';
@@ -632,6 +633,12 @@ if ($del > 0) {
                                                                 echo 'checked';
                                                             } ?> tabindex="41" class="custom-control-input studentreport-sub-checkbox" id="student_transport_list" name="student_transport_list">
                         <label class="custom-control-label" for="student_transport_list">Student Transport List</label>
+                    </div>
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" value="Yes" <?php if (isset($student_mark_list) && $student_mark_list == 0) {
+                                                                echo 'checked';
+                                                            } ?> tabindex="41" class="custom-control-input studentreport-sub-checkbox" id="student_mark_list" name="student_mark_list">
+                        <label class="custom-control-label" for="student_mark_list">Student Mark List</label>
                     </div>
                 </div>
 

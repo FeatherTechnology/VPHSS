@@ -112,7 +112,7 @@ $(document).ready(function () {
         } else if (category_options === 'BCM') {
           $('#bcm').val('BCM').prop('checked', true);
         }
-        
+
         extracur();
         $('#temp_no_empty').click(); //To close the modal box.
       }
@@ -140,8 +140,11 @@ $(document).ready(function () {
   // Get Previous School Details
   $("#standard").change(function () {
     var standard = $("#standard").val();
-    hide_show_standard(standard)
+    hide_show_standard(standard); // Custom function (assumed)
+
+
   });
+
 
   //hostel details show
   $('#hostel').change(function () {
@@ -424,7 +427,7 @@ $(document).ready(function () {
   });
 
   // Submit Button 
-  $('#SubmitStudentCreation').click(function () {
+ $('#SubmitStudentCreation').click(function () {
     var admissionNoValidation = validateadmission_number();
     var stdNameValidation = validatestudent_name();
     var genderValidation = validategenderStatus();
@@ -436,23 +439,189 @@ $(document).ready(function () {
     var stdtypeValidation = validatestudentstype();
     // calculateAge();
     // validatereason();
-    
+
     // var mobnoValidation = mobno();
-      // var gudnoValidation = gaurdmobno();
-      // var smsnoValidation = smsmobno();
+    // var gudnoValidation = gaurdmobno();
+    // var smsnoValidation = smsmobno();
     // var momnoValidation = mommobile();
     // var dadnoValidation = dadmobile();
     var smssentvalidation = smsmobile();
     // var dadaadharValidation = dadaadhaar();
     // var momaadharValidation = momaadhaar();
-      // var guardianaadharValidation = gaurdaadhar();
+    // var guardianaadharValidation = gaurdaadhar();
     // var appaadharValidation = appaadhaar();
-    
-    if(admissionNoValidation == '1' || stdNameValidation == '1' || genderValidation == '1' || mothertogueValidation == '1' || stdValidation == '1' || sectionValidation == '1' || mediumValidation == '1' || rollnoValidation == '1' || stdtypeValidation == '1' || smssentvalidation == '1' ){
+
+    if (admissionNoValidation == '1' || stdNameValidation == '1' || genderValidation == '1' || mothertogueValidation == '1' || stdValidation == '1' || sectionValidation == '1' || mediumValidation == '1' || rollnoValidation == '1' || stdtypeValidation == '1' || smssentvalidation == '1') {
       event.preventDefault();
     }
 
+    var medium = $("#medium").val();
+    var student_id = $("#id").val();
+    var standardEditvalue = $("#standardEditvalue").val();
+    var standard = $("#standard").val();
+
+    // If standard changed, perform ajax check first
+    if (standardEditvalue && standardEditvalue != standard) {
+      $.ajax({
+        url: 'studentFile/ajaxfeesInsertion.php',
+        type: 'POST',
+        data: {
+          student_id: student_id,
+          standard: standard,
+          medium: medium
+        },
+        cache: false,
+        success: function (response) {
+          var result = JSON.parse(response);
+
+          if (result.status === "warning") {
+            var isConfirmed = confirm("Paid fee is higher than current. Do you still want to continue?");
+
+            if (isConfirmed) {
+              // Proceed with refund confirmation
+
+              $.post('studentFile/ajaxfeesInsertion.php', {
+                student_id: student_id,
+                standard: standard,
+                medium: medium,
+                confirm: true
+              }, function (response) {
+                let confirmResult = JSON.parse(response);
+                showFeedback(confirmResult);
+
+                if (confirmResult.status === "success" || confirmResult.status === "updated") {
+                  $("#studentCreationForm").submit(); // Submit form only on success
+                }
+              });
+            } else {
+              // If user cancels, do nothing
+              return false;
+            }
+          } else {
+            showFeedback(result);
+
+            if (result.status === "success" || result.status === "updated") {
+              $("#studentCreationForm").submit(); // Submit directly
+            }
+          }
+        }
+      });
+    } else {
+      // No change in standard, submit directly
+      $("#studentCreationForm").submit();
+    }
+
+    function showFeedback(result) {
+      if (result.status === "success") {
+        alert("Standard Updated Successfully")
+      }  else {
+       alert
+       ("Standard not Updated")
+      }
+    }
+
   });
+
+
+  // $('#SubmitStudentCreation').click(function (event) {
+  //     event.preventDefault(); // Always prevent default first
+
+  //     var admissionNoValidation = validateadmission_number();
+  //     var stdNameValidation = validatestudent_name();
+  //     var genderValidation = validategenderStatus();
+  //     var mothertogueValidation = validateMotherTongue();
+  //     var stdValidation = validateStandard();
+  //     var sectionValidation = validatesection();
+  //     var mediumValidation = validatemedium();
+  //     var rollnoValidation = validatestudentrollno();
+  //     var stdtypeValidation = validatestudentstype();
+  //     var smssentvalidation = smsmobile();
+
+  //     if (
+  //         admissionNoValidation == '1' || stdNameValidation == '1' || genderValidation == '1' || 
+  //         mothertogueValidation == '1' || stdValidation == '1' || sectionValidation == '1' || 
+  //         mediumValidation == '1' || rollnoValidation == '1' || stdtypeValidation == '1' || 
+  //         smssentvalidation == '1'
+  //     ) {
+  //         return false;
+  //     }
+
+  //     var medium = $("#medium").val();
+  //     var student_id = $("#id").val();
+  //     var standardEditvalue = $("#standardEditvalue").val();
+  //     var standard = $("#standard").val();
+
+  //     // If standard changed, perform ajax check first
+  //     if (standardEditvalue && standardEditvalue != standard) {
+  //         $.ajax({
+  //             url: 'studentFile/ajaxfeesInsertion.php',
+  //             type: 'POST',
+  //             data: {
+  //                 student_id: student_id,
+  //                 standard: standard,
+  //                 medium: medium
+  //             },
+  //             cache: false,
+  //             success: function (response) {
+  //                 var result = JSON.parse(response);
+
+  //                 if (result.status === "warning") {
+  //                     Swal.fire({
+  //                         icon: 'warning',
+  //                         title: 'Confirmation',
+  //                         text: result.message,
+  //                         showCancelButton: true,
+  //                         confirmButtonText: 'Yes, proceed!',
+  //                         cancelButtonText: 'Cancel'
+  //                     }).then((res) => {
+  //                         if (res.isConfirmed) {
+  //                             // Send confirmation and on success, submit form
+  //                             $.post('studentFile/ajaxfeesInsertion.php', {
+  //                                 student_id: student_id,
+  //                                 standard: standard,
+  //                                 medium: medium,
+  //                                 confirm: true
+  //                             }, function (response) {
+  //                                 let confirmResult = JSON.parse(response);
+  //                                 showFeedback(confirmResult);
+
+  //                                 // Only now submit the form
+  //                                 if (confirmResult.status === "success" || confirmResult.status === "updated") {
+  //                                     $("#studentCreationForm").submit(); // Make sure your form has this ID
+  //                                 }
+  //                             });
+  //                         }
+  //                     });
+  //                 } else {
+  //                     showFeedback(result);
+
+  //                     if (result.status === "success" || result.status === "updated") {
+  //                         $("#studentCreationForm").submit(); // auto submit after success
+  //                     }
+  //                 }
+  //             }
+  //         });
+  //     } else {
+  //         // If no change in standard, submit directly
+  //         $("#studentCreationForm").submit();
+  //     }
+
+  //     function showFeedback(result) {
+  //         if (result.status === "success") {
+  //             $('#reasonInsertOk').show().delay(2000).fadeOut();
+  //         } else if (result.status === "error") {
+  //             $('#reasonInsertNotOk').show().delay(2000).fadeOut();
+  //         } else {
+  //             $('#reasonUpdateOk').show().delay(2000).fadeOut();
+  //         }
+
+  //         $("#reasonTable").remove();
+  //         resetreasonTable();
+  //         $("#reason").val('');
+  //         $("#student_id").val('');
+  //     }
+  // });
+
 
   $('#gaurdian_email_id').blur(function () {
     var email = $(this).val();
@@ -469,7 +638,7 @@ $(document).ready(function () {
       }
     }
   });
-  
+
   $('#father_email_id').blur(function () {
     var email = $(this).val();
     if (email == '') {
@@ -490,39 +659,39 @@ $(document).ready(function () {
     extracur();
   });
 
-  $('#refstaffid, #refstudentid, #refoldstudentid').change(function(){
-      $('#referred_by').val($(this).find('option:selected').text().trim());
+  $('#refstaffid, #refstudentid, #refoldstudentid').change(function () {
+    $('#referred_by').val($(this).find('option:selected').text().trim());
   });
 
-  $('#standard, #medium, #studentstype').change(function(){
+  $('#standard, #medium, #studentstype').change(function () {
     extracur();
   });
-  
+
 }); //Document END.
 
-$(function(){ //ONLOAD Function
+$(function () { //ONLOAD Function
 
-    $('#reasonTable').DataTable({
-      'iDisplayLength': 5,
-      "language": {
-        "lengthMenu": "Display _MENU_ Records Per Page",
-        "info": "Showing Page _PAGE_ of _PAGES_",
-      }
-    });
+  $('#reasonTable').DataTable({
+    'iDisplayLength': 5,
+    "language": {
+      "lengthMenu": "Display _MENU_ Records Per Page",
+      "info": "Showing Page _PAGE_ of _PAGES_",
+    }
+  });
 
-    getStandardList(); //Get Standard List.
-    getResetTempAdmTable();// Get Temp Admission Table/
-    
-    setTimeout(() => {
-      extracur();
+  getStandardList(); //Get Standard List.
+  getResetTempAdmTable();// Get Temp Admission Table/
 
-      var stdidOnEdit = $('#stdidOnEdit').val();
-      if(stdidOnEdit > 0){
-        //readonly on edit page.
-        $('#standard').prop('disabled', true);
-      }
+  setTimeout(() => {
+    extracur();
 
-    }, 1000);
+    // var stdidOnEdit = $('#stdidOnEdit').val();
+    // if(stdidOnEdit > 0){
+    //   //readonly on edit page.
+    //   $('#standard').prop('disabled', true);
+    // }
+
+  }, 1000);
 });
 
 function validateadmission_number() {
@@ -676,7 +845,7 @@ function resetreasonTable() {
 }
 
 function hide_show_standard(standard) {
-  if (standard == 'PRE.K.G') {
+  if (standard == '1') {
     $("#previous_school").hide();
   } else {
     $("#previous_school").show();
@@ -714,12 +883,12 @@ function hide_show_referenceCat(referencecat) {
     $("#reference_staff").hide();
     $("#reference_agent").show();
 
-  } else{
+  } else {
     $("#reference_newstudent").hide();
     $("#reference_oldstudent").hide();
     $("#reference_staff").hide();
     $("#reference_agent").hide();
-    
+
   }
 }
 
@@ -784,12 +953,12 @@ $('#sms_sent_no').blur(function () {
 
 function mobno() {
   var telephoneno = $('#telephone_number').val();
-  if (telephoneno.length == '' || telephoneno.length < '10'){
+  if (telephoneno.length == '' || telephoneno.length < '10') {
     $('#mobile').text('');
     $('#mobile').text('Enter 10 Digit Mobile Number');
     return '1';
 
-  }else{
+  } else {
     $('#mobile').text('');
     return '0';
   }
@@ -851,7 +1020,7 @@ function smsmobile() {
     $('#smsmobile').show();
     return '1';
 
-  }else{
+  } else {
     $('#smsmobile').hide();
     return '0';
   }
@@ -951,7 +1120,7 @@ function momaadhaar() {
     $("#momaadhar_chk").text('');
     $("#momaadhar_chk").text('Enter valid Aadhaar number');
   } else {
-      $("#momaadhar_chk").text('');
+    $("#momaadhar_chk").text('');
   }
 }
 
@@ -961,35 +1130,35 @@ function gaurdaadhar() {
     $("#gaurdaadhar_chk").text('');
     $("#gaurdaadhar_chk").text('Enter valid Aadhaar number');
   } else {
-      $("#gaurdaadhar_chk").text('');
+    $("#gaurdaadhar_chk").text('');
   }
 }
 
-function setReferredByValue(){
+function setReferredByValue() {
   let referredBY = $('#referencecat').val();
   let referenceName;
-  if(referredBY =='New Student'){
-      referenceName = $('#refstudentid option:selected').text().trim();
+  if (referredBY == 'New Student') {
+    referenceName = $('#refstudentid option:selected').text().trim();
 
-  }else if(referredBY =='Old Student'){
-      referenceName = $('#refoldstudentid option:selected').text().trim();
+  } else if (referredBY == 'Old Student') {
+    referenceName = $('#refoldstudentid option:selected').text().trim();
 
-  }else if(referredBY =='Staff'){
-      referenceName = $('#refstaffid option:selected').text().trim();
+  } else if (referredBY == 'Staff') {
+    referenceName = $('#refstaffid option:selected').text().trim();
 
   }
 
   $('#referred_by').val(referenceName);
 }
 
-function getResetTempAdmTable(){
+function getResetTempAdmTable() {
   // Modal Box 
   $.ajax({
     url: 'studentFile/ajaxResetTemporaryStudentTable.php',
     type: 'POST',
     data: {},
     cache: false,
-    success: function(html){
+    success: function (html) {
       $("#updateddepartmentTable").empty();
       $("#updateddepartmentTable").html(html);
     }

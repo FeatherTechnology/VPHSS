@@ -1,9 +1,11 @@
 <?php
-date_default_timezone_set('Asia/Calcutta');
-@session_start();
-include("api/iedit-config.php");
+session_start(); // Start the session to access and destroy it
 
-session_destroy();   
-echo "<script>location.href='vidhyaparthihss-001-site3.etempurl.com'</script>"; 
+// Destroy session data
+session_unset(); 
+session_destroy();
 
+// Redirect the user to the login or home page
+header("Location: https://localhost/vphss/");
+exit();
 ?>

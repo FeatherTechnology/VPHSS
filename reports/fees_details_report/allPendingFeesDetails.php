@@ -176,7 +176,6 @@ WHERE sh.academic_year  = '$academicyear' && sc.medium = '$stdMedium' && sh.stan
                             FROM fees_concession
                             WHERE student_id = '$studentList->student_id'
                             AND fees_table_name = 'transport'
-                            AND fees_master_id = tafd.area_creation_id
                         ), 0
                     ), 0
                 ) AS pending
@@ -188,7 +187,7 @@ WHERE sh.academic_year  = '$academicyear' && sc.medium = '$stdMedium' && sh.stan
         ");
                     $lastyearpending = $getLastYearPending->fetchObject();
                     $lastPending = $lastyearpending->total_balance_tobe_paid;
-                    $lastyr_grpfeeQry = $connect->query("SELECT (SUM(lyfd.fee_received)) as paid_grp_amount 
+                    $lastyr_grpfeeQry = $connect->query("SELECT (SUM(lyfd.fee_received) + SUM(lyfd.scholarship)) as paid_grp_amount 
                     FROM `last_year_fees` lyf 
                     JOIN last_year_fees_details lyfd ON lyf.id = lyfd.admission_fees_ref_id 
                     JOIN group_course_fee gcf ON lyfd.fees_id = gcf.grp_course_id 

@@ -641,6 +641,7 @@ if($idupd>0)
                                             <label for="disabledInput">Section<span class="required">*</span></label>
                                             <select class="select2 form-control" id="section" name="section" tabindex="42"><option value="">Select a Section...</option>
                                                 <option value="A"<?php  if(isset($section)) { if($section == "A") echo 'selected'; }?>>A</option>
+                                                <option value="A1"<?php  if(isset($section)) { if($section == "A1") echo 'selected'; }?>>A1</option>
                                                 <option value="B"<?php  if(isset($section)) { if($section == "B") echo 'selected'; }?>>B</option>
                                                 <option value="C"<?php  if(isset($section)) { if($section == "C") echo 'selected'; }?>>C</option>
                                                 <option value="D"<?php  if(isset($section)) { if($section == "D") echo 'selected'; }?>>D</option>
@@ -1447,7 +1448,7 @@ if($idupd>0)
                         </div>
                     </div>           
                 </div>
-            <div id="updateddepartmentTable"> 
+            <div id="updateddepartmentTable" style="max-height: 400px !important; overflow: auto !important; white-space: nowrap !important;">
                     <table class="table custom-table" id="departmentTable"> 
                 <thead>
                     <tr>
