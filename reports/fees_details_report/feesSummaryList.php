@@ -1,15 +1,15 @@
 <?php
 include "../../ajaxconfig.php";
 @session_start();
-if(isset($_SESSION['school_id'])){
+if (isset($_SESSION['school_id'])) {
     $school_id = $_SESSION['school_id'];
 }
 
-if(isset($_POST['feesFromDate'])){
+if (isset($_POST['feesFromDate'])) {
     $feesFromDate = new DateTime($_POST['feesFromDate']);
     $startdate = clone $feesFromDate;
 }
-if(isset($_POST['feesToDate'])){
+if (isset($_POST['feesToDate'])) {
     $feesToDate = new DateTime($_POST['feesToDate']);
     $to_date = $feesToDate->format('Y-m-d');
 }
@@ -17,79 +17,140 @@ if(isset($_POST['feesToDate'])){
 
 <table class="table table-bordered" id="show_student_fees_summary_list">
     <thead>
-        <tr><th colspan='7'>Fees Summary Report From <?php echo $feesFromDate->format('d-m-Y'); ?>  To  <?php echo $feesToDate->format('d-m-Y'); ?> </th></tr>
         <tr>
-            <th>S.No</th>
-            <th>Date</th>
-            <th>School Fee</th>
-            <th>Book Fee</th>
-            <th>Transport Fee</th>
-            <th>Last year Fee</th>
-            <th>Total Amount</th>
+            <th colspan='12'>Fees Summary Report From <?php echo $feesFromDate->format('d-m-Y'); ?> To <?php echo $feesToDate->format('d-m-Y'); ?> </th>
+        </tr>
+        <tr>
+            <th rowspan="2">S.No</th>
+            <th rowspan="2">Date</th>
+            <th colspan="3">School Fee</th>
+            <th rowspan="2">Book Fee</th>
+            <th colspan="3">Transport Fee</th>
+            <th rowspan="2">Last year Fee</th>
+            <th rowspan="2">Total Amount</th>
+        </tr>
+        <tr>
+            <th>Term I</th>
+            <th>Term II</th>
+            <th>Term III</th>
+            <th>Term I</th>
+            <th>Term II</th>
+            <th>Term III</th>
         </tr>
     </thead>
     <tbody>
-    <?php 
-    $i=1;
-    $schoolfee_total = 0;
-    $bookfee_total = 0;
-    $transportfee_total = 0;
-    $lastyear_total = 0;
-    $total = 0;
-    while($startdate <= $feesToDate){
-    $from_date = $startdate->format('Y-m-d');
+        <?php
+        $i = 1;
+        $schoolfee_total1 = 0;
+        $schoolfee_total2 = 0;
+        $schoolfee_total3 = 0;
+        $bookfee_total = 0;
+        $transportfee_total1 = 0;
+        $transportfee_total2 = 0;
+        $transportfee_total3 = 0;
+        $lastyear_total = 0;
+        $total = 0;
+        while ($startdate <= $feesToDate) {
+            $from_date = $startdate->format('Y-m-d');
 
-    //School fee
-    $getCollectedFeesQry = $connect->query("SELECT COALESCE(SUM(afd.fee_received),0) AS collectedFees FROM `admission_fees` af JOIN admission_fees_details afd ON af.id = afd.admission_fees_ref_id WHERE af.receipt_date ='$from_date' AND afd.fees_table_name ='grptable' AND af.school_id = '$school_id' ");
-    $collectedFeesInfo = $getCollectedFeesQry->fetchObject();
-    
-    //Book feee
-    $getBookFeesQry = $connect->query("SELECT COALESCE(SUM(afd.fee_received),0) AS bookFees FROM `admission_fees` af JOIN admission_fees_details afd ON af.id = afd.admission_fees_ref_id WHERE af.receipt_date ='$from_date' AND afd.fees_table_name ='amenitytable' AND af.school_id = '$school_id' ");
-    $bookFeesInfo = $getBookFeesQry->fetchObject();
-    
-    //Transport fee
-    $getTransportFeesQry = $connect->query("SELECT COALESCE(SUM(tafd.fee_received),0) AS transportFees FROM `transport_admission_fees` taf JOIN transport_admission_fees_details tafd ON taf.id = tafd.admission_fees_ref_id WHERE taf.receipt_date ='$from_date' AND taf.school_id = '$school_id' ");
-    $transportFeesInfo = $getTransportFeesQry->fetchObject();
+            //School fee
+            $getCollectedFeesQry = $connect->query("SELECT COALESCE( SUM(
+                CASE 
+                    WHEN afd.fees_table_name = 'grptable' 
+                     AND gcf.grp_particulars LIKE '%I%' 
+                     AND gcf.grp_particulars NOT LIKE '%II%' 
+                     AND gcf.grp_particulars NOT LIKE '%III%' 
+                    THEN afd.fee_received 
+                    ELSE 0 
+                END
+            ),0) AS grp_fee_t1,
+        
+           COALESCE( SUM(
+                CASE 
+                    WHEN afd.fees_table_name = 'grptable' 
+                     AND gcf.grp_particulars LIKE '%II%' 
+                     AND gcf.grp_particulars NOT LIKE '%III%' 
+                    THEN afd.fee_received 
+                    ELSE 0 
+                END
+            ),0) AS grp_fee_t2,
+        
+           COALESCE( SUM(
+                CASE 
+                    WHEN afd.fees_table_name = 'grptable' 
+                     AND gcf.grp_particulars LIKE '%III%' 
+                    THEN afd.fee_received 
+                    ELSE 0 
+                END
+            ),0) AS grp_fee_t3 FROM `admission_fees` af JOIN admission_fees_details afd ON af.id = afd.admission_fees_ref_id LEFT JOIN group_course_fee gcf 
+            ON afd.fees_id = gcf.grp_course_id WHERE af.receipt_date ='$from_date' AND afd.fees_table_name ='grptable' AND af.school_id = '$school_id' ");
+            $collectedFeesInfo = $getCollectedFeesQry->fetchObject();
 
-    //Last Year Fee
-    $getLastyearFeesQry = $connect->query("SELECT COALESCE(SUM(lyfd.fee_received),0) AS lastyearFees FROM `last_year_fees` lyf JOIN last_year_fees_details lyfd ON lyf.id = lyfd.admission_fees_ref_id WHERE lyf.receipt_date ='$from_date' AND lyf.school_id = '$school_id' ");
-    $lastyearFeesInfo = $getLastyearFeesQry->fetchObject();
-    ?>
+            //Book feee
+            $getBookFeesQry = $connect->query("SELECT COALESCE(SUM(afd.fee_received),0) AS bookFees FROM `admission_fees` af JOIN admission_fees_details afd ON af.id = afd.admission_fees_ref_id WHERE af.receipt_date ='$from_date' AND afd.fees_table_name ='amenitytable' AND af.school_id = '$school_id' ");
+            $bookFeesInfo = $getBookFeesQry->fetchObject();
 
-    <tr>
-        <td><?php echo $i++;?></td>
-        <td><?php echo $startdate->format('d-m-Y');?></td>
-        <td><?php echo $collectedFeesInfo->collectedFees;?></td>
-        <td><?php echo $bookFeesInfo->bookFees;?></td>
-        <td><?php echo $transportFeesInfo->transportFees;?></td>
-        <td><?php echo $lastyearFeesInfo->lastyearFees;?></td>
-        <td><?php echo $totalAmnt = $collectedFeesInfo->collectedFees + $bookFeesInfo->bookFees + $transportFeesInfo->transportFees + $lastyearFeesInfo->lastyearFees;?></td>
-    </tr>
+            //Transport fee
+            $getTransportFeesQry = $connect->query("SELECT COALESCE(SUM(CASE WHEN acp.particulars LIKE '%I%' AND acp.particulars NOT LIKE '%II%' AND acp.particulars NOT LIKE '%III%' THEN tafd.fee_received ELSE 0 END ), 0) AS transport_fee_t1,
+        COALESCE(SUM(CASE WHEN acp.particulars LIKE '%II%' AND acp.particulars NOT LIKE '%III%' THEN tafd.fee_received ELSE 0 END),0) AS transport_fee_t2,
+       COALESCE( SUM(CASE WHEN acp.particulars LIKE '%III%' THEN tafd.fee_received ELSE 0 END),0) AS transport_fee_t3 FROM `transport_admission_fees` taf JOIN transport_admission_fees_details tafd ON taf.id = tafd.admission_fees_ref_id  JOIN area_creation_particulars acp 
+            ON tafd.area_creation_particulars_id = acp.particulars_id WHERE taf.receipt_date ='$from_date' AND taf.school_id = '$school_id' ");
+        
+            $transportFeesInfo = $getTransportFeesQry->fetchObject();
 
-    <?php 
-$schoolfee_total += $collectedFeesInfo->collectedFees;
-$bookfee_total += $bookFeesInfo->bookFees;
-$transportfee_total += $transportFeesInfo->transportFees;
-$lastyear_total += $lastyearFeesInfo->lastyearFees;
-$total += $totalAmnt;
-$startdate->modify('+1 day');
-} ?>
-    <tr style="font-weight: bold;">
-        <td><?php echo $i;?></td>
-        <td>Grand Total</td>
-        <td><?php echo $schoolfee_total;?></td>
-        <td><?php echo $bookfee_total;?></td>
-        <td><?php echo $transportfee_total;?></td>
-        <td><?php echo $lastyear_total;?></td>
-        <td><?php echo $total;?></td>
-    </tr>
+            //Last Year Fee
+            $getLastyearFeesQry = $connect->query("SELECT COALESCE(SUM(lyfd.fee_received),0) AS lastyearFees FROM `last_year_fees` lyf JOIN last_year_fees_details lyfd ON lyf.id = lyfd.admission_fees_ref_id WHERE lyf.receipt_date ='$from_date' AND lyf.school_id = '$school_id' ");
+            $lastyearFeesInfo = $getLastyearFeesQry->fetchObject();
+        ?>
+
+            <tr>
+                <td><?php echo $i++; ?></td>
+                <td><?php echo $startdate->format('d-m-Y'); ?></td>
+                <td><?php echo $collectedFeesInfo->grp_fee_t1; ?></td>
+                <td><?php echo $collectedFeesInfo->grp_fee_t2; ?></td>
+                <td><?php echo $collectedFeesInfo->grp_fee_t3; ?></td>
+                <td><?php echo $bookFeesInfo->bookFees; ?></td>
+                <td><?php echo $transportFeesInfo->transport_fee_t1; ?></td>
+                <td><?php echo $transportFeesInfo->transport_fee_t2; ?></td>
+                <td><?php echo $transportFeesInfo->transport_fee_t3; ?></td>
+                <td><?php echo $lastyearFeesInfo->lastyearFees; ?></td>
+                <td><?php echo $totalAmnt = $collectedFeesInfo->grp_fee_t1 +  $collectedFeesInfo->grp_fee_t2 +  $collectedFeesInfo->grp_fee_t3 + $bookFeesInfo->bookFees + $transportFeesInfo->transport_fee_t1 + $transportFeesInfo->transport_fee_t2 + $transportFeesInfo->transport_fee_t3 +  $lastyearFeesInfo->lastyearFees; ?></td>
+            </tr>
+
+        <?php
+            $schoolfee_total1 += $collectedFeesInfo->grp_fee_t1;
+            $schoolfee_total2 += $collectedFeesInfo->grp_fee_t2;
+            $schoolfee_total3 += $collectedFeesInfo->grp_fee_t3;
+            $bookfee_total += $bookFeesInfo->bookFees;
+            $transportfee_total1 += $transportFeesInfo->transport_fee_t1;
+            $transportfee_total2 += $transportFeesInfo->transport_fee_t2;
+            $transportfee_total3 += $transportFeesInfo->transport_fee_t3;
+            $lastyear_total += $lastyearFeesInfo->lastyearFees;
+            $total += $totalAmnt;
+            $startdate->modify('+1 day');
+        } ?>
+        <tr style="font-weight: bold;">
+            <td><?php echo $i; ?></td>
+            <td>Grand Total</td>
+            <td><?php echo $schoolfee_total1; ?></td>
+            <td><?php echo $schoolfee_total2; ?></td>
+            <td><?php echo $schoolfee_total3; ?></td>
+            <td><?php echo $bookfee_total; ?></td>
+            <td><?php echo $transportfee_total1; ?></td>
+            <td><?php echo $transportfee_total2; ?></td>
+            <td><?php echo $transportfee_total3; ?></td>
+            <td><?php echo $lastyear_total; ?></td>
+            <td><?php echo $total; ?></td>
+        </tr>
     </tbody>
 </table>
 
 <script>
-    $(document).ready(function(){
+    $(document).ready(function() {
         $('#show_student_fees_summary_list').DataTable({
-            order: [[0, "asc"]],
+            order: [
+                [0, "asc"]
+            ],
             // columnDefs: [
             //     { type: 'natural', targets: 0 }
             // ],

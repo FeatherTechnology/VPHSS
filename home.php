@@ -389,6 +389,10 @@ if($current_page == 'vendorcreation' || $current_page == 'auction_details') {
 			if($current_page == 'student_mark_list') { 
 				include "reports/student_mark_report/student_mark_list.php";
 			}
+			//Roll of Honour.
+			if($current_page == 'roll_of_honour_list') { 
+				include "reports/roll_of_honour_report/roll_of_honour_list.php";
+			}
 			//Student Fees Details.
 
 			if($current_page == 'daily_fees_collection') { 

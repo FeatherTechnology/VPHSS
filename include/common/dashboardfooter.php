@@ -783,6 +783,10 @@ if($current_page == 'student_mark_list') { ?>
 <script src="js/student_mark_list.js"></script>
 <?php }
 
+if($current_page == 'roll_of_honour_list') { ?>
+<script src="js/roll_of_honour_list.js"></script>
+<?php }
+
 if($current_page == 'daily_fees_collection') { ?>
 <script src="js/daily_fees_collection.js"></script>
 <?php }

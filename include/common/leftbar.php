@@ -48,6 +48,7 @@ if (sizeof($getmanageuserdetails)>0) {
 	$register_of_admission                  = $getmanageuserdetails['register_of_admission']; 
 	$student_transport_list                  = $getmanageuserdetails['student_transport_list']; 
 	$student_mark_list                  = $getmanageuserdetails['student_mark_list']; 
+	$roll_of_honour_list                  = $getmanageuserdetails['roll_of_honour_list']; 
 	$fee_details_sub_module                  = $getmanageuserdetails['fee_details_sub_module']; 
 	$daily_fees_collection                  = $getmanageuserdetails['daily_fees_collection']; 
 	$day_end_report                  = $getmanageuserdetails['day_end_report']; 
@@ -436,6 +437,10 @@ if (sizeof($getmanageuserdetails)>0) {
 									<?php } if(isset($student_mark_list) && $student_mark_list ==0){ ?>
 										<li>
 											<a href="student_mark_list"><i class="icon-assignment"></i>Student Mark List</a>	
+										</li>
+									<?php } if(isset($roll_of_honour_list) && $roll_of_honour_list ==0){ ?>
+										<li>
+											<a href="roll_of_honour_list"><i class="icon-layers"></i>Roll Of Honour List</a>	
 										</li>
 									<?php }  ?>
 									</ul>

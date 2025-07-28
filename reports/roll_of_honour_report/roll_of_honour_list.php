@@ -8,11 +8,18 @@ if (isset($_SESSION["userid"])) {
 }
 
 ?>
+<style>
+@media print {
+    .dt-buttons {
+        display: none !important;
+    }
+}
 
+</style>
 <!-- Page header start -->
 <div class="page-header">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item">SM - Student Mark List </li>
+        <li class="breadcrumb-item">SM - Roll of Honour </li>
     </ol>
 </div>
 <!-- Page header end -->
@@ -35,15 +42,7 @@ if (isset($_SESSION["userid"])) {
                                         <div class="form-group">
                                             <label>Standard List</label>
                                             <select class="form-control" id="standard" name="standard">
-                                                <option value=" ">Select  Standard...</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12">
-                                        <div class="form-group">
-                                            <label>Section</label>
-                                            <select class="form-control" id="section" name="section">
-                                                <option value=" ">Select Section</option>
+                                                <option value=" ">Select Standard...</option>
                                             </select>
                                         </div>
                                     </div>
@@ -56,7 +55,7 @@ if (isset($_SESSION["userid"])) {
                                         </div>
                                     </div>
                                     <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12">
-                                        <button type="button" name="view_student" id="view_student" class="btn btn-primary" value="View" style="margin-top: 18px;" tabindex="4">View</button>
+                                        <button type="button" name="view_honour_list" id="view_honour_list" class="btn btn-primary" value="View" style="margin-top: 18px;" tabindex="4">View</button>
                                     </div>
                                 </div>
                             </div>
@@ -71,7 +70,7 @@ if (isset($_SESSION["userid"])) {
                     </div>
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12" id="mark_info_table_div" style="overflow: auto;">  
+                            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12" id="mark_info_table_div" style="overflow: auto;">
                             </div>
                         </div>
                     </div>

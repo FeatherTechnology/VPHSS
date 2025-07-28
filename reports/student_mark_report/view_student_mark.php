@@ -6,7 +6,13 @@ $exam = $_POST['exam'];
 $standard = $_POST['standard'];
 $section = $_POST['section'];
 $academic_year = $_SESSION['academic_year'];
-
+if (isset($_SESSION['school_id'])) {
+    $school_id = $_SESSION['school_id'];
+}
+$getbrc = $mysqli->query("SELECT sc.school_name FROM school_creation sc WHERE sc.status = 0 AND school_id = '$school_id'");
+while ($schoolInfo = $getbrc->fetch_assoc()) {
+    $school_name     = $schoolInfo["school_name"];
+}
 $response = ['html' => ''];
 
 // Step 1: Get distinct paper names
@@ -30,7 +36,22 @@ $outQry = $connect->query("
 while ($row = $outQry->fetch()) {
     $outOfMarksList[$row['paper_name']] = $row['out_of_marks'];
 }
-
+$examQry = $connect->query("
+    SELECT exam_type
+    FROM exam_type 
+    WHERE id = '$exam' AND academic_year = '$academic_year'
+");
+while ($row1 = $examQry->fetch()) {
+    $exam_name = $row1['exam_type'];
+}
+$stdQry = $connect->query("
+    SELECT standard
+    FROM standard_creation 
+    WHERE standard_id = '$standard' 
+");
+while ($row2 = $stdQry->fetch()) {
+    $standard_name = $row2['standard'];
+}
 // Step 3: Get student marks
 $studentData = [];
 $studentQry = $connect->query("
@@ -100,9 +121,15 @@ foreach ($studentData as $index => &$stu) {
     }
 }
 unset($stu);
+// Final display: sort alphabetically by student name
+usort($studentData, function ($a, $b) {
+    return strcmp($a['student_name'], $b['student_name']);
+});
 
 // Step 5: Build HTML Table
 $response['html'] .= "<div id='student_mark_export'>";
+$response['html'] .= "<h4 style='text-align:center; font-weight:bold; text-transform:uppercase;'>$school_name</h4>";
+$response['html'] .= "<h5 style='text-align:center; font-weight:bold;'>Exam: $exam_name | Standard: $standard_name - $section</h5><br>";
 $response['html'] .= "<table class='table table-bordered' id ='student_mark_list'>
 <thead style='background-color:#aad4f5;'>
 <tr>
@@ -151,6 +178,40 @@ foreach ($studentData as $stu) {
 
     $i++;
 }
+// Calculate average total and average percent BEFORE outputting the row
+$totalSum = 0;
+$studentCount = count($studentData);
+
+foreach ($studentData as $stu) {
+    $totalSum += $stu['converted_total']; // Treats absent as 0
+}
+
+$avgTotalMark = $studentCount > 0 ? round($totalSum / $studentCount) : '-';
+$avgPercent = count($paperNames) > 0 && $avgTotalMark !== '-' ? round($avgTotalMark / count($paperNames), 2) . '%' : '-';
+
+// Now print the row
+$response['html'] .= "<tr>";
+$response['html'] .= "<td></td><td></td><td><b>Average</b></td>"; // 3 columns
+
+foreach ($paperNames as $paper) {
+    $sum = 0;
+    $count = 0;
+
+    foreach ($studentData as $stu) {
+        $mark = $stu['marks'][$paper] ?? null;
+        $sum += is_numeric($mark) ? $mark : 0;
+        $count++;
+    }
+
+    $avg = $count > 0 ? round($sum / $count) : '-';
+    $response['html'] .= "<td><b>$avg</b></td>";
+}
+
+$response['html'] .= "<td><b>$avgTotalMark</b></td>"; // 1 column
+$response['html'] .= "<td><b>$avgPercent</b></td>";   // 1 column
+$response['html'] .= "<td></td><td></td><td></td>";   // Rank, Fail, Abs Sub
+$response['html'] .= "</tr>";
+
 
 // Subject Summary
 $subjectSummary = [];
@@ -178,19 +239,50 @@ foreach ($paperNames as $paper) {
     }
 }
 
-// Step 6: Dynamic Thresholds
+// Step 6: Subject Summary Initialization
+$subjectSummary = [];
+foreach ($paperNames as $paper) {
+    $subjectSummary[$paper] = [
+        'total' => 0, 'fail' => 0, 'pass' => 0, 'absent' => 0,
+        'above80' => 0, 'above60' => 0, 'above40' => 0, 'faculty' => ''
+    ];
+
+    $getStaffQry = $connect->query("
+        SELECT s.first_name, s.last_name 
+        FROM staff_subject_allocation sa 
+        JOIN staff_creation s ON sa.staff = s.id 
+        WHERE sa.standard = '$standard' 
+          AND sa.section = '$section' 
+          AND sa.paper_name = '$paper' 
+          AND sa.academic_year = '$academic_year'
+        LIMIT 1
+    ");
+    if ($getStaffQry->rowCount() > 0) {
+        $staffRow = $getStaffQry->fetch();
+        $subjectSummary[$paper]['faculty'] = $staffRow['first_name'] . ' ' . $staffRow['last_name'];
+    } else {
+        $subjectSummary[$paper]['faculty'] = 'N/A';
+    }
+}
+
+// Step 7: Define custom thresholds from total mark to 100, in steps of 50
+$thresholdStep = 50;
+$minThreshold = 100;
 $maxTotal = count($paperNames) * 100;
-$thresholds = [
-    'Above ' . round($maxTotal * 0.90) => 0, // 90%
-    'Above ' . round($maxTotal * 0.80) => 0, // 80%
-    'Above ' . round($maxTotal * 0.70) => 0, // 70%
-    'Above ' . round($maxTotal * 0.60) => 0, // 60%
-    'Above ' . round($maxTotal * 0.50) => 0, // 50%
-    'Above ' . round($maxTotal * 0.40) => 0, // 40%
-];
+
+$thresholdValues = [];
+for ($i = $maxTotal - $thresholdStep; $i >= $minThreshold; $i -= $thresholdStep) {
+    $thresholdValues[] = $i;
+}
+
+// Create threshold buckets
+$thresholdCounts = [];
+foreach ($thresholdValues as $value) {
+    $thresholdCounts[$value] = 0; // keys: 550, 500, 450, ...
+}
 
 $allPassCount = 0;
-
+// Loop students
 foreach ($studentData as $stu) {
     $isAllPass = true;
     foreach ($paperNames as $paper) {
@@ -215,15 +307,18 @@ foreach ($studentData as $stu) {
         }
     }
 
-    $total = $stu['converted_total'];
     if ($isAllPass) $allPassCount++;
-    foreach ($thresholds as $label => &$count) {
-        if ($total >= (int) filter_var($label, FILTER_SANITIZE_NUMBER_INT)) {
-            $count++;
+
+    // Bucket count logic
+    foreach ($thresholdValues as $val) {
+        if ($stu['converted_total'] >= $val) {
+            $thresholdCounts[$val]++;
+            break;
         }
     }
 }
 
+// Subject Summary Table
 $response['html'] .= "</tbody></table><br>";
 $response['html'] .= "<table class='table table-bordered subject-summary'>
 <thead style='background-color:#f2f2f2'>
@@ -241,19 +336,20 @@ foreach ($subjectSummary as $paper => $data) {
     </tr>";
 }
 
+// Final Summary Table
 $totalStudents = count($studentData);
 $passPercent = $totalStudents > 0 ? round(($allPassCount / $totalStudents) * 100, 2) . '%' : '0%';
 
-// Final Summary Section
 $response['html'] .= "</tbody></table><br>";
 $response['html'] .= "<table class='table table-bordered final-summary'><tbody>";
-
 $response['html'] .= "<tr><td><b>All Pass Student</b></td><td>$allPassCount</td>";
+
 $counter = 0;
-foreach ($thresholds as $label => $count) {
+foreach ($thresholdCounts as $value => $count) {
     if ($counter % 2 == 0 && $counter != 0) {
         $response['html'] .= "</tr><tr><td></td><td></td>";
     }
+    $label = "Above $value";
     $response['html'] .= "<td><b>$label</b></td><td>$count</td>";
     $counter++;
 }
@@ -266,6 +362,4 @@ $response['html'] .= "<tr><td><b>All Pass Student %</b></td><td>$passPercent</td
 </tbody></table>";
 
 $response['html'] .= "</div>";
-
 echo json_encode($response);
-?>
