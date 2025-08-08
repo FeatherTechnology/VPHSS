@@ -28,6 +28,22 @@
                                             </select>
                                         </div>
                                     </div>
+                                    <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12">
+                                        <div class="form-group">
+                                            <label>Section</label>
+                                            <select class="form-control" id="section" name="section">
+                                                <option value=" ">Select Section</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12">
+                                        <div class="form-group">
+                                            <label>Exam</label>
+                                            <select class="form-control" id="exam" name="exam">
+                                                <option value=" ">Select Exam</option>
+                                            </select>
+                                        </div>
+                                    </div>
 
                                     <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-12">
                                         <button type="button" name="view_student" id="view_student" class="btn btn-primary" value="View" style="margin-top: 18px;" tabindex="4">View</button>
@@ -37,33 +53,13 @@
                         </div>
                     </div>
                 </div>
-                <div class="card report_card">
+                <div class="card report_card" style="display: none;">
                     <div class="card-header">
                         <div class="card-title">SMS Delivery List</div>
                     </div>
-                    <!-- <div class="card-body">
+                    <div class="card-body">
                         <div class="row">
                             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12" id="mark_info_table_div" style="overflow: auto;">  
-                            </div>
-                        </div>
-                    </div> -->
-                    <div class="row">
-                        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                            <div class="form-group">
-                                <table id="fam_info_table" class="table custom-table">
-                                    <thead>
-                                        <tr>
-                                            <th width="20">S.NO</th>
-                                            <th>Customer Name</th>
-                                            <th>Message Type</th>
-                                            <th>SMS Date</th>
-                                            <th>Status</th>
-                                            <th>Comments</th>
-                                            <th>MessageID</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody></tbody>
-                                </table>
                             </div>
                         </div>
                     </div>

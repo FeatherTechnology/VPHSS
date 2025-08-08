@@ -72,7 +72,7 @@ while ($row = $studentQry->fetch()) {
 
 // Step 3: Filter students with converted_total > 400
 $filteredStudents = array_filter($studentData, function ($stu) {
-    return $stu['converted_total'] > 400;
+    return $stu['converted_total'] >= 400;
 });
 
 // Step 4: Sort by converted_total descending

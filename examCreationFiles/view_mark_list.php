@@ -9,9 +9,30 @@ $section = $_POST['section'];
 if (isset($_SESSION["academic_year"])) {
     $academic_year = $_SESSION["academic_year"];
 }
-
+if (isset($_SESSION['school_id'])) {
+    $school_id = $_SESSION['school_id'];
+}
 $response = ['html' => ''];
-
+$getbrc = $mysqli->query("SELECT sc.school_name FROM school_creation sc WHERE sc.status = 0 AND school_id = '$school_id'");
+while ($schoolInfo = $getbrc->fetch_assoc()) {
+    $school_name     = $schoolInfo["school_name"];
+}
+$examQry = $connect->query("
+    SELECT exam_type
+    FROM exam_type 
+    WHERE id = '$exam' AND academic_year = '$academic_year'
+");
+while ($row1 = $examQry->fetch()) {
+    $exam_name = $row1['exam_type'];
+}
+$stdQry = $connect->query("
+    SELECT standard
+    FROM standard_creation 
+    WHERE standard_id = '$standard' 
+");
+while ($row2 = $stdQry->fetch()) {
+    $standard_name = $row2['standard'];
+}
 // Step 1: Get distinct paper names (subjects)
 $paperNames = [];
 $paperQry = $connect->query("
@@ -74,7 +95,10 @@ while ($row = $studentQry->fetch()) {
 }
 
 // Step 3: Build HTML table
+$response['html'] .= "<h4 style='text-align:center; font-weight:bold; text-transform:uppercase;'>$school_name</h4>";
+$response['html'] .= "<h5 style='text-align:center; font-weight:bold;'>Exam: $exam_name | Standard: $standard_name - $section</h5><br>";
 $response['html'] .= "<table class='table table-bordered'>
+
     <thead>
         <tr>
             <th><input type='checkbox' id='selectAll'></th>
@@ -102,16 +126,15 @@ foreach ($studentData as $sid => $stu) {
         $original = $markData['original'];
 
         if (is_numeric($converted)) {
-            $display = $converted; // removed bracketed original marks
+            $display = $converted;
             $total += $converted;
         } else {
-            $display = strtoupper($original) == 'AB' ? 'AB' : '-';
+            $display = strtoupper($original) == 'A' ? 'AB' : '-';
         }
 
-        $response['html'] .= "<td>$display</td>";
+        $response['html'] .= "<td data-paper='$paper' data-mark='$display'>$display</td>";
     }
-
-    $response['html'] .= "<td><b>$total</b></td></tr>";
+    $response['html'] .= "<td data-total='$total'><b>$total</b></td></tr>";
 }
 
 
@@ -127,4 +150,3 @@ if (!empty($studentData)) {
 }
 
 echo json_encode($response);
-?>

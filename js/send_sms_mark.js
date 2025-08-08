@@ -45,6 +45,8 @@ $(document).ready(function () {
   $(document).on('change', '#selectAll', function () {
     $('.student-check').prop('checked', this.checked);
   });
+
+
   $(document).on('click', '#sendSelectedSMS', function (event) {
     event.preventDefault();
 
@@ -59,7 +61,6 @@ $(document).ready(function () {
       var checkbox = $(this);
       var row = checkbox.closest('tr');
       var student_id = checkbox.data('student-id');
-      let admissionNo = row.find('td:eq(1)').text().trim();
       let studentName = row.find('td:eq(2)').text().trim();
       let smsNo = row.data('sms');
 
@@ -75,7 +76,6 @@ $(document).ready(function () {
       total = totalTd.data('total');
       selectedStudents.push({
         student_id: student_id,
-        admission_no: admissionNo,
         student_name: studentName,
         smsNo: smsNo,
         marks: marks,
@@ -100,14 +100,14 @@ $(document).ready(function () {
       dataType: 'json',
       success: function (response) {
         $('#sendSelectedSMS').attr('disabled', false);
-        if (response.status === 200) {
-          alert('Message sent successfully. ' + response.message);
+        if (response.status == 'success') {
+          alert('Success' + response.message);
         } else {
           alert('Message failed!');
         }
       },
       error: function (xhr, status, error) {
-         $('#sendSelectedSMS').attr('disabled', false);
+        $('#sendSelectedSMS').attr('disabled', false);
         console.error('Error:', error);
         alert('An error occurred while sending the message.');
       }

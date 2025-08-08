@@ -523,7 +523,7 @@ if ($del > 0) {
             <br>
 
             <div class="row">
-                <div class="col-sm-6 col-md-6 col-lg-4 col-xl-3 col-12">
+                <!-- <div class="col-sm-6 col-md-6 col-lg-4 col-xl-3 col-12">
                     <div class="custom-control custom-checkbox">
                         <input type="checkbox" value="Yes" <?php if (isset($birthday_wishes) && $birthday_wishes == 0) {
                                                                 echo 'checked';
@@ -557,7 +557,7 @@ if ($del > 0) {
                                                             } ?> tabindex="35" class="custom-control-input sms-checkbox" id="staff_general_message" name="staff_general_message">
                         <label class="custom-control-label" for="staff_general_message">Staff General Message</label>
                     </div>
-                </div>
+                </div> -->
                 <div class="col-sm-6 col-md-6 col-lg-4 col-xl-3 col-12">
                     <div class="custom-control custom-checkbox">
                         <input type="checkbox" value="Yes" <?php if (isset($send_sms_mark) && $send_sms_mark == 0) {

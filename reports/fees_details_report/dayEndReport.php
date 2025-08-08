@@ -56,10 +56,29 @@ if ($dateSelect == 'singledate') {
             END) AS third_term_grp_fee,
 
             SUM(CASE WHEN afd.fees_table_name = 'extratable' THEN afd.fee_received ELSE 0 END) AS extra_fee,
-            SUM(CASE WHEN afd.fees_table_name = 'amenitytable' THEN afd.fee_received ELSE 0 END) AS amenity_fee
+            SUM(CASE WHEN afd.fees_table_name = 'amenitytable' THEN afd.fee_received ELSE 0 END) AS amenity_fee,
+             SUM(
+                CASE 
+                    WHEN afd_deno.payment_mode = 'cash_payment' 
+                    THEN afd.fee_received 
+                    ELSE 0 
+                END
+            ) AS cash_balance,
+        
+            -- Bank Balance
+            SUM(
+                CASE 
+                    WHEN afd_deno.payment_mode != 'cash_payment' 
+                    THEN afd.fee_received 
+                    ELSE 0 
+                END
+            ) AS bank_balance
+        
 
         FROM admission_fees af 
         JOIN admission_fees_details afd ON af.id = afd.admission_fees_ref_id 
+                 LEFT  JOIN admission_fees_denomination afd_deno 
+            ON af.id = afd_deno.admission_fees_ref_id
        LEFT  JOIN group_course_fee gcf ON afd.fees_id = gcf.grp_course_id
         JOIN student_creation sc ON af.admission_id = sc.student_id 
         JOIN student_history sh ON sh.student_id = sc.student_id AND af.academic_year = sh.academic_year
@@ -73,6 +92,7 @@ if ($dateSelect == 'singledate') {
         GROUP BY af.id
         ORDER BY CAST(SUBSTRING(af.receipt_no, LOCATE('-', af.receipt_no) + 1) AS UNSIGNED)";
     } else if ($feeType == 'lastyear') {
+        
         $Qry = "SELECT 
             lyf.receipt_no, 
             sc.admission_number, 
@@ -80,12 +100,30 @@ if ($dateSelect == 'singledate') {
             std.standard, 
             sh.section, 
             lyf.receipt_date,
-            (CASE WHEN lyfd.fees_table_name = 'grptable' THEN lyfd.fee_received ELSE 0 END) AS group_fees,
-            (CASE WHEN lyfd.fees_table_name = 'transport' THEN lyfd.fee_received ELSE 0 END) AS transport_fees,
-            (CASE WHEN lyfd.fees_table_name = 'amenitytable' THEN lyfd.fee_received ELSE 0 END) AS amenity_fees
+            SUM(CASE WHEN lyfd.fees_table_name = 'grptable' THEN lyfd.fee_received ELSE 0 END) AS group_fees,
+            SUM(CASE WHEN lyfd.fees_table_name = 'transport' THEN lyfd.fee_received ELSE 0 END) AS transport_fees,
+            SUM(CASE WHEN lyfd.fees_table_name = 'amenitytable' THEN lyfd.fee_received ELSE 0 END) AS amenity_fees,
+               SUM(
+                CASE 
+                    WHEN lyfd_deno.payment_mode = 'cash_payment' 
+                    THEN lyfd.fee_received
+                    ELSE 0 
+                END
+            ) AS cash_balance,
+        
+            -- Bank Balance
+            SUM(
+                CASE 
+                    WHEN lyfd_deno.payment_mode != 'cash_payment' 
+                    THEN lyfd.fee_received
+                    ELSE 0 
+                END
+            ) AS bank_balance
 
         FROM last_year_fees lyf 
         JOIN last_year_fees_details lyfd ON lyf.id = lyfd.admission_fees_ref_id 
+         JOIN last_year_fees_denomination lyfd_deno ON
+            lyf.id = lyfd_deno.admission_fees_ref_id
         JOIN student_creation sc ON lyf.admission_id = sc.student_id
         JOIN student_history sh ON sh.student_id = sc.student_id AND lyf.academic_year = sh.academic_year 
         JOIN standard_creation std ON sh.standard = std.standard_id 
@@ -120,10 +158,28 @@ if ($dateSelect == 'singledate') {
         SUM(CASE 
             WHEN acp.particulars LIKE '%III Term%' THEN tafd.fee_received 
             ELSE 0 
-        END) AS transport_term3
+        END) AS transport_term3,
+                SUM(
+                CASE 
+                    WHEN tafd_deno.payment_mode = 'cash_payment' 
+                    THEN tafd.fee_received
+                    ELSE 0 
+                END
+            ) AS cash_balance,
+        
+            -- Bank Balance
+            SUM(
+                CASE 
+                    WHEN tafd_deno.payment_mode != 'cash_payment' 
+                    THEN tafd.fee_received 
+                    ELSE 0 
+                END
+            ) AS bank_balance
 
     FROM transport_admission_fees taf 
     JOIN transport_admission_fees_details tafd ON taf.id = tafd.admission_fees_ref_id 
+          LEFT JOIN transport_admission_fees_denomination tafd_deno 
+            ON taf.id = tafd_deno.admission_fees_ref_id
     JOIN area_creation_particulars acp ON tafd.area_creation_particulars_id = acp.particulars_id
     JOIN student_creation sc ON taf.admission_id = sc.student_id 
     JOIN student_history sh ON sh.student_id = sc.student_id AND taf.academic_year = sh.academic_year 
@@ -145,7 +201,7 @@ if ($dateSelect == 'singledate') {
     <table class="table table-bordered" id="show_dayend_report_list">
         <thead>
             <tr>
-                <th colspan='<?php echo ($feeType == "extratable" || $feeType == "amenitytable") ? "7" : "9"; ?>'>
+                <th colspan='<?php echo ($feeType == "extratable" || $feeType == "amenitytable") ? "9" : "11"; ?>'>
                     Day End Report At <?php echo date('d-m-Y', strtotime($singleDate)); ?>
                 </th>
             </tr>
@@ -167,6 +223,8 @@ if ($dateSelect == 'singledate') {
                 <?php } else { ?>
                     <th>Collected Fee</th>
                 <?php } ?>
+                <th>Bank Cash</th>
+                <th>Hand Cash</th>
             </tr>
         </thead>
         <tbody>
@@ -178,6 +236,8 @@ if ($dateSelect == 'singledate') {
             $term1_total = 0;
             $term2_total = 0;
             $term3_total = 0;
+            $cash_total = 0;
+            $bank_total = 0;
 
             $getFeeCollectionQry = $connect->query($Qry);
             while ($feeCollection = $getFeeCollectionQry->fetchObject()) {
@@ -195,34 +255,53 @@ if ($dateSelect == 'singledate') {
                         echo "<td>{$feeCollection->group_fees}</td>";
                         echo "<td>{$feeCollection->amenity_fees}</td>";
                         echo "<td>{$feeCollection->transport_fees}</td>";
+                        echo "<td>{$feeCollection->bank_balance}</td>";
+                        echo "<td>{$feeCollection->cash_balance}</td>";
 
                         $single_total += $feeCollection->group_fees;
                         $single_total2 += $feeCollection->amenity_fees;
                         $single_total3 += $feeCollection->transport_fees;
+                        $bank_total += $feeCollection->bank_balance;
+                        $cash_total += $feeCollection->cash_balance;
                     } else if ($feeType == 'grptable') {
                         echo "<td>{$feeCollection->first_term_grp_fee}</td>";
                         echo "<td>{$feeCollection->second_term_grp_fee}</td>";
                         echo "<td>{$feeCollection->third_term_grp_fee}</td>";
+                        echo "<td>{$feeCollection->bank_balance}</td>";
+                        echo "<td>{$feeCollection->cash_balance}</td>";
 
                         $term1_total += $feeCollection->first_term_grp_fee;
                         $term2_total += $feeCollection->second_term_grp_fee;
                         $term3_total += $feeCollection->third_term_grp_fee;
-
+                        $bank_total += $feeCollection->bank_balance;
+                        $cash_total += $feeCollection->cash_balance;
                         $single_total += $feeCollection->first_term_grp_fee + $feeCollection->second_term_grp_fee + $feeCollection->third_term_grp_fee;
                     } else if ($feeType == 'transport') {
                         echo "<td>{$feeCollection->transport_term1}</td>";
                         echo "<td>{$feeCollection->transport_term2}</td>";
                         echo "<td>{$feeCollection->transport_term3}</td>";
+                        echo "<td>{$feeCollection->bank_balance}</td>";
+                        echo "<td>{$feeCollection->cash_balance}</td>";
 
                         $term1_total += $feeCollection->transport_term1;
                         $term2_total += $feeCollection->transport_term2;
                         $term3_total += $feeCollection->transport_term3;
+                        $bank_total += $feeCollection->bank_balance;
+                        $cash_total += $feeCollection->cash_balance;
                     } else if ($feeType == 'extratable') {
                         echo "<td>{$feeCollection->extra_fee}</td>";
+                        echo "<td>{$feeCollection->bank_balance}</td>";
+                        echo "<td>{$feeCollection->cash_balance}</td>";
                         $single_total += $feeCollection->extra_fee;
+                        $bank_total += $feeCollection->bank_balance;
+                        $cash_total += $feeCollection->cash_balance;
                     } else if ($feeType == 'amenitytable') {
                         echo "<td>{$feeCollection->amenity_fee}</td>";
+                        echo "<td>{$feeCollection->bank_balance}</td>";
+                        echo "<td>{$feeCollection->cash_balance}</td>";
                         $single_total += $feeCollection->amenity_fee;
+                        $cash_total += $feeCollection->bank_balance;
+                        $cash_total += $feeCollection->cash_balance;
                     } else {
                         // If feeType is unknown, pad with empty cell to avoid mismatch
                         echo "<td></td>";
@@ -245,12 +324,18 @@ if ($dateSelect == 'singledate') {
                     echo "<td>{$single_total}</td>";
                     echo "<td>{$single_total2}</td>";
                     echo "<td>{$single_total3}</td>";
+                    echo "<td>{$bank_total}</td>";
+                    echo "<td>{$cash_total}</td>";
                 } else if ($feeType == 'grptable' || $feeType == 'transport') {
                     echo "<td>{$term1_total}</td>";
                     echo "<td>{$term2_total}</td>";
                     echo "<td>{$term3_total}</td>";
+                    echo "<td>{$bank_total}</td>";
+                    echo "<td>{$cash_total}</td>";
                 } else {
                     echo "<td>{$single_total}</td>";
+                    echo "<td>{$bank_total}</td>";
+                    echo "<td>{$cash_total}</td>";
                 }
                 ?>
             </tr>
@@ -264,10 +349,10 @@ if ($dateSelect == 'singledate') {
     <table class="table table-bordered" id="show_dayend_report_list">
         <thead>
             <tr>
-                    <th colspan='<?php echo ($feeType == "extratable" || $feeType == "amenitytable") ? "7" : "9"; ?>'>
-                        Day End Report From <?php echo $feesFromDate->format('d-m-Y'); ?> To <?php echo $feesToDate->format('d-m-Y'); ?>
-                    </th>
-                </tr>
+                <th colspan='<?php echo ($feeType == "extratable" || $feeType == "amenitytable") ? "9" : "11"; ?>'>
+                    Day End Report From <?php echo $feesFromDate->format('d-m-Y'); ?> To <?php echo $feesToDate->format('d-m-Y'); ?>
+                </th>
+            </tr>
             <tr>
                 <th>S.No</th>
                 <th>Date</th>
@@ -279,12 +364,18 @@ if ($dateSelect == 'singledate') {
                     <th>Group Fee</th>
                     <th>Amenity Fee</th>
                     <th>Transport Fee</th>
+                    <th>Bank Cash</th>
+                    <th>Hand Cash</th>
                 <?php } else if ($feeType == 'grptable' || $feeType == 'transport') { ?>
                     <th>Term I</th>
                     <th>Term II</th>
                     <th>Term III</th>
+                    <th>Bank Cash</th>
+                    <th>Hand Cash</th>
                 <?php } else { ?>
                     <th>Collected Fee</th>
+                    <th>Bank Cash</th>
+                    <th>Hand Cash</th>
                 <?php } ?>
             </tr>
 
@@ -297,6 +388,8 @@ if ($dateSelect == 'singledate') {
             $term1_total = 0;
             $term2_total = 0;
             $term3_total = 0;
+            $cash_total = 0;
+            $bank_total = 0;
             $a = 1;
             while ($startdate <= $feesToDate) {
                 $from_date = $startdate->format('Y-m-d');
@@ -326,10 +419,29 @@ if ($dateSelect == 'singledate') {
             END) AS third_term_grp_fee,
 
             SUM(CASE WHEN afd.fees_table_name = 'extratable' THEN afd.fee_received ELSE 0 END) AS extra_fee,
-            SUM(CASE WHEN afd.fees_table_name = 'amenitytable' THEN afd.fee_received ELSE 0 END) AS amenity_fee
+            SUM(CASE WHEN afd.fees_table_name = 'amenitytable' THEN afd.fee_received ELSE 0 END) AS amenity_fee,
+              SUM(
+                CASE 
+                    WHEN afd_deno.payment_mode = 'cash_payment' 
+                    THEN afd.fee_received 
+                    ELSE 0 
+                END
+            ) AS cash_balance,
+        
+            -- Bank Balance
+            SUM(
+                CASE 
+                    WHEN afd_deno.payment_mode != 'cash_payment' 
+                    THEN afd.fee_received 
+                    ELSE 0 
+                END
+            ) AS bank_balance
+        
 
         FROM admission_fees af 
         JOIN admission_fees_details afd ON af.id = afd.admission_fees_ref_id 
+           LEFT  JOIN admission_fees_denomination afd_deno 
+            ON af.id = afd_deno.admission_fees_ref_id
         JOIN group_course_fee gcf ON afd.fees_id = gcf.grp_course_id
         JOIN student_creation sc ON af.admission_id = sc.student_id 
         JOIN student_history sh ON sh.student_id = sc.student_id AND af.academic_year = sh.academic_year
@@ -345,11 +457,29 @@ if ($dateSelect == 'singledate') {
     std.standard, 
     sh.section, 
     lyf.receipt_date,
-    (CASE WHEN lyfd.fees_table_name = 'grptable' THEN lyfd.fee_received ELSE 0 END) AS group_fees,
-    (CASE WHEN lyfd.fees_table_name = 'transport' THEN lyfd.fee_received ELSE 0 END) AS transport_fees,
-    (CASE WHEN lyfd.fees_table_name = 'amenitytable' THEN lyfd.fee_received ELSE 0 END) AS amenity_fees
+    SUM(CASE WHEN lyfd.fees_table_name = 'grptable' THEN lyfd.fee_received ELSE 0 END) AS group_fees,
+    SUM(CASE WHEN lyfd.fees_table_name = 'transport' THEN lyfd.fee_received ELSE 0 END) AS transport_fees,
+   SUM(CASE WHEN lyfd.fees_table_name = 'amenitytable' THEN lyfd.fee_received ELSE 0 END) AS amenity_fees,
+           SUM(
+                CASE 
+                    WHEN lyfd_deno.payment_mode = 'cash_payment' 
+                    THEN lyfd.fee_received
+                    ELSE 0 
+                END
+            ) AS cash_balance,
+        
+            -- Bank Balance
+            SUM(
+                CASE 
+                    WHEN lyfd_deno.payment_mode != 'cash_payment' 
+                    THEN lyfd.fee_received
+                    ELSE 0 
+                END
+            ) AS bank_balance
 FROM last_year_fees lyf 
 JOIN last_year_fees_details lyfd ON lyf.id = lyfd.admission_fees_ref_id 
+ JOIN last_year_fees_denomination lyfd_deno ON
+            lyf.id = lyfd_deno.admission_fees_ref_id
 JOIN student_creation sc ON lyf.admission_id = sc.student_id
 JOIN student_history sh ON sh.student_id = sc.student_id AND lyf.academic_year = sh.academic_year 
 JOIN standard_creation std ON sh.standard = std.standard_id 
@@ -385,10 +515,28 @@ ORDER BY
         SUM(CASE 
             WHEN acp.particulars LIKE '%III Term%' THEN tafd.fee_received 
             ELSE 0 
-        END) AS transport_term3
+        END) AS transport_term3,
+                SUM(
+                CASE 
+                    WHEN tafd_deno.payment_mode = 'cash_payment' 
+                    THEN tafd.fee_received
+                    ELSE 0 
+                END
+            ) AS cash_balance,
+        
+            -- Bank Balance
+            SUM(
+                CASE 
+                    WHEN tafd_deno.payment_mode != 'cash_payment' 
+                    THEN tafd.fee_received 
+                    ELSE 0 
+                END
+            ) AS bank_balance
 
     FROM transport_admission_fees taf 
     JOIN transport_admission_fees_details tafd ON taf.id = tafd.admission_fees_ref_id 
+        LEFT JOIN transport_admission_fees_denomination tafd_deno 
+            ON taf.id = tafd_deno.admission_fees_ref_id
     JOIN area_creation_particulars acp ON tafd.area_creation_particulars_id = acp.particulars_id
     JOIN student_creation sc ON taf.admission_id = sc.student_id 
     JOIN student_history sh ON sh.student_id = sc.student_id AND taf.academic_year = sh.academic_year 
@@ -412,32 +560,52 @@ ORDER BY
                             echo "<td>{$feeCollection->group_fees}</td>";
                             echo "<td>{$feeCollection->amenity_fees}</td>";
                             echo "<td>{$feeCollection->transport_fees}</td>";
+                            echo "<td>{$feeCollection->bank_balance}</td>";
+                            echo "<td>{$feeCollection->cash_balance}</td>";
 
                             $multiple_total += $feeCollection->group_fees;
                             $multiple_total2 += $feeCollection->amenity_fees;
                             $multiple_total3 += $feeCollection->transport_fees;
+                            $bank_total += $feeCollection->bank_balance;
+                            $cash_total += $feeCollection->cash_balance;
                         } else if ($feeType == 'grptable') {
                             echo "<td>{$feeCollection->first_term_grp_fee}</td>";
                             echo "<td>{$feeCollection->second_term_grp_fee}</td>";
                             echo "<td>{$feeCollection->third_term_grp_fee}</td>";
+                            echo "<td>{$feeCollection->bank_balance}</td>";
+                            echo "<td>{$feeCollection->cash_balance}</td>";
 
                             $term1_total += $feeCollection->first_term_grp_fee;
                             $term2_total += $feeCollection->second_term_grp_fee;
                             $term3_total += $feeCollection->third_term_grp_fee;
+                            $bank_total += $feeCollection->bank_balance;
+                            $cash_total += $feeCollection->cash_balance;
                         } else if ($feeType == 'transport') {
                             echo "<td>{$feeCollection->transport_term1}</td>";
                             echo "<td>{$feeCollection->transport_term2}</td>";
                             echo "<td>{$feeCollection->transport_term3}</td>";
+                            echo "<td>{$feeCollection->bank_balance}</td>";
+                            echo "<td>{$feeCollection->cash_balance}</td>";
 
                             $term1_total += $feeCollection->transport_term1;
                             $term2_total += $feeCollection->transport_term2;
                             $term3_total += $feeCollection->transport_term3;
+                            $bank_total += $feeCollection->bank_balance;
+                            $cash_total += $feeCollection->cash_balance;
                         } else if ($feeType == 'extratable') {
                             echo "<td>{$feeCollection->extra_fee}</td>";
+                            echo "<td>{$feeCollection->bank_balance}</td>";
+                            echo "<td>{$feeCollection->cash_balance}</td>";
                             $multiple_total += $feeCollection->extra_fee;
+                            $bank_total += $feeCollection->bank_balance;
+                            $cash_total += $feeCollection->cash_balance;
                         } else if ($feeType == 'amenitytable') {
                             echo "<td>{$feeCollection->amenity_fee}</td>";
+                            echo "<td>{$feeCollection->bank_balance}</td>";
+                            echo "<td>{$feeCollection->cash_balance}</td>";
                             $multiple_total += $feeCollection->amenity_fee;
+                            $bank_total += $feeCollection->bank_balance;
+                            $cash_total += $feeCollection->cash_balance;
                         } else {
                             echo "<td></td>";
                         }
@@ -461,12 +629,18 @@ ORDER BY
                     echo "<td>{$multiple_total}</td>";
                     echo "<td>{$multiple_total2}</td>";
                     echo "<td>{$multiple_total3}</td>";
+                    echo "<td>{$bank_total}</td>";
+                    echo "<td>{$cash_total}</td>";
                 } else if ($feeType == 'grptable' || $feeType == 'transport') {
                     echo "<td>{$term1_total}</td>";
                     echo "<td>{$term2_total}</td>";
                     echo "<td>{$term3_total}</td>";
+                    echo "<td>{$bank_total}</td>";
+                    echo "<td>{$cash_total}</td>";
                 } else {
                     echo "<td>{$multiple_total}</td>";
+                    echo "<td>{$bank_total}</td>";
+                    echo "<td>{$cash_total}</td>";
                 }
                 ?>
             </tr>

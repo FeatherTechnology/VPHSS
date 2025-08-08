@@ -18,7 +18,7 @@ if (isset($_POST['feesToDate'])) {
 <table class="table table-bordered" id="show_monthwise_fees_summary">
     <thead>
         <tr>
-            <th colspan='12'>Fees Summary Report From <?php echo $feesFromDate->format('M-Y'); ?> To <?php echo $feesToDate->format('M-Y'); ?> </th>
+            <th colspan='14'>Fees Summary Report From <?php echo $feesFromDate->format('M-Y'); ?> To <?php echo $feesToDate->format('M-Y'); ?> </th>
         </tr>
         <tr>
             <th rowspan="2">S.No</th>
@@ -27,6 +27,8 @@ if (isset($_POST['feesToDate'])) {
             <th rowspan="2">Book Fee</th>
             <th colspan="3">Transport Fee</th>
             <th rowspan="2">Last year Fee</th>
+            <th rowspan="2">Bank</th>
+            <th rowspan="2">Cash</th>
             <th rowspan="2">Total Amount</th>
         </tr>
         <tr>
@@ -50,6 +52,8 @@ if (isset($_POST['feesToDate'])) {
         $transportfee_total3 = 0;
         $lastyear_total = 0;
         $total = 0;
+        $cash_total = 0;
+        $bank_total = 0;
         while ($startdate <= $feesToDate) {
             $from_date = $startdate->format('Y-m-d');
 
@@ -82,22 +86,89 @@ if (isset($_POST['feesToDate'])) {
                     THEN afd.fee_received 
                     ELSE 0 
                 END
-            ),0) AS grp_fee_t3 FROM `admission_fees` af JOIN admission_fees_details afd ON af.id = afd.admission_fees_ref_id LEFT JOIN group_course_fee gcf 
+            ),0) AS grp_fee_t3,
+                SUM(
+                CASE 
+                    WHEN afd_deno.payment_mode = 'cash_payment' 
+                    THEN afd.fee_received 
+                    ELSE 0 
+                END
+            ) AS cash_balance,
+        
+            -- Bank Balance
+            SUM(
+                CASE 
+                    WHEN afd_deno.payment_mode != 'cash_payment' 
+                    THEN afd.fee_received 
+                    ELSE 0 
+                END
+            ) AS bank_balance
+             FROM `admission_fees` af JOIN admission_fees_details afd ON af.id = afd.admission_fees_ref_id   LEFT JOIN 
+                admission_fees_denomination afd_deno ON af.id = afd_deno.admission_fees_ref_id
+                LEFT JOIN group_course_fee gcf 
             ON afd.fees_id = gcf.grp_course_id WHERE (MONTH(af.receipt_date) = MONTH('$from_date') AND YEAR(af.receipt_date) = YEAR('$from_date') )  AND afd.fees_table_name ='grptable' AND af.school_id = '$school_id' ");
             $collectedFeesInfo = $getCollectedFeesQry->fetchObject();
 
             //Book feee
-            $getBookFeesQry = $connect->query("SELECT COALESCE(SUM(afd.fee_received),0) AS bookFees FROM `admission_fees` af JOIN admission_fees_details afd ON af.id = afd.admission_fees_ref_id WHERE (MONTH(af.receipt_date) = MONTH('$from_date') AND YEAR(af.receipt_date) = YEAR('$from_date') ) AND afd.fees_table_name ='amenitytable' AND af.school_id = '$school_id' ");
+            $getBookFeesQry = $connect->query("SELECT COALESCE(SUM(afd.fee_received),0) AS bookFees,SUM(
+                CASE 
+                    WHEN afd_deno.payment_mode = 'cash_payment' 
+                    THEN afd.fee_received 
+                    ELSE 0 
+                END
+            ) AS cash_balance,
+        
+            -- Bank Balance
+            SUM(
+                CASE 
+                    WHEN afd_deno.payment_mode != 'cash_payment' 
+                    THEN afd.fee_received 
+                    ELSE 0 
+                END
+            ) AS bank_balance FROM `admission_fees` af JOIN admission_fees_details afd ON af.id = afd.admission_fees_ref_id  LEFT JOIN 
+                admission_fees_denomination afd_deno ON af.id = afd_deno.admission_fees_ref_id  WHERE (MONTH(af.receipt_date) = MONTH('$from_date') AND YEAR(af.receipt_date) = YEAR('$from_date') ) AND afd.fees_table_name ='amenitytable' AND af.school_id = '$school_id' ");
             $bookFeesInfo = $getBookFeesQry->fetchObject();
 
             //Transport fee
             $getTransportFeesQry = $connect->query("SELECT COALESCE(SUM(CASE WHEN acp.particulars LIKE '%I%' AND acp.particulars NOT LIKE '%II%' AND acp.particulars NOT LIKE '%III%' THEN tafd.fee_received ELSE 0 END ), 0) AS transport_fee_t1,
         COALESCE(SUM(CASE WHEN acp.particulars LIKE '%II%' AND acp.particulars NOT LIKE '%III%' THEN tafd.fee_received ELSE 0 END),0) AS transport_fee_t2,
-       COALESCE( SUM(CASE WHEN acp.particulars LIKE '%III%' THEN tafd.fee_received ELSE 0 END),0) AS transport_fee_t3  FROM `transport_admission_fees` taf JOIN transport_admission_fees_details tafd ON taf.id = tafd.admission_fees_ref_id JOIN area_creation_particulars acp ON tafd.area_creation_particulars_id = acp.particulars_id WHERE (MONTH(taf.receipt_date) = MONTH('$from_date') AND YEAR(taf.receipt_date) = YEAR('$from_date') ) AND taf.school_id = '$school_id' ");
+       COALESCE( SUM(CASE WHEN acp.particulars LIKE '%III%' THEN tafd.fee_received ELSE 0 END),0) AS transport_fee_t3 , SUM(
+                CASE 
+                    WHEN tafd_deno.payment_mode = 'cash_payment' 
+                    THEN tafd.fee_received
+                    ELSE 0 
+                END
+            ) AS cash_balance,
+        
+            -- Bank Balance
+            SUM(
+                CASE 
+                    WHEN tafd_deno.payment_mode != 'cash_payment' 
+                    THEN tafd.fee_received 
+                    ELSE 0 
+                END
+            ) AS bank_balance FROM `transport_admission_fees` taf JOIN transport_admission_fees_details tafd ON taf.id = tafd.admission_fees_ref_id LEFT JOIN transport_admission_fees_denomination tafd_deno 
+            ON taf.id = tafd_deno.admission_fees_ref_id JOIN area_creation_particulars acp ON tafd.area_creation_particulars_id = acp.particulars_id WHERE (MONTH(taf.receipt_date) = MONTH('$from_date') AND YEAR(taf.receipt_date) = YEAR('$from_date') ) AND taf.school_id = '$school_id' ");
             $transportFeesInfo = $getTransportFeesQry->fetchObject();
 
             //Last Year Fee
-            $getLastyearFeesQry = $connect->query("SELECT COALESCE(SUM(lyfd.fee_received),0) AS lastyearFees FROM `last_year_fees` lyf JOIN last_year_fees_details lyfd ON lyf.id = lyfd.admission_fees_ref_id WHERE (MONTH(lyf.receipt_date) = MONTH('$from_date') AND YEAR(lyf.receipt_date) = YEAR('$from_date') ) AND lyf.school_id = '$school_id' ");
+            $getLastyearFeesQry = $connect->query("SELECT COALESCE(SUM(lyfd.fee_received),0) AS lastyearFees, SUM(
+                CASE 
+                    WHEN lyfd_deno.payment_mode = 'cash_payment' 
+                    THEN lyfd.fee_received
+                    ELSE 0 
+                END
+            ) AS cash_balance,
+        
+            -- Bank Balance
+            SUM(
+                CASE 
+                    WHEN lyfd_deno.payment_mode != 'cash_payment' 
+                    THEN lyfd.fee_received
+                    ELSE 0 
+                END
+            ) AS bank_balance FROM `last_year_fees` lyf JOIN last_year_fees_details lyfd ON lyf.id = lyfd.admission_fees_ref_id  LEFT JOIN last_year_fees_denomination lyfd_deno ON
+            lyf.id = lyfd_deno.admission_fees_ref_id WHERE (MONTH(lyf.receipt_date) = MONTH('$from_date') AND YEAR(lyf.receipt_date) = YEAR('$from_date') ) AND lyf.school_id = '$school_id' ");
             $lastyearFeesInfo = $getLastyearFeesQry->fetchObject();
         ?>
 
@@ -112,6 +183,8 @@ if (isset($_POST['feesToDate'])) {
                 <td><?php echo $transportFeesInfo->transport_fee_t2; ?></td>
                 <td><?php echo $transportFeesInfo->transport_fee_t3; ?></td>
                 <td><?php echo $lastyearFeesInfo->lastyearFees; ?></td>
+                <td><?php echo $bankcash = $collectedFeesInfo->bank_balance + $bookFeesInfo->bank_balance + $transportFeesInfo->bank_balance + $lastyearFeesInfo->bank_balance; ?></td>
+                <td><?php echo $handcash = $collectedFeesInfo->cash_balance + $bookFeesInfo->cash_balance + $transportFeesInfo->cash_balance + $lastyearFeesInfo->cash_balance; ?></td>
                 <td><?php echo $totalAmnt = $collectedFeesInfo->grp_fee_t1 +  $collectedFeesInfo->grp_fee_t2 +  $collectedFeesInfo->grp_fee_t3 + $bookFeesInfo->bookFees + $transportFeesInfo->transport_fee_t1 + $transportFeesInfo->transport_fee_t2 + $transportFeesInfo->transport_fee_t3 +  $lastyearFeesInfo->lastyearFees; ?></td>
             </tr>
 
@@ -124,6 +197,8 @@ if (isset($_POST['feesToDate'])) {
             $transportfee_total2 += $transportFeesInfo->transport_fee_t2;
             $transportfee_total3 += $transportFeesInfo->transport_fee_t3;
             $lastyear_total += $lastyearFeesInfo->lastyearFees;
+            $bank_total += $bankcash;
+            $cash_total += $handcash;
             $total += $totalAmnt;
             $startdate->modify('+1 month');
         } ?>
@@ -138,6 +213,8 @@ if (isset($_POST['feesToDate'])) {
             <td><?php echo $transportfee_total2; ?></td>
             <td><?php echo $transportfee_total3; ?></td>
             <td><?php echo $lastyear_total; ?></td>
+            <td><?php echo $bank_total; ?></td>
+            <td><?php echo $cash_total; ?></td>
             <td><?php echo $total; ?></td>
         </tr>
     </tbody>
