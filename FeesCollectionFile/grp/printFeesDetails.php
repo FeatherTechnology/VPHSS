@@ -92,7 +92,7 @@ function AmountInWords($amount)
     return ($implode_to_Rupees ? $implode_to_Rupees . 'Rupees ' : '') . $get_paise;
 }
 
-$qry = $mysqli->query("SELECT stdc.student_name, stdc.admission_number, stdc.section, sc.standard FROM student_creation stdc  
+$qry = $mysqli->query("SELECT stdc.student_name, stdc.admission_number, stdc.section, sc.standard ,stdc.student_image FROM student_creation stdc  
 JOIN 
 student_history sh ON sh.student_id = stdc.student_id  JOIN standard_creation sc ON sh.standard = sc.standard_id WHERE sh.student_id = '$student_id' AND stdc.status=0 AND stdc.school_id='$school_id' AND sh.academic_year='$year_id'");
 // SELECT * FROM student_creation WHERE student_id = '$student_id' AND status=0
@@ -101,6 +101,15 @@ while ($row = $qry->fetch_assoc()) {
     $admission_number = $row["admission_number"];
     $standard = $row["standard"];
     $section = $row["section"];
+    $student_image = $row["student_image"];
+    $web_img_path = "uploads/student_creation/" . $admission_number . "/" . $student_image;
+
+    // Define the actual server path for file_exists
+     $server_img_path = __DIR__ . "/../../" . $web_img_path;
+    // Final path logic
+    $final_img_path = (file_exists($server_img_path) && !empty($student_image))
+        ? $web_img_path
+        : 'img/No_image.png';
 }
 
 $getbrc = $mysqli->query("SELECT sc.school_name, sc.district, sc.address1, sc.address2, sc.pincode, sc.contact_number, sc.email_id, sc.school_logo, stc.state FROM school_creation sc JOIN state_creation stc ON sc.state = stc.id WHERE sc.status = 0 AND school_id = '$school_id'");
@@ -148,11 +157,33 @@ while ($schoolInfo = $getbrc->fetch_assoc()) {
                 </td>
             </tr>
         </table>
-        <p style="float:right">Date: <?php echo $receipt_date; ?></p>
-        <p>Admission Number: <?php echo $admission_number; ?></p>
-        <p style="float:right">Standard & Section: <?php echo $standard ?> &amp; <?php echo $section; ?></p>
-        <p>Student Name: <?php echo $student_name; ?></p>
+        <table style="width:100%; margin-top:10px; border-collapse:collapse;">
+            <tr>
+                <!-- Side: Student Details -->
+                <td style="width:70%; vertical-align:top; padding-left:15px;">
+                    <div style="margin-bottom:12px;">
+                        <strong>Date:</strong> <?php echo $receipt_date; ?>
+                    </div>
+                    <div style="margin-bottom:12px;">
+                        <strong>Admission Number:</strong> <?php echo $admission_number; ?>
+                    </div>
+                    <div style="margin-bottom:12px;">
+                        <strong>Student Name:</strong> <?php echo $student_name; ?>
+                    </div>
+                    <div style="margin-bottom:12px;">
+                        <strong>Standard & Section:</strong> <?php echo $standard; ?> &amp; <?php echo $section; ?>
+                    </div>
+                </td>
 
+                <!-- Side: Student Photo -->
+                <td style="width:30%; text-align:right; vertical-align:top;">
+                    <img src="<?php echo $final_img_path; ?>"
+                        alt="No Image"
+                        height="120px" width="120px"
+                        style="border:1px solid black; object-fit:cover;">
+                </td>
+            </tr>
+        </table>
         <br /><br />
         <table rules="all" style="width: 100%;border-style: double;border: 1px solid black;margin: auto;">
             <tr>
@@ -236,7 +267,7 @@ while ($schoolInfo = $getbrc->fetch_assoc()) {
 
 <button type="button" name="printpurchase" onclick="poprint()" id="printpurchase" class="btn btn-primary" style="display: none;">Print</button>
 
-<!--<script type="text/javascript">
+<!-- <script type="text/javascript">
     function poprint() {
         var Bill = document.getElementById("dettable").innerHTML;
         var printWindow = window.open('', '', 'height=400,width=800');

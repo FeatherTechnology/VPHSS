@@ -29,7 +29,8 @@ stdc.student_name,
 stdc.section, 
 sc.standard, 
 taf.receipt_no, 
-taf.receipt_date
+taf.receipt_date,
+stdc.student_image
 FROM 
 transport_admission_fees taf 
 JOIN 
@@ -43,7 +44,16 @@ transport_admission_fees_details tafd ON taf.id = tafd.admission_fees_ref_id
 WHERE taf.id = '$transportFeesid' && tafd.fee_received > 0  ");
 $payfeesDetails = $getPayFees->fetch();
 
+$student_image = $payfeesDetails["student_image"];
+$admission_number = $payfeesDetails["admission_number"];
+ $web_img_path = "uploads/student_creation/" . $admission_number . "/" . $student_image;
 
+    // Define the actual server path for file_exists
+     $server_img_path = __DIR__ . "/../" . $web_img_path;
+    // Final path logic
+    $final_img_path = (file_exists($server_img_path) && !empty($student_image))
+        ? $web_img_path
+        : 'img/No_image.png';
 function AmountInWords($amount)
 {
     $amount_after_decimal = round($amount - ($num = floor($amount)), 2) * 100;
@@ -131,7 +141,6 @@ function AmountInWords($amount)
         /* margin-top: 30px; */
     }
 </style>
-
 <div id="printReceiptTable">
     <table class="table table-bordered table-responsive">
         <tr>
@@ -150,19 +159,17 @@ function AmountInWords($amount)
             </td>
         </tr>
         <tr>
-            <td colspan='2' style="border-bottom: none; border-right: none;">
-                Admission Number: <?php echo $payfeesDetails['admission_number']; ?>
+            <!-- Left: Student Details -->
+            <td colspan="2" style="text-align:left; vertical-align:top; padding-left:10px; border:none;">
+                <div style="margin-bottom:8px;"><strong>Date:</strong> <?php echo date('d-m-Y', strtotime($payfeesDetails['receipt_date'])); ?></div>
+                <div style="margin-bottom:8px;"><strong>Admission Number:</strong> <?php echo $payfeesDetails['admission_number']; ?></div>
+                <div style="margin-bottom:8px;"><strong>Student Name:</strong> <?php echo $payfeesDetails['student_name']; ?></div>
+                <div style="margin-bottom:8px;"><strong>Standard / Section:</strong> <?php echo $payfeesDetails['standard']; ?> - <?php echo $payfeesDetails['section']; ?></div>
             </td>
-            <td style="border-bottom: none; border-left: none;">
-                Date: <?php echo date('d-m-Y', strtotime($payfeesDetails['receipt_date'])); ?>
-            </td>
-        </tr>
-        <tr>
-            <td colspan='2' style="border-top: none; border-right: none;">
-                Student Name: <?php echo $payfeesDetails['student_name']; ?>
-            </td>
-            <td style="border-top: none; border-left: none; border-bottom: none; white-space: nowrap;">
-                Standard / Section: <?php echo $payfeesDetails['standard']; ?> - <?php echo $payfeesDetails['section']; ?>
+
+            <!-- Right: Student Photo -->
+            <td style="text-align:right; vertical-align:top; border:none;">
+             <img src="<?php echo $final_img_path; ?>" alt="" onerror="this.src='img/No_img_available.png'" height="120px" width="120px" style="border:1px solid black; object-fit:cover;">
             </td>
         </tr>
         <tr>

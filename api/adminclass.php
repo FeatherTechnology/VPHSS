@@ -1991,6 +1991,10 @@ class admin
 		}
 
 		$student_image = '';
+			$subdir5 = $_POST['admission_number'];
+		//set the directory path name
+		$dir5 = ("uploads/student_creation/" . $subdir5);
+			mkdir($dir5, 0777);
 		if (!empty($_FILES['student_image']['name'])) {
 			//delete old file
 			$path = "uploads/student_creation/$admission_number/" . $_POST["updateimage"];
@@ -2000,7 +2004,7 @@ class admin
 			//insert new file
 			$student_image = $_FILES['student_image']['name'];
 			$student_image_tmp = $_FILES['student_image']['tmp_name'];
-			$student_imagefolder = "uploads/student_creation/$admission_number/" . $student_image;
+			$student_imagefolder = "$dir5/" . $student_image;
 			move_uploaded_file($student_image_tmp, $student_imagefolder);
 		}
 		// if($father_image == '' && isset($_POST["updateimage"])){

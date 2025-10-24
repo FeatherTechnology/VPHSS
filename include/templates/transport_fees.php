@@ -35,12 +35,20 @@ if (isset($_POST['submittransportpay']) && $_POST['submittransportpay'] != '') {
                     },
                     success: function(html) {
                         var printWindow = window.open('', '_blank', 'height=800,width=1200');
-
-                        if (printWindow) { // Check if the window is successfully opened
+                        if (printWindow) {
                             printWindow.document.write(html);
                             printWindow.document.close();
-                            printWindow.print();
-                            printWindow.close();
+
+                            // Wait for images to load before printing
+                            const images = printWindow.document.querySelectorAll('img');
+                            Promise.all(Array.from(images).map(img => new Promise(resolve => {
+                                if (img.complete) resolve();
+                                else img.addEventListener('load', resolve);
+                                img.addEventListener('error', resolve);
+                            }))).then(() => {
+                                printWindow.print();
+                                printWindow.close();
+                            });
                         } else {
                             alert('Pop-up blocked. Please allow pop-ups for this site.');
                         }
