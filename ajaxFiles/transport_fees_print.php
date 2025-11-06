@@ -30,7 +30,10 @@ stdc.section,
 sc.standard, 
 taf.receipt_no, 
 taf.receipt_date,
-stdc.student_image
+stdc.student_image,
+tafds.payment_mode,
+tafds.neft_ref_number,
+tafds.neft_bank_name
 FROM 
 transport_admission_fees taf 
 JOIN 
@@ -41,19 +44,21 @@ JOIN
 standard_creation sc ON sh.standard = sc.standard_id 
 JOIN 
 transport_admission_fees_details tafd ON taf.id = tafd.admission_fees_ref_id
+LEFT JOIN
+transport_admission_fees_denomination tafds ON taf.id = tafds.admission_fees_ref_id
 WHERE taf.id = '$transportFeesid' && tafd.fee_received > 0  ");
 $payfeesDetails = $getPayFees->fetch();
 
 $student_image = $payfeesDetails["student_image"];
 $admission_number = $payfeesDetails["admission_number"];
- $web_img_path = "uploads/student_creation/" . $admission_number . "/" . $student_image;
+$web_img_path = "uploads/student_creation/" . $admission_number . "/" . $student_image;
 
-    // Define the actual server path for file_exists
-     $server_img_path = __DIR__ . "/../" . $web_img_path;
-    // Final path logic
-    $final_img_path = (file_exists($server_img_path) && !empty($student_image))
-        ? $web_img_path
-        : 'img/No_image.png';
+// Define the actual server path for file_exists
+$server_img_path = __DIR__ . "/../" . $web_img_path;
+// Final path logic
+$final_img_path = (file_exists($server_img_path) && !empty($student_image))
+    ? $web_img_path
+    : 'img/No_image.png';
 function AmountInWords($amount)
 {
     $amount_after_decimal = round($amount - ($num = floor($amount)), 2) * 100;
@@ -165,12 +170,34 @@ function AmountInWords($amount)
                 <div style="margin-bottom:8px;"><strong>Admission Number:</strong> <?php echo $payfeesDetails['admission_number']; ?></div>
                 <div style="margin-bottom:8px;"><strong>Student Name:</strong> <?php echo $payfeesDetails['student_name']; ?></div>
                 <div style="margin-bottom:8px;"><strong>Standard / Section:</strong> <?php echo $payfeesDetails['standard']; ?> - <?php echo $payfeesDetails['section']; ?></div>
+                <div style="margin-bottom:8px;"><strong>Payment Mode:</strong> <?php
+                                                                                if ($payfeesDetails['payment_mode'] == 'cash_payment') {
+                                                                                    echo 'Cash';
+                                                                                } else if ($payfeesDetails['payment_mode'] == 'cheque') {
+                                                                                    echo 'Cheque';
+                                                                                } else if ($payfeesDetails['payment_mode'] == 'neft') {
+                                                                                    echo 'Bank Transfer';
+                                                                                } else {
+                                                                                    echo '';
+                                                                                }
+                                                                                ?>
+                </div>
+                <?php if ($payfeesDetails['payment_mode'] == 'neft') { ?>
+                    <div style="margin-bottom:8px;">
+                        <strong>Bank Name:</strong> <?php echo $payfeesDetails['neft_bank_name']; ?>
+                    </div>
+                    <div style="margin-bottom:8px;">
+                        <strong>Transaction ID:</strong> <?php echo $payfeesDetails['neft_ref_number']; ?>
+                    </div> <?php } ?>
             </td>
 
             <!-- Right: Student Photo -->
             <td style="text-align:right; vertical-align:top; border:none;">
-             <img src="<?php echo $final_img_path; ?>" alt="" onerror="this.src='img/No_img_available.png'" height="120px" width="120px" style="border:1px solid black; object-fit:cover;">
+                <img src="<?php echo $final_img_path; ?>" alt="" onerror="this.src='img/No_img_available.png'" height="120px" width="120px" style="border:1px solid black; object-fit:cover;">
             </td>
+        </tr>
+        <tr>
+            <td colspan="3" style="height:20px; border:none;"></td>
         </tr>
         <tr>
             <th>

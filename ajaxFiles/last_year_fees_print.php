@@ -30,7 +30,10 @@ stdc.section,
 sc.standard, 
 lyf.receipt_no, 
 lyf.receipt_date,
-stdc.student_image
+stdc.student_image,
+lfds.payment_mode,
+lfds.neft_ref_number,
+lfds.neft_bank_name
 FROM 
 last_year_fees lyf 
 JOIN 
@@ -39,6 +42,7 @@ JOIN
 standard_creation sc ON stdc.standard = sc.standard_id 
 JOIN 
 last_year_fees_details lyfd ON lyf.id = lyfd.admission_fees_ref_id
+JOIN last_year_fees_denomination lfds ON lyf.id = lfds.admission_fees_ref_id 
 WHERE lyf.id = '$lastYearFeesid' && lyfd.fee_received > 0");
 
 $tempfeesDetails = $getTempFees->fetch();
@@ -164,12 +168,34 @@ function AmountInWords($amount)
                 <div style="margin-bottom:8px;"><strong>Admission Number:</strong> <?php echo $tempfeesDetails['admission_number']; ?></div>
                 <div style="margin-bottom:8px;"><strong>Student Name:</strong> <?php echo $tempfeesDetails['student_name']; ?></div>
                 <div style="margin-bottom:8px;"><strong>Standard / Section:</strong> <?php echo $tempfeesDetails['standard']; ?> - <?php echo $tempfeesDetails['section']; ?></div>
+                 <div style="margin-bottom:8px;"><strong>Payment Mode:</strong> <?php
+                                                                                if ($tempfeesDetails['payment_mode'] == 'cash_payment') {
+                                                                                    echo 'Cash';
+                                                                                } else if ($tempfeesDetails['payment_mode'] == 'cheque') {
+                                                                                    echo 'Cheque';
+                                                                                } else if ($tempfeesDetails['payment_mode'] == 'neft') {
+                                                                                    echo 'Bank Transfer';
+                                                                                } else {
+                                                                                    echo '';
+                                                                                }
+                                                                                ?>
+                </div>
+                <?php if ($tempfeesDetails['payment_mode'] == 'neft') { ?>
+                    <div style="margin-bottom:8px;">
+                        <strong>Bank Name:</strong> <?php echo $tempfeesDetails['neft_bank_name']; ?>
+                    </div>
+                    <div style="margin-bottom:8px;">
+                        <strong>Transaction ID:</strong> <?php echo $tempfeesDetails['neft_ref_number']; ?>
+                    </div> <?php } ?>
             </td>
 
             <!-- Right: Student Photo -->
             <td style="text-align:right; vertical-align:top; border:none;">
                 <img src="<?php echo $final_img_path; ?>" alt="Student Image" height="120px" width="120px" style="border:1px solid black; object-fit:cover;">
             </td>
+        </tr>
+          <tr>
+            <td colspan="3" style="height:20px; border:none;"></td>
         </tr>
         <tr>
             <th>

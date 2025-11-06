@@ -30,7 +30,10 @@ sc.standard,
 stdc.section, 
 af.receipt_no, 
 af.receipt_date,
-stdc.student_image
+stdc.student_image,
+afds.payment_mode,
+afds.neft_ref_number,
+afds.neft_bank_name
 FROM 
 admission_fees af 
 JOIN 
@@ -41,20 +44,21 @@ JOIN
 standard_creation sc ON sh.standard = sc.standard_id 
 JOIN 
 admission_fees_details afd ON af.id = afd.admission_fees_ref_id
+LEFT JOIN admission_fees_denomination afds ON af.id = afds.admission_fees_ref_id
 WHERE af.id = '$payFeesid' && afd.fee_received > 0 ");
 $payfeesDetails = $getPayFees->fetch();
 
 $student_image = $payfeesDetails["student_image"];
 $admission_number = $payfeesDetails["admission_number"];
- $web_img_path = "uploads/student_creation/" . $admission_number . "/" . $student_image;
+$web_img_path = "uploads/student_creation/" . $admission_number . "/" . $student_image;
 
-    // Define the actual server path for file_exists
-    $server_img_path = __DIR__ . "/../" . $web_img_path;
+// Define the actual server path for file_exists
+$server_img_path = __DIR__ . "/../" . $web_img_path;
 
-    // Final path logic
-    $final_img_path = (file_exists($server_img_path) && !empty($student_image))
-        ? $web_img_path
-        : 'img/No_image.png';
+// Final path logic
+$final_img_path = (file_exists($server_img_path) && !empty($student_image))
+    ? $web_img_path
+    : 'img/No_image.png';
 function AmountInWords($amount)
 {
     $amount_after_decimal = round($amount - ($num = floor($amount)), 2) * 100;
@@ -154,20 +158,20 @@ function AmountInWords($amount)
 
             <!-- Center: School Details -->
             <td style="width:55%; text-align:center; vertical-align:top;">
-                <b><?php if(isset($school_name)) echo $school_name; ?></b><br>
+                <b><?php if (isset($school_name)) echo $school_name; ?></b><br>
                 <?php
-                if(isset($address1)) echo $address1 . ', ';
-                if(isset($address2)) echo $address2 . ', ';
-                if(isset($district)) echo $district . ', ';
-                if(isset($state)) echo $state . '-';
-                if(isset($pincode)) echo $pincode;
+                if (isset($address1)) echo $address1 . ', ';
+                if (isset($address2)) echo $address2 . ', ';
+                if (isset($district)) echo $district . ', ';
+                if (isset($state)) echo $state . '-';
+                if (isset($pincode)) echo $pincode;
                 ?><br>
-                <span style="margin-right:5px;">&#x260E;</span> <?php if(isset($contact_number)) echo $contact_number; ?>
-                <span style="margin-left:10px;">&#x1F4E7;</span> <?php if(isset($email_id)) echo $email_id; ?>
+                <span style="margin-right:5px;">&#x260E;</span> <?php if (isset($contact_number)) echo $contact_number; ?>
+                <span style="margin-left:10px;">&#x1F4E7;</span> <?php if (isset($email_id)) echo $email_id; ?>
             </td>
 
             <!-- Right: Receipt Info -->
-            <td style="width:30%; text-align:right; vertical-align:top;">
+            <td style="width:30%; text-align:left; vertical-align:top;">
                 <strong>Receipt No:</strong> <?php echo $payfeesDetails['receipt_no']; ?><br>
                 Manual Rcpt No <br>
                 (Student Copy)
@@ -182,6 +186,25 @@ function AmountInWords($amount)
                 <div style="margin-bottom:8px;"><strong>Admission Number:</strong> <?php echo $payfeesDetails['admission_number']; ?></div>
                 <div style="margin-bottom:8px;"><strong>Student Name:</strong> <?php echo $payfeesDetails['student_name']; ?></div>
                 <div style="margin-bottom:8px;"><strong>Standard / Section:</strong> <?php echo $payfeesDetails['standard']; ?> - <?php echo $payfeesDetails['section']; ?></div>
+                <div style="margin-bottom:8px;"><strong>Payment Mode:</strong> <?php
+                                                                                if ($payfeesDetails['payment_mode'] == 'cash_payment') {
+                                                                                    echo 'Cash';
+                                                                                } else if ($payfeesDetails['payment_mode'] == 'cheque') {
+                                                                                    echo 'Cheque';
+                                                                                } else if ($payfeesDetails['payment_mode'] == 'neft') {
+                                                                                    echo 'Bank Transfer';
+                                                                                } else {
+                                                                                    echo '';
+                                                                                }
+                                                                                ?>
+                </div>
+                <?php if ($payfeesDetails['payment_mode'] == 'neft') { ?>
+                    <div style="margin-bottom:8px;">
+                        <strong>Bank Name:</strong> <?php echo $payfeesDetails['neft_bank_name']; ?>
+                    </div>
+                    <div style="margin-bottom:8px;">
+                        <strong>Transaction ID:</strong> <?php echo $payfeesDetails['neft_ref_number']; ?>
+                    </div> <?php } ?>
             </td>
 
             <!-- Right: Student Photo -->
@@ -189,8 +212,10 @@ function AmountInWords($amount)
                 <img src="<?php echo $final_img_path; ?>" alt="Student Image" height="120px" width="120px" style="border:1px solid black; object-fit:cover;">
             </td>
         </tr>
- 
 
+        <tr>
+            <td colspan="3" style="height:20px; border:none;"></td>
+        </tr>
 
         <tr>
             <th>Sl No.</th>
