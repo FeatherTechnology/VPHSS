@@ -22,7 +22,12 @@ if (isset($_POST['stdSection'])) {
 if (isset($_POST['feeType'])) {
     $feeType = $_POST['feeType']; //1=school, 2=extra/book, 3=Lastyear, 4=Transportation
 }
-
+$getbrc = $mysqli->query("SELECT sc.school_name, sc.district, sc.pincode FROM school_creation sc WHERE sc.status = 0 AND school_id = '$school_id'");
+while ($schoolInfo = $getbrc->fetch_assoc()) {
+    $school_name     = $schoolInfo["school_name"];
+    $district  = $schoolInfo["district"];
+    $pincode  = $schoolInfo["pincode"];
+}
 if ($feeType == '1') { //school
 ?>
 
@@ -485,6 +490,21 @@ WHERE
 
 <script>
     $(document).ready(function() {
+         var schoolName = "<?php echo $school_name . ' - ' . $district . ' - ' . $pincode; ?>";
+
+        var feeHeading = "<?php
+            if ($feeType == '1') {
+                echo 'Group Fees';
+            } elseif ($feeType == '2') {
+                echo 'Amenity Fees';
+            } elseif ($feeType == '3') {
+                echo 'Last Year Fees';
+            } elseif ($feeType == '4') {
+                echo 'Transport Fees';
+            } else {
+                echo 'Day End Report';
+            }
+        ?>";
         var table = $('#show_student_scholarship_list').DataTable({
             order: [
                 [0, "asc"]
@@ -495,8 +515,20 @@ WHERE
                 } // Treat first column as numeric
             ],
             dom: 'Bfrtip',
-            buttons: [
-                'copy', 'csv', 'excel', 'pdf', 'print'
+          buttons: [
+                'copy', 'csv', 'excel', 'pdf',
+                {
+                    extend: 'print',
+                    text: 'Print',
+                    title: '',
+                    customize: function(win) {
+                        $(win.document.body)
+                            .prepend(
+                                '<h2 style="text-align:center;">' + schoolName + '</h2>' +
+                                '<h4 style="text-align:center;">' + feeHeading + '</h4><br>'
+                            );
+                    }
+                }
             ],
             footerCallback: function(row, data, start, end, display) {
                 var api = this.api();

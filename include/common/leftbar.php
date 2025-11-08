@@ -26,6 +26,10 @@ if (sizeof($getmanageuserdetails)>0) {
 	$delete_student                  = $getmanageuserdetails['delete_student']; 
 	$certificate_sub_module                  = $getmanageuserdetails['certificate_sub_module']; 
 	$transfer                  = $getmanageuserdetails['transfer']; 
+	$exam_module                  = $getmanageuserdetails['exam_module']; 
+	$exam_creation                  = $getmanageuserdetails['exam_creation']; 
+	$student_mark_entry                  = $getmanageuserdetails['student_mark_entry']; 
+	$staff_subject_allocation                  = $getmanageuserdetails['staff_subject_allocation']; 
 	$collection_module                  = $getmanageuserdetails['collection_module']; 
 	$fees_concession                  = $getmanageuserdetails['fees_concession']; 
 	$fees_collection                  = $getmanageuserdetails['fees_collection']; 
@@ -34,6 +38,8 @@ if (sizeof($getmanageuserdetails)>0) {
 	$tamil_birthday_wishes                  = $getmanageuserdetails['tamil_birthday_wishes']; 
 	$student_general_message                  = $getmanageuserdetails['student_general_message']; 
 	$staff_general_message                  = $getmanageuserdetails['staff_general_message']; 
+	$send_sms_mark                  = $getmanageuserdetails['send_sms_mark']; 
+	$sms_delivery_report                  = $getmanageuserdetails['sms_delivery_report']; 
 	$home_work                  = $getmanageuserdetails['home_work']; 
 	$report_module                  = $getmanageuserdetails['report_module']; 
 	$student_report_sub_module                  = $getmanageuserdetails['student_report_sub_module']; 
@@ -41,6 +47,8 @@ if (sizeof($getmanageuserdetails)>0) {
 	$class_wise_list                  = $getmanageuserdetails['class_wise_list']; 
 	$register_of_admission                  = $getmanageuserdetails['register_of_admission']; 
 	$student_transport_list                  = $getmanageuserdetails['student_transport_list']; 
+	$student_mark_list                  = $getmanageuserdetails['student_mark_list']; 
+	$roll_of_honour_list                  = $getmanageuserdetails['roll_of_honour_list']; 
 	$fee_details_sub_module                  = $getmanageuserdetails['fee_details_sub_module']; 
 	$daily_fees_collection                  = $getmanageuserdetails['daily_fees_collection']; 
 	$day_end_report                  = $getmanageuserdetails['day_end_report']; 
@@ -304,7 +312,33 @@ if (sizeof($getmanageuserdetails)>0) {
 						</ul>
 					</div>
 				</li>
-			<?php } if(isset($collection_module) && $collection_module ==0){ ?>
+				<?php }
+			 if(isset($exam_module) && $exam_module ==0){ ?>
+				<li class="sidebar-dropdown">
+					<a href="javascript:void(0)">
+						<i class="icon-local_library"></i>
+						<span class="menu-text"> Exam </span>
+					</a>
+					<div class="sidebar-submenu">
+						<ul>
+						<?php if(isset($exam_creation) && $exam_creation ==0){ ?>
+							<li>
+								<a href="exam_creation"><i class="icon-rate_review"></i>Exam Creation</a>
+							</li>
+						<?php }if(isset($staff_subject_allocation) && $staff_subject_allocation ==0){ ?>
+							<li>
+								<a href="staff_subject_allocation"><i class="icon-person_pin"></i>Staff Subject Allocation</a>
+							</li>
+						<?php }if(isset($student_mark_entry) && $student_mark_entry ==0){ ?>
+							<li>
+								<a href="student_mark_entry"><i class="icon-edit1"></i>Student Mark Entry</a>
+							</li>
+						<?php } ?>
+						</ul>
+					</div>
+				</li>
+			<?php }
+			 if(isset($collection_module) && $collection_module ==0){ ?>
 				<li class="sidebar-dropdown">
 					<a href="javascript:void(0)">
 						<i class="icon-wallet"></i>
@@ -349,7 +383,15 @@ if (sizeof($getmanageuserdetails)>0) {
 							<li>
 								<a href="edit_staff_general_message"><i class="icon-user-check"></i>Staff General Message</a>
 							</li>
-						<?php } if(isset($home_work) && $home_work ==0){ ?>
+						<?php }if(isset($send_sms_mark) && $send_sms_mark ==0){ ?>
+							<li>
+								<a href="send_sms_mark"><i class="icon-contact_mail"></i>Student SMS Mark</a>
+							</li>
+						<?php }if(isset($sms_delivery_report) && $sms_delivery_report ==0){ ?>
+							<li>
+								<a href="sms_delivery_report"><i class="icon-assignment_turned_in"></i>SMS Delivery Report</a>
+							</li>
+						<?php }  if(isset($home_work) && $home_work ==0){ ?>
 							<!-- <li>
 								<a href="edit_home_work"><i class="icon-pencil"></i>Home Work</a>
 							</li> -->
@@ -392,7 +434,15 @@ if (sizeof($getmanageuserdetails)>0) {
 										<li>
 											<a href="student_transport_list"><i class="icon-airport_shuttle"></i>Student Transport List</a>	
 										</li>
-									<?php } ?>
+									<?php } if(isset($student_mark_list) && $student_mark_list ==0){ ?>
+										<li>
+											<a href="student_mark_list"><i class="icon-assignment"></i>Student Mark List</a>	
+										</li>
+									<?php } if(isset($roll_of_honour_list) && $roll_of_honour_list ==0){ ?>
+										<li>
+											<a href="roll_of_honour_list"><i class="icon-layers"></i>Roll Of Honour List</a>	
+										</li>
+									<?php }  ?>
 									</ul>
 								</div>	
 							</li>

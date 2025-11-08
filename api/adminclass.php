@@ -141,6 +141,26 @@ class admin
 		} else {
 			$transfer = 1;
 		}
+		if (isset($_POST['exam_module']) &&    $_POST['exam_module'] == 'Yes') {
+			$exam_module = 0;
+		} else {
+			$exam_module = 1;
+		}
+		if (isset($_POST['exam_creation']) &&    $_POST['exam_creation'] == 'Yes') {
+			$exam_creation = 0;
+		} else {
+			$exam_creation = 1;
+		}
+		if (isset($_POST['student_mark_entry']) &&    $_POST['student_mark_entry'] == 'Yes') {
+			$student_mark_entry = 0;
+		} else {
+			$student_mark_entry = 1;
+		}
+		if (isset($_POST['staff_subject_allocation']) &&    $_POST['staff_subject_allocation'] == 'Yes') {
+			$staff_subject_allocation = 0;
+		} else {
+			$staff_subject_allocation = 1;
+		}
 		if (isset($_POST['collection_module']) &&    $_POST['collection_module'] == 'Yes') {
 			$collection_module = 0;
 		} else {
@@ -181,6 +201,16 @@ class admin
 		} else {
 			$staff_general_message = 1;
 		}
+		if (isset($_POST['send_sms_mark']) &&    $_POST['send_sms_mark'] == 'Yes') {
+			$send_sms_mark = 0;
+		} else {
+			$send_sms_mark = 1;
+		}
+		if (isset($_POST['sms_delivery_report']) &&    $_POST['sms_delivery_report'] == 'Yes') {
+			$sms_delivery_report = 0;
+		} else {
+			$sms_delivery_report = 1;
+		}
 		// if(isset($_POST['home_work']) &&    $_POST['home_work'] == 'Yes')		
 		// {
 		// 	$home_work=0;
@@ -216,6 +246,16 @@ class admin
 			$student_transport_list = 0;
 		} else {
 			$student_transport_list = 1;
+		}
+		if (isset($_POST['student_mark_list']) &&    $_POST['student_mark_list'] == 'Yes') {
+			$student_mark_list = 0;
+		} else {
+			$student_mark_list = 1;
+		}
+		if (isset($_POST['roll_of_honour_list']) &&    $_POST['roll_of_honour_list'] == 'Yes') {
+			$roll_of_honour_list = 0;
+		} else {
+			$roll_of_honour_list = 1;
 		}
 		if (isset($_POST['fee_details_sub_module']) &&    $_POST['fee_details_sub_module'] == 'Yes') {
 			$fee_details_sub_module = 0;
@@ -263,7 +303,7 @@ class admin
 			$monthwise_fees_summary = 1;
 		}
 
-		$userInsert = "INSERT INTO `user`(`firstname`, `lastname`, `fullname`, `title`, `school_id`, `emailid`, `user_name`, `user_password`, `role`, `status`, `dashboard`, `administration_module`, `trust_creation`, `school_update`, `fees_master`, `holiday_creation`, `manage_users`, `master_module`, `area_master`, `syllabus_sub_module`, `allocation`, `allocation_view`, `staff_module`, `staff_creation`, `student_module`, `temp_admission_form`, `student_creation`, `student_rollback`, `delete_student`, `certificate_sub_module`, `transfer`, `collection_module`, `fees_concession`, `fees_collection`, `sms_module`, `birthday_wishes`, `tamil_birthday_wishes`, `student_general_message`, `staff_general_message`, `report_module`, `student_report_sub_module`, `student_caste_report`, `class_wise_list`, `register_of_admission`, `student_transport_list`, `fee_details_sub_module`, `daily_fees_collection`, `day_end_report`, `overall_scholarship_fee_details`, `pending_fee_details`, `all_type_pending_fee_details`, `classwise_overall_pending`, `fees_summary`, `monthwise_fees_summary`, `insert_login_id`) VALUES ('$first_name','$last_name','$full_name','$title','$school_name','$email_id','$user_name','$password','$user_role','0','$dashboard_module','$administration_module','$trust_creation','$school_update','$fees_master','$holiday_creation','$manage_users','$master_module','$area_master','$syllabus_sub_module','$allocation','$allocation_view','$staff_module','$staff_creation','$student_module','$temp_admission_form','$student_creation','$student_rollback','$delete_student','$certificate_sub_module','$transfer','$collection_module','$fees_concession','$fees_collection', '$sms_module', '$birthday_wishes', '$tamil_birthday_wishes', '$student_general_message', '$staff_general_message', '$report_module','$student_report_sub_module','$student_caste_report','$class_wise_list','$register_of_admission','$student_transport_list','$fee_details_sub_module','$daily_fees_collection','$day_end_report','$overall_scholarship_fee_details','$pending_fee_details','$all_type_pending_fee_details','$classwise_overall_pending','$fees_summary','$monthwise_fees_summary', '$userid')";
+		$userInsert = "INSERT INTO `user`(`firstname`, `lastname`, `fullname`, `title`, `school_id`, `emailid`, `user_name`, `user_password`, `role`, `status`, `dashboard`, `administration_module`, `trust_creation`, `school_update`, `fees_master`, `holiday_creation`, `manage_users`, `master_module`, `area_master`, `syllabus_sub_module`, `allocation`, `allocation_view`, `staff_module`, `staff_creation`, `student_module`, `temp_admission_form`, `student_creation`, `student_rollback`, `delete_student`, `certificate_sub_module`, `transfer`,`exam_module`,`exam_creation`,`student_mark_entry`,`staff_subject_allocation`, `collection_module`, `fees_concession`, `fees_collection`, `sms_module`, `birthday_wishes`, `tamil_birthday_wishes`, `student_general_message`, `staff_general_message`,`send_sms_mark`, `sms_delivery_report`,`report_module`, `student_report_sub_module`, `student_caste_report`, `class_wise_list`, `register_of_admission`, `student_transport_list`, `student_mark_list`,`roll_of_honour_list`,`fee_details_sub_module`, `daily_fees_collection`, `day_end_report`, `overall_scholarship_fee_details`, `pending_fee_details`, `all_type_pending_fee_details`, `classwise_overall_pending`, `fees_summary`, `monthwise_fees_summary`, `insert_login_id`) VALUES ('$first_name','$last_name','$full_name','$title','$school_name','$email_id','$user_name','$password','$user_role','0','$dashboard_module','$administration_module','$trust_creation','$school_update','$fees_master','$holiday_creation','$manage_users','$master_module','$area_master','$syllabus_sub_module','$allocation','$allocation_view','$staff_module','$staff_creation','$student_module','$temp_admission_form','$student_creation','$student_rollback','$delete_student','$certificate_sub_module','$transfer','$exam_module','$exam_creation','$student_mark_entry','$staff_subject_allocation','$collection_module','$fees_concession','$fees_collection', '$sms_module', '$birthday_wishes', '$tamil_birthday_wishes', '$student_general_message', '$staff_general_message','$send_sms_mark', '$sms_delivery_report','$report_module','$student_report_sub_module','$student_caste_report','$class_wise_list','$register_of_admission','$student_transport_list','$student_mark_list','$roll_of_honour_list','$fee_details_sub_module','$daily_fees_collection','$day_end_report','$overall_scholarship_fee_details','$pending_fee_details','$all_type_pending_fee_details','$classwise_overall_pending','$fees_summary','$monthwise_fees_summary', '$userid')";
 		$insresult = $mysqli->query($userInsert) or die("Error " . $mysqli->error);
 	}
 
@@ -405,6 +445,26 @@ class admin
 		} else {
 			$transfer = 1;
 		}
+		if (isset($_POST['exam_module']) &&    $_POST['exam_module'] == 'Yes') {
+			$exam_module = 0;
+		} else {
+			$exam_module = 1;
+		}
+		if (isset($_POST['exam_creation']) &&    $_POST['exam_creation'] == 'Yes') {
+			$exam_creation = 0;
+		} else {
+			$exam_creation = 1;
+		}
+		if (isset($_POST['student_mark_entry']) &&    $_POST['student_mark_entry'] == 'Yes') {
+			$student_mark_entry = 0;
+		} else {
+			$student_mark_entry = 1;
+		}
+		if (isset($_POST['staff_subject_allocation']) &&    $_POST['staff_subject_allocation'] == 'Yes') {
+			$staff_subject_allocation = 0;
+		} else {
+			$staff_subject_allocation = 1;
+		}
 		if (isset($_POST['collection_module']) &&    $_POST['collection_module'] == 'Yes') {
 			$collection_module = 0;
 		} else {
@@ -445,6 +505,16 @@ class admin
 		} else {
 			$staff_general_message = 1;
 		}
+		if (isset($_POST['send_sms_mark']) &&    $_POST['send_sms_mark'] == 'Yes') {
+			$send_sms_mark = 0;
+		} else {
+			$send_sms_mark = 1;
+		}
+		if (isset($_POST['sms_delivery_report']) &&    $_POST['sms_delivery_report'] == 'Yes') {
+			$sms_delivery_report = 0;
+		} else {
+			$sms_delivery_report = 1;
+		}
 		// if(isset($_POST['home_work']) &&    $_POST['home_work'] == 'Yes')		
 		// {
 		// 	$home_work=0;
@@ -480,6 +550,16 @@ class admin
 			$student_transport_list = 0;
 		} else {
 			$student_transport_list = 1;
+		}
+		if (isset($_POST['student_mark_list']) &&    $_POST['student_mark_list'] == 'Yes') {
+			$student_mark_list = 0;
+		} else {
+			$student_mark_list = 1;
+		}
+		if (isset($_POST['roll_of_honour_list']) &&    $_POST['roll_of_honour_list'] == 'Yes') {
+			$roll_of_honour_list = 0;
+		} else {
+			$roll_of_honour_list = 1;
 		}
 		if (isset($_POST['fee_details_sub_module']) &&    $_POST['fee_details_sub_module'] == 'Yes') {
 			$fee_details_sub_module = 0;
@@ -527,7 +607,7 @@ class admin
 			$monthwise_fees_summary = 1;
 		}
 
-		$updateUserQry = "UPDATE `user` SET `firstname`='$first_name',`lastname`='$last_name',`fullname`='$full_name',`title`='$title',`school_id`='$school_name',`emailid`='$email_id',`user_name`='$user_name',`user_password`='$password',`role`='$user_role',`status`='0',`dashboard`='$dashboard_module',`administration_module`='$administration_module',`trust_creation`='$trust_creation',`school_update`='$school_update',`fees_master`='$fees_master',`holiday_creation`='$holiday_creation',`manage_users`='$manage_users',`master_module`='$master_module',`area_master`='$area_master',`syllabus_sub_module`='$syllabus_sub_module',`allocation`='$allocation',`allocation_view`='$allocation_view',`staff_module`='$staff_module',`staff_creation`='$staff_creation',`student_module`='$student_module',`temp_admission_form`='$temp_admission_form',`student_creation`='$student_creation',`student_rollback`='$student_rollback',`delete_student`='$delete_student',`certificate_sub_module`='$certificate_sub_module',`transfer`='$transfer',`collection_module`='$collection_module',`fees_concession`='$fees_concession',`fees_collection`='$fees_collection', `sms_module`='$sms_module',`birthday_wishes`='$birthday_wishes',`tamil_birthday_wishes`='$tamil_birthday_wishes',`student_general_message`='$student_general_message',`staff_general_message`='$staff_general_message',`report_module`='$report_module',`student_report_sub_module`='$student_report_sub_module',`student_caste_report`='$student_caste_report',`class_wise_list`='$class_wise_list',`register_of_admission`='$register_of_admission',`student_transport_list`='$student_transport_list',`fee_details_sub_module`='$fee_details_sub_module',`daily_fees_collection`='$daily_fees_collection',`day_end_report`='$day_end_report',`overall_scholarship_fee_details`='$overall_scholarship_fee_details',`pending_fee_details`='$pending_fee_details',`all_type_pending_fee_details`='$all_type_pending_fee_details',`classwise_overall_pending`='$classwise_overall_pending',`fees_summary`='$fees_summary',`monthwise_fees_summary`='$monthwise_fees_summary', `update_login_id`='$userid', `updated_date`=now() WHERE `user_id`='$manage_user_id'";
+		$updateUserQry = "UPDATE `user` SET `firstname`='$first_name',`lastname`='$last_name',`fullname`='$full_name',`title`='$title',`school_id`='$school_name',`emailid`='$email_id',`user_name`='$user_name',`user_password`='$password',`role`='$user_role',`status`='0',`dashboard`='$dashboard_module',`administration_module`='$administration_module',`trust_creation`='$trust_creation',`school_update`='$school_update',`fees_master`='$fees_master',`holiday_creation`='$holiday_creation',`manage_users`='$manage_users',`master_module`='$master_module',`area_master`='$area_master',`syllabus_sub_module`='$syllabus_sub_module',`allocation`='$allocation',`allocation_view`='$allocation_view',`staff_module`='$staff_module',`staff_creation`='$staff_creation',`student_module`='$student_module',`temp_admission_form`='$temp_admission_form',`student_creation`='$student_creation',`student_rollback`='$student_rollback',`delete_student`='$delete_student',`certificate_sub_module`='$certificate_sub_module',`transfer`='$transfer',`exam_module`='$exam_module',`exam_creation`='$exam_creation',`student_mark_entry`='$student_mark_entry',`staff_subject_allocation`='$staff_subject_allocation',`collection_module`='$collection_module',`fees_concession`='$fees_concession',`fees_collection`='$fees_collection', `sms_module`='$sms_module',`birthday_wishes`='$birthday_wishes',`tamil_birthday_wishes`='$tamil_birthday_wishes',`student_general_message`='$student_general_message',`staff_general_message`='$staff_general_message',`send_sms_mark`='$send_sms_mark',`sms_delivery_report`='$sms_delivery_report',`report_module`='$report_module',`student_report_sub_module`='$student_report_sub_module',`student_caste_report`='$student_caste_report',`class_wise_list`='$class_wise_list',`register_of_admission`='$register_of_admission',`student_transport_list`='$student_transport_list',`student_mark_list`='$student_mark_list',`roll_of_honour_list`='$roll_of_honour_list',`fee_details_sub_module`='$fee_details_sub_module',`daily_fees_collection`='$daily_fees_collection',`day_end_report`='$day_end_report',`overall_scholarship_fee_details`='$overall_scholarship_fee_details',`pending_fee_details`='$pending_fee_details',`all_type_pending_fee_details`='$all_type_pending_fee_details',`classwise_overall_pending`='$classwise_overall_pending',`fees_summary`='$fees_summary',`monthwise_fees_summary`='$monthwise_fees_summary', `update_login_id`='$userid', `updated_date`=now() WHERE `user_id`='$manage_user_id'";
 		$insresult = $mysqli->query($updateUserQry) or die("Error " . $mysqli->error);
 	}
 
@@ -571,6 +651,10 @@ class admin
 			$detailrecords['delete_student']                  = $row->delete_student;
 			$detailrecords['certificate_sub_module']                  = $row->certificate_sub_module;
 			$detailrecords['transfer']                  = $row->transfer;
+			$detailrecords['exam_module']                  = $row->exam_module;
+			$detailrecords['exam_creation']                  = $row->exam_creation;
+			$detailrecords['student_mark_entry']                  = $row->student_mark_entry;
+			$detailrecords['staff_subject_allocation']                  = $row->staff_subject_allocation;
 			$detailrecords['collection_module']                  = $row->collection_module;
 			$detailrecords['fees_concession']                  = $row->fees_concession;
 			$detailrecords['fees_collection']                  = $row->fees_collection;
@@ -579,6 +663,8 @@ class admin
 			$detailrecords['tamil_birthday_wishes']                  = $row->tamil_birthday_wishes;
 			$detailrecords['student_general_message']                  = $row->student_general_message;
 			$detailrecords['staff_general_message']                  = $row->staff_general_message;
+			$detailrecords['send_sms_mark']                  = $row->send_sms_mark;
+			$detailrecords['sms_delivery_report']                  = $row->sms_delivery_report;
 			$detailrecords['home_work']                  = $row->home_work;
 			$detailrecords['report_module']                  = $row->report_module;
 			$detailrecords['student_report_sub_module']                  = $row->student_report_sub_module;
@@ -586,6 +672,8 @@ class admin
 			$detailrecords['class_wise_list']                  = $row->class_wise_list;
 			$detailrecords['register_of_admission']                  = $row->register_of_admission;
 			$detailrecords['student_transport_list']                  = $row->student_transport_list;
+			$detailrecords['student_mark_list']                  = $row->student_mark_list;
+			$detailrecords['roll_of_honour_list']                  = $row->roll_of_honour_list;
 			$detailrecords['fee_details_sub_module']                  = $row->fee_details_sub_module;
 			$detailrecords['daily_fees_collection']                  = $row->daily_fees_collection;
 			$detailrecords['day_end_report']                  = $row->day_end_report;
@@ -1707,8 +1795,8 @@ class admin
 		if (isset($_POST['pincode1'])) {
 			$pincode1 = $_POST['pincode1'];
 		}
-		if (isset($_POST['standardEditvalue'])) {
-			$standard = $_POST['standardEditvalue'];
+		if (isset($_POST['standard'])) {
+			$standard = $_POST['standard'];
 		}
 		if (isset($_POST['previouschoolname'])) {
 			$previouschoolname = $_POST['previouschoolname'];
@@ -1903,6 +1991,10 @@ class admin
 		}
 
 		$student_image = '';
+			$subdir5 = $_POST['admission_number'];
+		//set the directory path name
+		$dir5 = ("uploads/student_creation/" . $subdir5);
+			mkdir($dir5, 0777);
 		if (!empty($_FILES['student_image']['name'])) {
 			//delete old file
 			$path = "uploads/student_creation/$admission_number/" . $_POST["updateimage"];
@@ -1912,7 +2004,7 @@ class admin
 			//insert new file
 			$student_image = $_FILES['student_image']['name'];
 			$student_image_tmp = $_FILES['student_image']['tmp_name'];
-			$student_imagefolder = "uploads/student_creation/$admission_number/" . $student_image;
+			$student_imagefolder = "$dir5/" . $student_image;
 			move_uploaded_file($student_image_tmp, $student_imagefolder);
 		}
 		// if($father_image == '' && isset($_POST["updateimage"])){
@@ -2598,6 +2690,7 @@ class admin
 		if (isset($_POST['staff_designation'])) {
 			$staff_designation = $_POST['staff_designation'];
 		}
+		$gender = '';
 		if (isset($_POST['gender'])) {
 			$gender = $_POST['gender'];
 		}
@@ -2631,6 +2724,7 @@ class admin
 		if (isset($_POST['emg_contact_no'])) {
 			$emg_contact_no = $_POST['emg_contact_no'];
 		}
+		$transport_details = '';
 		if (isset($_POST['transport_details'])) {
 			$transport_details = $_POST['transport_details'];
 		}
@@ -2646,6 +2740,7 @@ class admin
 		if (isset($_POST['bank_acc_no'])) {
 			$bank_acc_no = $_POST['bank_acc_no'];
 		}
+		$area = '';
 		if (isset($_POST['area'])) {
 			$area = $_POST['area'];
 		}
@@ -2671,8 +2766,10 @@ class admin
 		//set the directory path name
 		$staffdir = ("uploads/staff_creation/staffImages/" . $employee_no);
 		//make the directory
-		mkdir($staffdir, 0777);
-
+		if (!is_dir($staffdir)) {
+			mkdir($staffdir, 0777, true); // 'true' allows recursive directory creation
+		}
+        $staff_image = '';
 		if (!empty($_FILES['staff_image']['name'])) {
 			$staff_image = $_FILES['staff_image']['name'];
 			$pic_temp = $_FILES['staff_image']['tmp_name'];

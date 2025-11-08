@@ -95,27 +95,40 @@ $getAreaMasterDetailsQry->closeCursor();
 //Fee Details /// Gross Payable/// Last year fees//////////////////////
 $split_academic_year = explode('-', $academic_year);
 $last_year = (($split_academic_year[0] - 1) . '-' . ($split_academic_year[1] - 1));
-$particular_std_id = array('14', '15', '16', '17', '18', '19', '20', '21', '22', '23');
-if (!in_array($standard, $particular_std_id)) { //these under 9 std. so jst add 1 to the id and update.
-    $lastyr_std_id = intval($standard) - 1;
-} else { //these are 11th std so  no need to check next standard id.
-    $lastyr_std_id = '0';
-
-    if ($standard == '19') { //Maths_biology
-        $lastyr_std_id = '14';
-    } else if ($standard == '20') { //maths_computerscience
-        $lastyr_std_id = '15';
-    } else if ($standard == '21') { //biology_computerscience
-        $lastyr_std_id = '16';
-    } else if ($standard == '22') { //commerce_computerscience
-        $lastyr_std_id = '17';
-    } else if ($standard == '23') { //all
-        $lastyr_std_id = '18';
-    }
-    else if ($standard == '25') { //all
-        $lastyr_std_id = '24';
-    }
+$getOldStudCntQry = $connect->query(" SELECT standard as last_yr_std FROM `student_history` WHERE student_id = '$student_id' AND academic_year ='$last_year' ");
+$final_std_id = null;
+if ($getOldStudCntQry->rowCount() > 0) {
+    $final_std_id = $getOldStudCntQry->fetchColumn(); // fetches last_yr_std
 }
+$particular_std_id = array('14', '15', '16', '17', '18', '19', '20', '21', '22', '23');
+// if (!in_array($standard, $particular_std_id)) { //these under 9 std. so jst add 1 to the id and update.
+//     $lastyr_std_id = intval($standard) - 1;
+// } else { //these are 11th std so  no need to check next standard id.
+//     $lastyr_std_id = '0';
+
+//     if ($standard == '19') { //Maths_biology
+//         $lastyr_std_id = '14';
+//     } else if ($standard == '20') { //maths_computerscience
+//         $lastyr_std_id = '15';
+//     } else if ($standard == '21') { //biology_computerscience
+//         $lastyr_std_id = '16';
+//     } else if ($standard == '22') { //commerce_computerscience
+//         $lastyr_std_id = '17';
+//     } else if ($standard == '23') { //all
+//         $lastyr_std_id = '18';
+//     }
+//     else if ($standard == '25') { //all
+//         $lastyr_std_id = '24';
+//     }
+// }
+// if ($last_yr_std !== null && $last_yr_std == $standard) {
+//     // Use actual last year standard ID from DB if it matches the expected
+//     $final_std_id = $last_yr_std;
+// } else {
+//     // Use computed one if not matching
+//     $final_std_id = $lastyr_std_id;
+// }
+
 
 //Group fees
 // $getOldStudCntQry = $connect->query(" SELECT * FROM `student_creation` WHERE studentstype ='2' AND YEAR(created_date) <= YEAR(CURDATE()) AND student_id = '$student_id' ");
@@ -140,7 +153,7 @@ $getLastYearGrpFeesQry = $connect->query("SELECT SUM(gcf.grp_amount) as OverallG
     JOIN group_course_fee gcf ON fm.fees_id = gcf.fee_master_id 
     JOIN student_creation stdc ON fm.medium = stdc.medium
     JOIN student_history sh ON sh.student_id = stdc.student_id
-    WHERE fm.academic_year = '$last_year' AND fm.medium = '$medium' AND $studentlast_type_cndtn AND fm.standard = '$lastyr_std_id' AND gcf.status = 1 AND fm.school_id = '$school_id' AND stdc.student_id = '$student_id' AND sh.academic_year = '$last_year' ");
+    WHERE fm.academic_year = '$last_year' AND fm.medium = '$medium' AND $studentlast_type_cndtn AND fm.standard = '$final_std_id' AND gcf.status = 1 AND fm.school_id = '$school_id' AND stdc.student_id = '$student_id' AND sh.academic_year = '$last_year' ");
 if ($getLastYearGrpFeesQry->rowCount() > 0) {
     $overallLastYearGrpAmount = $getLastYearGrpFeesQry->fetch()['OverallGrpAmount'];
 } else {
@@ -155,7 +168,7 @@ $getLastYearExtraCurFeesQry = $connect->query("SELECT SUM(ecaf.extra_amount) as 
     FROM fees_master fm 
     JOIN extra_curricular_activities_fee ecaf ON fm.fees_id = ecaf.fee_master_id
 JOIN student_history sh ON FIND_IN_SET(ecaf.extra_fee_id, sh.extra_curricular) AND sh.academic_year = '$last_year'
-    WHERE fm.academic_year = '$last_year' AND fm.medium = '$medium' AND $studentlast_type_cndtn AND fm.standard = '$lastyr_std_id' AND ecaf.status = '1' AND fm.school_id ='$school_id' AND sh.student_id = '$student_id' ");
+    WHERE fm.academic_year = '$last_year' AND fm.medium = '$medium' AND $studentlast_type_cndtn AND fm.standard = '$final_std_id' AND ecaf.status = '1' AND fm.school_id ='$school_id' AND sh.student_id = '$student_id' ");
 if ($getLastYearExtraCurFeesQry->rowCount() > 0) {
     $overallLastYearExtraCurAmount = $getLastYearExtraCurFeesQry->fetch()['OverallExtraCurAmount'];
 } else {
@@ -171,7 +184,7 @@ $getLastYearAmenityFeesQry = $connect->query("SELECT SUM(af.amenity_amount) as O
     JOIN amenity_fee af ON fm.fees_id = af.fee_master_id 
     JOIN student_creation stdc ON fm.medium = stdc.medium
     JOIN student_history sh ON sh.student_id = stdc.student_id
-    WHERE fm.academic_year = '$last_year' AND fm.medium = '$medium' AND $studentlast_type_cndtn AND fm.standard = '$lastyr_std_id' AND af.status = '1' AND fm.school_id ='$school_id' AND stdc.student_id = '$student_id' AND sh.academic_year = '$last_year'");
+    WHERE fm.academic_year = '$last_year' AND fm.medium = '$medium' AND $studentlast_type_cndtn AND fm.standard = '$final_std_id' AND af.status = '1' AND fm.school_id ='$school_id' AND stdc.student_id = '$student_id' AND sh.academic_year = '$last_year'");
 if ($getLastYearAmenityFeesQry->rowCount() > 0) {
     $overallLastYearAmenityAmount = $getLastYearAmenityFeesQry->fetch()['OverallAmenityAmount'];
 } else {
@@ -195,6 +208,8 @@ if ($getLastAreaMasterDetailsQry->rowCount() > 0) {
 }
 //Close DB connection
 $getLastAreaMasterDetailsQry->closeCursor();
+// echo 'sdfs',$overallLastYearGrpAmount;
+// echo 'sd'.$overallLastYearAmenityAmount;
 $overallLastYearFees = intval($overallLastYearGrpAmount + $overallLastYearExtraCurAmount + $overallLastYearAmenityAmount + $overallLastTransportAmount);
 
 } else {
@@ -393,13 +408,12 @@ if ($CheckLastyrQry->rowCount() > 0) {
     } else {
         $lastyr_amenity_amount = '0';
     }
-
     //Close DB connection
     $lastyr_amenityFeeQry->closeCursor();
     $lastyr_transFeeQry = $connect->query("SELECT (SUM(lyfd.fee_received)) as paid_trans_amount 
     FROM `last_year_fees` lyfs 
     JOIN last_year_fees_details lyfd ON lyfs.id = lyfd.admission_fees_ref_id 
- JOIN area_creation_particulars acp ON lyfd.fees_id = acp.particulars_id
+    JOIN area_creation_particulars acp ON lyfd.fees_id = acp.particulars_id
     WHERE lyfs.admission_id = '$student_id'  && lyfd.fees_table_name = 'transport' && lyfs.academic_year = '$academic_year'");
     if ($lastyr_transFeeQry->rowCount() > 0) {
         $lastyr_trans_amount = $lastyr_transFeeQry->fetch()['paid_trans_amount'];
@@ -563,7 +577,7 @@ if ($CheckLastyrFeesConcessionQry->rowCount() > 0) {
 
 //Close DB connection
 $CheckLastyrFeesConcessionQry->closeCursor();
-$CheckLastyrEntryConcessionQry = $connect->query("SELECT SUM(scholarship) as overall_lastyr_concession FROM `last_year_fees` WHERE admission_id = '$student_id' && academic_year = '$last_year' ");
+$CheckLastyrEntryConcessionQry = $connect->query("SELECT SUM(scholarship) as overall_lastyr_concession FROM `last_year_fees` WHERE admission_id = '$student_id' && academic_year = '$academic_year' ");
 if ($CheckLastyrEntryConcessionQry->rowCount() > 0) {
     $lastyr_entry_concession_amount = $CheckLastyrEntryConcessionQry->fetch()['overall_lastyr_concession'];
 } else {

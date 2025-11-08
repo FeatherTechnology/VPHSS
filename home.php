@@ -46,7 +46,7 @@ if($current_page == 'vendorcreation' || $current_page == 'auction_details') {
 	<!-- Page wrapper start -->
 	<div class="page-wrapper">
 		<?php 
-		if($_SESSION['userid']=="")
+		if(!isset($_SESSION['userid']) || $_SESSION['userid']=="")
 		{
 			echo "<script>location.href='index.php'</script>"; 
 		}
@@ -217,7 +217,19 @@ if($current_page == 'vendorcreation' || $current_page == 'auction_details') {
 			if($current_page == 'covid_concession') { 
 			include "include/templates/covid_concession.php"; 
 			} 
-			
+			//Exam Creation
+			if($current_page == 'exam_creation') { 
+				include "include/templates/exam_creation.php"; 
+				} 
+	//Student Mark Enty
+	if($current_page == 'student_mark_entry') { 
+		include "include/templates/student_mark_entry.php"; 
+		} 
+	//Staff Subject Allocation 
+	if($current_page == 'staff_subject_allocation') { 
+		include "include/templates/staff_subject_allocation.php"; 
+		} 
+
 			//Fees Concession 
 			if($current_page == 'fees_concession') { 
 			include "include/templates/fees_concession.php"; 
@@ -373,6 +385,14 @@ if($current_page == 'vendorcreation' || $current_page == 'auction_details') {
 			if($current_page == 'student_transport_list') { 
 				include "reports/student_transport_report/student_transport_list.php";
 			}
+			//Student Mark List.
+			if($current_page == 'student_mark_list') { 
+				include "reports/student_mark_report/student_mark_list.php";
+			}
+			//Roll of Honour.
+			if($current_page == 'roll_of_honour_list') { 
+				include "reports/roll_of_honour_report/roll_of_honour_list.php";
+			}
 			//Student Fees Details.
 
 			if($current_page == 'daily_fees_collection') { 
@@ -422,6 +442,12 @@ if($current_page == 'vendorcreation' || $current_page == 'auction_details') {
 				include "include/templates/edit_staff_general_message.php";
 			}
 
+			if($current_page == 'send_sms_mark') { 
+				include "include/templates/send_sms_mark.php";
+			}
+			if($current_page == 'sms_delivery_report') { 
+				include "include/templates/sms_delivery_report.php";
+			}
 			if($current_page == 'edit_home_work') { 
 				include "include/templates/edit_home_work.php";
 			}

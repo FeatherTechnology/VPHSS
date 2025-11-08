@@ -1,0 +1,8 @@
+1 standard edit in student creation
+2 Day End and daily fees collection report show based on the terms
+3 adding exam module
+4 remove pan mandatory field in staff creation
+5 adding Exam Mark SMS module
+6  Developed A Student Mark list Report
+7 Developed a Roll of Honor report
+8 Showing hand and bank Cash Separately for all fees related reports

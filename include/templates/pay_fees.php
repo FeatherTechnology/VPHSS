@@ -31,11 +31,6 @@ if (isset($_POST['submitpayfees']) && $_POST['submitpayfees'] != '') {
             }, 1000);
 
             function print_temp_fees(payFeesid) {
-                // Open a new window or tab
-                var printWindow = window.open('', '_blank');
-
-                // Make sure the popup window is not blocked
-                if (printWindow) {
                     // Load the content into the popup window
                     $.ajax({
                         url: 'ajaxFiles/pay_fees_print.php',
@@ -46,12 +41,24 @@ if (isset($_POST['submitpayfees']) && $_POST['submitpayfees'] != '') {
                         type: "post",
                         success: function(html) {
                             // Write the content to the new window
-                            printWindow.document.open();
-                            printWindow.document.write(html);
-                            printWindow.document.close();
+                            var printWindow = window.open('', '_blank');
+                            if (printWindow) {
+                                printWindow.document.write(html);
+                                printWindow.document.close();
 
-                            // Optionally, print the content
-                            printWindow.print();
+                                // Wait for images to load before printing
+                                const images = printWindow.document.querySelectorAll('img');
+                                Promise.all(Array.from(images).map(img => new Promise(resolve => {
+                                    if (img.complete) resolve();
+                                    else img.addEventListener('load', resolve);
+                                    img.addEventListener('error', resolve);
+                                }))).then(() => {
+                                    printWindow.print();
+                                    printWindow.close();
+                                });
+                            } else {
+                                alert('Pop-up blocked. Please allow pop-ups for this site.');
+                            }
                         },
                         error: function() {
                             // Handle error
@@ -59,9 +66,6 @@ if (isset($_POST['submitpayfees']) && $_POST['submitpayfees'] != '') {
                             alert('Failed to load print content.');
                         }
                     });
-                } else {
-                    alert('Popup blocked. Please allow popups for this website.');
-                }
             }
         </script>
 <?php
@@ -93,7 +97,7 @@ if (isset($_GET['upd'])) {
         <li class="breadcrumb-item">School Fee Receipt</li>
     </ol>
     <a href=" <?php if ($pagename == 'stdcreation') { ?> edit_student_creation <?php } else { ?> fees_collection&studid=<?php if (isset($admission_id)) echo $admission_id;
-                                                                                                                } ?>">
+                                                                                                                    } ?>">
         <button type="button" class="btn btn-primary"><span class="icon-arrow-left"></span>&nbsp; Back</button>
     </a>
 </div>
@@ -376,8 +380,8 @@ if (isset($_GET['upd'])) {
                                                     <div class="form-group">
                                                         <select tabindex="1" type="text" class="form-control" id="cheque_ledger_name" name="cheque_ledger_name" tabindex="1">
                                                             <option value="">Select ledger</option>
-                                                            <option value="2022-2023">2022 - 2023</option>
-                                                            <option value="2023-2024">2023 - 2024</option>
+                                                            <option value="2024-2025">2024 - 2025</option>
+                                                            <option value="2025-2026">2025 - 2026</option>
                                                         </select>
                                                     </div>
                                                 </td>
@@ -411,8 +415,8 @@ if (isset($_GET['upd'])) {
                                                     <div class="form-group">
                                                         <select tabindex="1" type="text" class="form-control" id="neft_ledger_name" name="neft_ledger_name" tabindex="1">
                                                             <option value="">Select Ledger</option>
-                                                            <option value="2022-2023">2022 - 2023</option>
-                                                            <option value="2023-2024">2023 - 2024</option>
+                                                            <option value="2024-2025">2024 - 2025</option>
+                                                            <option value="2025-2026">2025 - 2026</option>
                                                         </select>
                                                     </div>
                                                 </td>

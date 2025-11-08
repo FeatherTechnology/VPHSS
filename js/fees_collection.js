@@ -101,46 +101,53 @@ $(document).ready(function () {
   //   });
   // });
 
-  $("#paid_fees_details").on('click', '.printpo', function () {
+$("#paid_fees_details").on('click', '.printpo', function () {
     var currentRow = $(this).closest("tr");
     var fees_ids = currentRow.find('.fees_id').val();
     var student_id = currentRow.find('.student_id').val();
     var academic_year = currentRow.find('.academicyear').val();
-    var receipt_date = currentRow.find("td:eq(1)").text();
-    var receipt_number = currentRow.find("td:eq(3)").text();
-    var mergedParticularsArray = currentRow.find("td:eq(4)").text();
-    var mergedAmountArray = currentRow.find("td:eq(5)").text();
-    
+    var receipt_date = currentRow.find("td:eq(1)").text().trim();
+    var receipt_number = currentRow.find("td:eq(3)").text().trim();
+    var mergedParticularsArray = currentRow.find("td:eq(4)").text().trim();
+    var mergedAmountArray = currentRow.find("td:eq(5)").text().trim();
+
     // Open a new window or tab
     var printWindow = window.open('', '_blank');
-    
-    // Make sure the popup window is not blocked
+
     if (printWindow) {
-        // Load the content into the popup window
         $.ajax({
             url: "FeesCollectionFile/grp/printFeesDetails.php",
-            data: {
-                "fees_ids": fees_ids,
-                "student_id": student_id,
-                "receipt_date": receipt_date,
-                "receipt_number": receipt_number,
-                "academic_year": academic_year,
-                "mergedParticularsArray": mergedParticularsArray,
-                "mergedAmountArray": mergedAmountArray
-            },
+            type: "POST",
             cache: false,
-            type: "post",
+            data: {
+                fees_ids: fees_ids,
+                student_id: student_id,
+                receipt_date: receipt_date,
+                receipt_number: receipt_number,
+                academic_year: academic_year,
+                mergedParticularsArray: mergedParticularsArray,
+                mergedAmountArray: mergedAmountArray
+            },
             success: function (html) {
-                // Write the content to the new window
                 printWindow.document.open();
                 printWindow.document.write(html);
-                printWindow.document.close();
+                printWindow.document.close(); // important so DOM is ready
 
-                // Optionally, print the content
-                printWindow.print();
+                // Wait for all images to load before printing
+                const images = printWindow.document.querySelectorAll('img');
+                Promise.all(Array.from(images).map(img => new Promise(resolve => {
+                    if (img.complete) resolve();
+                    else {
+                        img.addEventListener('load', resolve);
+                        img.addEventListener('error', resolve); // prevent hang if img fails
+                    }
+                }))).then(() => {
+                    printWindow.focus();
+                    printWindow.print();
+                    printWindow.close();
+                });
             },
             error: function () {
-                // Handle error
                 printWindow.close();
                 alert('Failed to load print content.');
             }
@@ -149,6 +156,7 @@ $(document).ready(function () {
         alert('Popup blocked. Please allow popups for this website.');
     }
 });
+
 
   $("#paid_fees_details").on('click', '.print_transport_fees', function () {
     var currentRow = $(this).closest("tr");
@@ -173,8 +181,19 @@ $(document).ready(function () {
                 printWindow.document.write(html);
                 printWindow.document.close();
 
-                // Optionally, print the content
-                printWindow.print();
+               // Wait for all images to load before printing
+                const images = printWindow.document.querySelectorAll('img');
+                Promise.all(Array.from(images).map(img => new Promise(resolve => {
+                    if (img.complete) resolve();
+                    else {
+                        img.addEventListener('load', resolve);
+                        img.addEventListener('error', resolve); // prevent hang if img fails
+                    }
+                }))).then(() => {
+                    printWindow.focus();
+                    printWindow.print();
+                    printWindow.close();
+                });
             },
             error: function () {
                 // Handle error
@@ -199,7 +218,7 @@ $(document).ready(function () {
       data: { "feesid": feesid },
       url: "FeesCollectionFile/feesCollection/deletePayFeesDetails.php",
       success: function (response) {
-        console.log(response);
+
         if(response == '1'){
           alert("Successfully fees deleted!")
           getPaidDetails(studentid);//call paid details function
@@ -223,7 +242,6 @@ $(document).ready(function () {
       data: { "feesid": feesid },
       url: "FeesCollectionFile/feesCollection/deleteLastPayFeesDetails.php",
       success: function (response) {
-        console.log(response);
         if(response == '1'){
           alert("Successfully fees deleted!")
           getPaidDetails(studentid);//call paid details function
@@ -248,7 +266,6 @@ $(document).ready(function () {
       data: { "feesid": feesid },
       url: "FeesCollectionFile/feesCollection/deleteTransportFeesDetails.php",
       success: function (response) {
-        console.log(response);
         if(response == '1'){
           alert("Successfully fees deleted!")
           getPaidDetails(studentid);//call paid details function

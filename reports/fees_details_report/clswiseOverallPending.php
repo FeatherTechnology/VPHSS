@@ -15,6 +15,12 @@ if (isset($_POST['stdMedium'])) {
 // if(isset($_POST['studentType'])){
 //     $studentType = $_POST['studentType'];
 // }
+$getbrc = $mysqli->query("SELECT sc.school_name, sc.district, sc.pincode FROM school_creation sc WHERE sc.status = 0 AND school_id = '$school_id'");
+while ($schoolInfo = $getbrc->fetch_assoc()) {
+    $school_name     = $schoolInfo["school_name"];
+    $district  = $schoolInfo["district"];
+    $pincode  = $schoolInfo["pincode"];
+}
 ?>
 
 <table class="table table-bordered" id="show_student_allPending_list">
@@ -53,6 +59,7 @@ WHERE std.status = '0' ");
         $grand_transport_term3 = 0;
         $grand_overall_total = 0;
         while ($standardList = $getStandardListQry->fetchObject()) {
+          
             $getTermPendingQry = $connect->query("SELECT
     (
         COALESCE(gcf.grp_amount, 0) *(
@@ -63,7 +70,7 @@ WHERE std.status = '0' ");
      LEFT JOIN student_history sh ON sc.student_id = sh.student_id
         WHERE
            sh.standard = '$standardList->standard_id' AND sh.academic_year = '$academicyear' AND
-       sc.leaving_term!=1 AND sc.leaving_term!=5  AND sc.school_id = '$school_id' AND sc.status = 0
+       sc.leaving_term!=1 AND sc.leaving_term!=5  AND sc.school_id = '$school_id' AND sc.status = 0 AND sc.medium = '$stdMedium'
     )
     ) -(
     SELECT
@@ -78,7 +85,7 @@ WHERE std.status = '0' ");
         sc.student_id = af.admission_id
     LEFT JOIN student_history sh ON sc.student_id = sh.student_id
     WHERE
-        afd.fees_id = gcf.grp_course_id && afd.fees_table_name = 'grptable' AND sh.standard = '$standardList->standard_id' AND sc.school_id = '$school_id' AND sc.status = 0
+        afd.fees_id = gcf.grp_course_id && afd.fees_table_name = 'grptable' AND sh.standard = '$standardList->standard_id' AND sc.school_id = '$school_id' AND sc.status = 0 AND sh.academic_year='$academicyear'
     ) AS termPending_for_standard
     FROM
         fees_master fm
@@ -101,7 +108,7 @@ WHERE std.status = '0' ");
      LEFT JOIN student_history sh ON sc.student_id = sh.student_id
         WHERE
            sh.standard = '$standardList->standard_id' AND sh.academic_year = '$academicyear' AND
-       sc.leaving_term!=1 AND sc.leaving_term!=5  AND sc.school_id = '$school_id' AND sc.status = 0
+       sc.leaving_term!=1 AND sc.leaving_term!=5  AND sc.school_id = '$school_id' AND sc.status = 0 AND sc.medium = '$stdMedium'
     )
     ) - 
     (
@@ -115,7 +122,7 @@ WHERE std.status = '0' ");
             sc.student_id = af.admission_id
         JOIN student_history sh ON sc.student_id = sh.student_id
         WHERE
-            afd.fees_id = af.amenity_fee_id && afd.fees_table_name = 'amenitytable' AND sh.standard = '$standardList->standard_id'AND sc.status = 0
+            afd.fees_id = af.amenity_fee_id && afd.fees_table_name = 'amenitytable' AND sh.standard = '$standardList->standard_id'AND sc.status = 0 AND sh.academic_year='$academicyear'
         ) AS bookpending_for_standard
     FROM
         fees_master fm
@@ -126,7 +133,6 @@ WHERE std.status = '0' ");
             } else {
                 $book_pending = '0';
             }
-
             $extra_pending = 0;
             $getExtraPendingQry = $connect->query("SELECT 
                 (
@@ -174,7 +180,7 @@ WHERE std.status = '0' ");
                 $extra_pending = 0;
             }
 
-            $getTransportPendingQry = $connect->query("SELECT 
+                       $getTransportPendingQry = $connect->query("SELECT 
     SUM(CASE WHEN is_min = 1 THEN transport_pending ELSE 0 END) AS total_transport_min,
     SUM(CASE WHEN is_max = 1 THEN transport_pending ELSE 0 END) AS total_transport_max,
     SUM(CASE WHEN is_middle = 1 THEN transport_pending ELSE 0 END) AS total_transport_middle
@@ -201,7 +207,7 @@ FROM (
                 AND sh.standard = '$standardList->standard_id' 
                 AND sc.school_id = '$school_id' 
                 AND sh.academic_year = '$academicyear' 
-                AND sc.leaving_term NOT IN (1, 5) AND sc.status = 0
+                AND sc.leaving_term NOT IN (1, 5) AND sc.status = 0 AND sc.medium = '$stdMedium'
         ) AS transport_pending,
         CASE 
             WHEN acp.particulars_id = (SELECT MIN(acp1.particulars_id) 
@@ -241,7 +247,7 @@ FROM (
             sh.standard = '$standardList->standard_id' 
             AND sh.academic_year = '$academicyear' 
             AND sc.leaving_term NOT IN (1, 5) 
-            AND sc.school_id = '$school_id' AND sc.status = 0
+            AND sc.school_id = '$school_id' AND sc.status = 0 AND sc.medium = '$stdMedium'
         GROUP BY sh.transportarearefid
     ) sc 
         ON ac.area_id = sc.area_id
@@ -261,9 +267,6 @@ FROM (
             $term1 = isset($term_pending[0]) ? $term_pending[0] : 0;
             $term2 = isset($term_pending[1]) ? $term_pending[1] : 0;
             $term3 = isset($term_pending[2]) ? $term_pending[2] : 0;
-            // $transport_term1 = isset($transport_pending[0]) ? $transport_pending[0] : 0;
-            // $transport_term2 = isset($transport_pending[1]) ? $transport_pending[1] : 0;
-            // $transport_term3 = isset($transport_pending[2]) ? $transport_pending[2] : 0;
 
         ?>
             <tr>
@@ -306,14 +309,29 @@ FROM (
 
 <script>
     $(document).ready(function() {
+         var schoolName = "<?php echo $school_name . ' - ' . $district . ' - ' . $pincode; ?>";
+
+        var feeHeading = " Class Wise Overall Pending Report";
         $('#show_student_allPending_list').DataTable({
             // order: [[0, "asc"]],
             // columnDefs: [
             //     { type: 'natural', targets: 0 }
             // ],
             dom: 'Bfrtip',
-            buttons: [
-                'copy', 'csv', 'excel', 'pdf', 'print'
+           buttons: [
+                'copy', 'csv', 'excel', 'pdf',
+                {
+                    extend: 'print',
+                    text: 'Print',
+                    title: '',
+                    customize: function(win) {
+                        $(win.document.body)
+                            .prepend(
+                                '<h2 style="text-align:center;">' + schoolName + '</h2>' +
+                                '<h4 style="text-align:center;">' + feeHeading + '</h4><br>'
+                            );
+                    }
+                }
             ],
             paging: false, // Disable paging
             sort: false,

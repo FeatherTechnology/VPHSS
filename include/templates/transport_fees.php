@@ -35,12 +35,20 @@ if (isset($_POST['submittransportpay']) && $_POST['submittransportpay'] != '') {
                     },
                     success: function(html) {
                         var printWindow = window.open('', '_blank', 'height=800,width=1200');
-
-                        if (printWindow) { // Check if the window is successfully opened
+                        if (printWindow) {
                             printWindow.document.write(html);
                             printWindow.document.close();
-                            printWindow.print();
-                            printWindow.close();
+
+                            // Wait for images to load before printing
+                            const images = printWindow.document.querySelectorAll('img');
+                            Promise.all(Array.from(images).map(img => new Promise(resolve => {
+                                if (img.complete) resolve();
+                                else img.addEventListener('load', resolve);
+                                img.addEventListener('error', resolve);
+                            }))).then(() => {
+                                printWindow.print();
+                                printWindow.close();
+                            });
                         } else {
                             alert('Pop-up blocked. Please allow pop-ups for this site.');
                         }
@@ -325,8 +333,8 @@ if (isset($_GET['upd'])) {
                                                     <div class="form-group">
                                                         <select tabindex="1" type="text" class="form-control" id="cheque_ledger_name" name="cheque_ledger_name" tabindex="1">
                                                             <option value="">Select ledger</option>
-                                                            <option value="2022-2023">2022 - 2023</option>
-                                                            <option value="2023-2024">2023 - 2024</option>
+                                                            <option value="2024-2025">2024 - 2025</option>
+                                                            <option value="2025-2026">2025 - 2026</option>
                                                         </select>
                                                     </div>
                                                 </td>
@@ -360,8 +368,8 @@ if (isset($_GET['upd'])) {
                                                     <div class="form-group">
                                                         <select tabindex="1" type="text" class="form-control" id="neft_ledger_name" name="neft_ledger_name" tabindex="1">
                                                             <option value="">Select Ledger</option>
-                                                            <option value="2022-2023">2022 - 2023</option>
-                                                            <option value="2023-2024">2023 - 2024</option>
+                                                               <option value="2024-2025">2024 - 2025</option>
+                                                            <option value="2025-2026">2025 - 2026</option>
                                                         </select>
                                                     </div>
                                                 </td>

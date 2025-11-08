@@ -18,55 +18,12 @@ if (isset($_POST['medium'])) {
 if (isset($_POST['studentType'])) {
     $studentType = $_POST['studentType'];
 }
-if (isset($_POST['standard'])) {
-    $standardId = (int)$_POST['standard']; // ensure it's an integer
 
-    // Initialize next_std_id
-    $prevstandardId = null;
-
-    if ($standardId >= 14) {
-        // Handle special case for certain standards
-        switch ($standardId) {
-            case 19:
-                $prevstandardId = 14;
-                break;
-            case 20:
-                $prevstandardId = 15;
-                break;
-            case 21:
-                $prevstandardId = 16;
-                break;
-            case 22:
-                $prevstandardId = 17;
-                break;
-            case 23:
-                $prevstandardId = 18;
-                break;
-            case 25:
-                $prevstandardId = 24;
-                break;
-            default:
-                $prevstandardId = $standardId - 1;
-                break; // fallback
-        }
-    } else {
-        // Default next standard as current + 1 for lower classes
-        $prevstandardId = $standardId - 1;
-    }
-
-    // You can now use $prevstandardId as needed
-}
-
-if ($studentType == "1" || $studentType == "2") {
-    $student_type_cndtn = "(fm.student_type = '$studentType' || fm.student_type = '4')";
-} else {
-    $student_type_cndtn = "(fm.student_type = '$studentType')";
-}
-$CheckReceiptQry1 = $connect->query("SELECT sc.id, sc.studentstype FROM `student_history` sc WHERE sc.academic_year = '$academicYear' AND sc.student_id = '$admissionFormId' ");
+$CheckReceiptQry1 = $connect->query("SELECT sc.id, sc.studentstype ,sc.standard FROM `student_history` sc WHERE sc.academic_year = '$academicYear' AND sc.student_id = '$admissionFormId' ");
 if ($CheckReceiptQry1->rowCount() > 0) {
     $studentData = $CheckReceiptQry1->fetch(PDO::FETCH_ASSOC);
     $studentstype = $studentData['studentstype'];
-
+    $prevstandardId = $studentData['standard'];
     if ($studentstype == "1" || $studentstype == "2") {
         $student_type_cndtn = "(fm.student_type = '$studentstype' || fm.student_type = '4')";
     } else {
@@ -85,6 +42,7 @@ while ($grpfeeDetailsInfo = $feeQueryToUse->fetch()) {
     $grpConcessionInfo = $grpConcessionQry->fetch();
     $grpTotalScholarshipAmnt = $grpConcessionInfo['grp_schlrshp_amnt'];
     $totalGrpAmnt = $grpConcessionInfo['grp_amnt'];
+    echo "SELECT COALESCE(SUM(lfd.scholarship),0) + COALESCE(SUM(lfd.fee_received),0) AS grp_amnt FROM `last_year_fees` lf JOIN last_year_fees_details lfd ON lf.id = lfd.admission_fees_ref_id WHERE lf.admission_id = '$admissionFormId' && lfd.fees_table_name = 'grptable' && lfd.fees_id = '" . $grpfeeDetailsInfo['grp_course_id'] . "' && lf.academic_year ='$nextAcademicYear'";
     $grpLastConcessionQry = $connect->query("SELECT COALESCE(SUM(lfd.scholarship),0) + COALESCE(SUM(lfd.fee_received),0) AS grp_amnt FROM `last_year_fees` lf JOIN last_year_fees_details lfd ON lf.id = lfd.admission_fees_ref_id WHERE lf.admission_id = '$admissionFormId' && lfd.fees_table_name = 'grptable' && lfd.fees_id = '" . $grpfeeDetailsInfo['grp_course_id'] . "' && lf.academic_year ='$nextAcademicYear' ");
     $grpLastConcessionInfo = $grpLastConcessionQry->fetch();
     $totallastGrpAmnt = $grpLastConcessionInfo['grp_amnt'];

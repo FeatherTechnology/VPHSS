@@ -484,7 +484,7 @@ if($idupd>0)
                             <div class="col-md-4"><br />
                                 <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                                 <label for="disabledInput">Student Photo</label>
-                                    <?php if(isset($_GET['upd'])<=0){ ?>
+                                    <?php  if(!isset($_GET['upd']))  { ?>
                                         <div class="form-group" style="margin: auto;"> 
                                             <img src="img/profile-pic.jpg" width="43%" id="viewimage1">
                                             <input type="file" tabindex="23"  class="form-control" 
@@ -492,7 +492,8 @@ if($idupd>0)
                                             id="student_image" name="student_image" style="width:43%">
                                         </div>
                                     <?php } ?>
-                                    <?php if(isset($student_image)){ if($student_image != ''){ ?>
+                                    <?php   if(!empty($student_image)) { ?>
+                                        
                                         <div class="form-group" style="margin: auto;"> 
                                             <img src="<?php echo "uploads/student_creation/$admission_number/".$student_image ?>" width="43%" id="viewimage1">
                                             <input type="file" tabindex="23"  class="form-control" 
@@ -507,7 +508,7 @@ if($idupd>0)
                                             accept="image/*" onchange="loadFile1(event)"  
                                             id="student_image" name="student_image" style="width:43%">
                                         </div>
-                                    <?php }} ?>
+                                    <?php }?>
                                 </div>
                             </div>
                         </div>
@@ -641,6 +642,7 @@ if($idupd>0)
                                             <label for="disabledInput">Section<span class="required">*</span></label>
                                             <select class="select2 form-control" id="section" name="section" tabindex="42"><option value="">Select a Section...</option>
                                                 <option value="A"<?php  if(isset($section)) { if($section == "A") echo 'selected'; }?>>A</option>
+                                                <option value="A1"<?php  if(isset($section)) { if($section == "A1") echo 'selected'; }?>>A1</option>
                                                 <option value="B"<?php  if(isset($section)) { if($section == "B") echo 'selected'; }?>>B</option>
                                                 <option value="C"<?php  if(isset($section)) { if($section == "C") echo 'selected'; }?>>C</option>
                                                 <option value="D"<?php  if(isset($section)) { if($section == "D") echo 'selected'; }?>>D</option>
@@ -1447,7 +1449,7 @@ if($idupd>0)
                         </div>
                     </div>           
                 </div>
-            <div id="updateddepartmentTable"> 
+            <div id="updateddepartmentTable" style="max-height: 400px !important; overflow: auto !important; white-space: nowrap !important;">
                     <table class="table custom-table" id="departmentTable"> 
                 <thead>
                     <tr>

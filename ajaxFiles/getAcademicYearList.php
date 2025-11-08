@@ -11,4 +11,7 @@ $i++;
 }
 
 echo json_encode($academicYearArr);
+$mysqli->close();
+$connect = null;
+
 ?>

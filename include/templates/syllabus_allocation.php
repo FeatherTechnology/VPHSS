@@ -28,7 +28,7 @@ if (isset($_SESSION["userid"])) {
                                 <div class="row">
                                     <div class="col-xl-4 col-lg-4 col-md-6 col-sm-6 col-12">
                                         <div class="form-group">
-                                            <label>Select standard</label>
+                                            <label>Select Standard</label>
                                             <select class="form-control select2" id="class_id" name="class_id">
                                                 <option>Select</option>
                                             </select>

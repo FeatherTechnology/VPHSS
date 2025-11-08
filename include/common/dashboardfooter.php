@@ -671,7 +671,15 @@ if($current_page == 'delete_student') { ?>
 if($current_page == 'student_rollback') { ?>
 <script src="js/student_rollback.js"></script>
 <?php }
-
+if($current_page == 'exam_creation') { ?>
+	<script src="js/exam_creation.js"></script>
+	<?php }
+if($current_page == 'student_mark_entry') { ?>
+	<script src="js/student_mark_entry.js"></script>
+	<?php }
+if($current_page == 'staff_subject_allocation') { ?>
+	<script src="js/staff_subject_allocation.js"></script>
+	<?php }
 if($current_page == 'covid_concession') { ?>
 <script src="js/covid_concession.js"></script>
 <?php }
@@ -771,6 +779,13 @@ if($current_page == 'register_of_admission') { ?>
 if($current_page == 'student_transport_list') { ?>
 <script src="js/student_transport_list.js"></script>
 <?php }
+if($current_page == 'student_mark_list') { ?>
+<script src="js/student_mark_list.js"></script>
+<?php }
+
+if($current_page == 'roll_of_honour_list') { ?>
+<script src="js/roll_of_honour_list.js"></script>
+<?php }
 
 if($current_page == 'daily_fees_collection') { ?>
 <script src="js/daily_fees_collection.js"></script>
@@ -831,6 +846,13 @@ if($current_page == 'edit_staff_general_message') { ?>
 if($current_page == 'edit_home_work') { ?>
 <script src="js/edit_home_work.js"></script>
 <?php }
+
+if($current_page == 'send_sms_mark') { ?>
+	<script src="js/send_sms_mark.js"></script>
+	<?php }
+if($current_page == 'sms_delivery_report') { ?>
+	<script src="js/sms_delivery_report.js"></script>
+	<?php }
 
 if($current_page == 'index' || $current_page == '' || $current_page == 'index.php'){ ?>
 	<script src="js/logincreation.js"></script>
