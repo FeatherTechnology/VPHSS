@@ -101,15 +101,15 @@ while ($row = $qry->fetch_assoc()) {
     $admission_number = $row["admission_number"];
     $standard = $row["standard"];
     $section = $row["section"];
-    $student_image = $row["student_image"];
-    $web_img_path = "uploads/student_creation/" . $admission_number . "/" . $student_image;
+    // $student_image = $row["student_image"];
+    // $web_img_path = "uploads/student_creation/" . $admission_number . "/" . $student_image;
 
-    // Define the actual server path for file_exists
-    $server_img_path = __DIR__ . "/../../" . $web_img_path;
-    // Final path logic
-    $final_img_path = (file_exists($server_img_path) && !empty($student_image))
-        ? $web_img_path
-        : 'img/No_image.png';
+    // // Define the actual server path for file_exists
+    // $server_img_path = __DIR__ . "/../../" . $web_img_path;
+    // // Final path logic
+    // $final_img_path = (file_exists($server_img_path) && !empty($student_image))
+    //     ? $web_img_path
+    //     : 'img/No_image.png';
 }
 
 $getbrc = $mysqli->query("SELECT sc.school_name, sc.district, sc.address1, sc.address2, sc.pincode, sc.contact_number, sc.email_id, sc.school_logo, stc.state FROM school_creation sc JOIN state_creation stc ON sc.state = stc.id WHERE sc.status = 0 AND school_id = '$school_id'");
@@ -159,31 +159,36 @@ while ($schoolInfo = $getbrc->fetch_assoc()) {
         </table>
         <table style="width:100%; margin-top:10px; border-collapse:collapse;">
             <tr>
-                <!-- Side: Student Details -->
+                <!-- Left Side -->
                 <td style="width:70%; vertical-align:top; padding-left:15px;">
-                    <div style="margin-bottom:12px;">
-                        <strong>Date:</strong> <?php echo $receipt_date; ?>
-                    </div>
                     <div style="margin-bottom:12px;">
                         <strong>Admission Number:</strong> <?php echo $admission_number; ?>
                     </div>
                     <div style="margin-bottom:12px;">
                         <strong>Student Name:</strong> <?php echo $student_name; ?>
                     </div>
-                    <div style="margin-bottom:12px;">
-                        <strong>Standard & Section:</strong> <?php echo $standard; ?> &amp; <?php echo $section; ?>
-                    </div>
                 </td>
 
-                <!-- Side: Student Photo -->
-                <td style="width:30%; text-align:right; vertical-align:top;">
+                <!-- Right Side -->
+                <td style="width:30%; vertical-align:top; padding-left:15px;">
+                     <!-- Side: Student Photo -->
+                <!-- <td style="width:30%; text-align:right; vertical-align:top;">
                     <img src="<?php echo $final_img_path; ?>"
                         alt="No Image"
                         height="120px" width="120px"
                         style="border:1px solid black; object-fit:cover;">
+                </td> -->
+                    <div style="margin-bottom:12px;">
+                        <strong>Date:</strong> <?php echo $receipt_date; ?>
+                    </div>
+                    <div style="margin-bottom:12px; white-space: nowrap;">
+                        <strong>Standard &amp; Section:</strong>
+                        <?php echo $standard; ?> &amp; <?php echo $section; ?>
+                    </div>
                 </td>
             </tr>
         </table>
+
         <br /><br />
 
         <table rules="all" style="width: 100%;border-style: double;border: 1px solid black;margin: auto;margin-top:50px;">
@@ -287,7 +292,7 @@ while ($schoolInfo = $getbrc->fetch_assoc()) {
                     <p style="margin-bottom:12px;white-space: nowrap;"><b>Transaction ID:</b> <?php echo $neft_ref_number; ?></p>
                 <?php } ?>
             </div>
-           
+
             <tr>
                 <td></td>
                 <td style="margin-left: 5px;padding-left: 30px;text-align:left;"><b>Total</b></td>

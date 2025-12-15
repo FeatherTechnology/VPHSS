@@ -48,14 +48,14 @@ WHERE lyf.id = '$lastYearFeesid' && lyfd.fee_received > 0");
 $tempfeesDetails = $getTempFees->fetch();
 $student_image = $tempfeesDetails["student_image"];
 $admission_number = $tempfeesDetails["admission_number"];
- $web_img_path = "uploads/student_creation/" . $admission_number . "/" . $student_image;
+//  $web_img_path = "uploads/student_creation/" . $admission_number . "/" . $student_image;
 
-    // Define the actual server path for file_exists
-     $server_img_path = __DIR__ . "/../" . $web_img_path;
-    // Final path logic
-    $final_img_path = (file_exists($server_img_path) && !empty($student_image))
-        ? $web_img_path
-        : 'img/No_image.png';
+//     // Define the actual server path for file_exists
+//      $server_img_path = __DIR__ . "/../" . $web_img_path;
+//     // Final path logic
+//     $final_img_path = (file_exists($server_img_path) && !empty($student_image))
+//         ? $web_img_path
+//         : 'img/No_image.png';
 
 function AmountInWords($amount)
 {
@@ -164,10 +164,8 @@ function AmountInWords($amount)
         <tr>
             <!-- Left: Student Details -->
             <td colspan="2" style="text-align:left; vertical-align:top; padding-left:10px; border:none;">
-                <div style="margin-bottom:8px;"><strong>Date:</strong> <?php echo date('d-m-Y', strtotime($tempfeesDetails['receipt_date'])); ?></div>
                 <div style="margin-bottom:8px;"><strong>Admission Number:</strong> <?php echo $tempfeesDetails['admission_number']; ?></div>
                 <div style="margin-bottom:8px;"><strong>Student Name:</strong> <?php echo $tempfeesDetails['student_name']; ?></div>
-                <div style="margin-bottom:8px;"><strong>Standard / Section:</strong> <?php echo $tempfeesDetails['standard']; ?> - <?php echo $tempfeesDetails['section']; ?></div>
                  <div style="margin-bottom:8px;"><strong>Payment Mode:</strong> <?php
                                                                                 if ($tempfeesDetails['payment_mode'] == 'cash_payment') {
                                                                                     echo 'Cash';
@@ -190,8 +188,10 @@ function AmountInWords($amount)
             </td>
 
             <!-- Right: Student Photo -->
-            <td style="text-align:right; vertical-align:top; border:none;">
-                <img src="<?php echo $final_img_path; ?>" alt="Student Image" height="120px" width="120px" style="border:1px solid black; object-fit:cover;">
+            <td style="vertical-align:top; border:none;">
+                <!-- <img src="<?php echo $final_img_path; ?>" alt="Student Image" height="120px" width="120px" style="border:1px solid black; object-fit:cover;"> -->
+                    <div style="margin-bottom:8px;"><strong>Date:</strong> <?php echo date('d-m-Y', strtotime($tempfeesDetails['receipt_date'])); ?></div>
+                     <div style="margin-bottom:8px; white-space: nowrap;"><strong>Standard / Section:</strong> <?php echo $tempfeesDetails['standard']; ?> - <?php echo $tempfeesDetails['section']; ?></div>
             </td>
         </tr>
           <tr>
