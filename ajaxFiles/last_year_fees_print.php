@@ -33,7 +33,9 @@ lyf.receipt_date,
 stdc.student_image,
 lfds.payment_mode,
 lfds.neft_ref_number,
-lfds.neft_bank_name
+lfds.neft_bank_name,
+lfds.cheque_bank_name,
+lfds.cheque_number
 FROM 
 last_year_fees lyf 
 JOIN 
@@ -56,6 +58,31 @@ $admission_number = $tempfeesDetails["admission_number"];
 //     $final_img_path = (file_exists($server_img_path) && !empty($student_image))
 //         ? $web_img_path
 //         : 'img/No_image.png';
+if ($tempfeesDetails['payment_mode'] == 'cheque') {
+    $bank_id = $tempfeesDetails['cheque_bank_name'] ?? '';
+
+    if ($bank_id != '') {
+        $qry = "SELECT short_name FROM bank_creation WHERE id = '$bank_id'";
+        $res = $connect->query($qry);
+        if ($res && $row = $res->fetch()) {
+            $neft_bank_name = $row['short_name'];
+        }
+    }
+
+    $neft_ref_number = $tempfeesDetails['cheque_number'] ?? '';
+} elseif ($tempfeesDetails['payment_mode'] == 'neft') {
+    $bank_id = $tempfeesDetails['neft_bank_name'] ?? '';
+
+    if ($bank_id != '') {
+        $qry = "SELECT short_name FROM bank_creation WHERE id = '$bank_id'";
+        $res = $connect->query($qry);
+        if ($res && $row = $res->fetch()) {
+            $neft_bank_name = $row['short_name'];
+        }
+    }
+
+    $neft_ref_number = $tempfeesDetails['neft_ref_number'] ?? '';
+}
 
 function AmountInWords($amount)
 {
@@ -178,12 +205,12 @@ function AmountInWords($amount)
                                                                                 }
                                                                                 ?>
                 </div>
-                <?php if ($tempfeesDetails['payment_mode'] == 'neft') { ?>
+                <?php if ($tempfeesDetails['payment_mode'] == 'neft' || $tempfeesDetails['payment_mode'] == 'cheque') { ?>
                     <div style="margin-bottom:8px;">
-                        <strong>Bank Name:</strong> <?php echo $tempfeesDetails['neft_bank_name']; ?>
+                        <strong>Bank Name:</strong> <?php echo $neft_bank_name; ?>
                     </div>
                     <div style="margin-bottom:8px;">
-                        <strong>Transaction ID:</strong> <?php echo $tempfeesDetails['neft_ref_number']; ?>
+                        <strong>Transaction ID:</strong> <?php echo $neft_ref_number; ?>
                     </div> <?php } ?>
             </td>
 

@@ -33,7 +33,9 @@ taf.receipt_date,
 stdc.student_image,
 tafds.payment_mode,
 tafds.neft_ref_number,
-tafds.neft_bank_name
+tafds.neft_bank_name,
+tafds.cheque_bank_name,
+tafds.cheque_number
 FROM 
 transport_admission_fees taf 
 JOIN 
@@ -51,6 +53,31 @@ $payfeesDetails = $getPayFees->fetch();
 
 $student_image = $payfeesDetails["student_image"];
 $admission_number = $payfeesDetails["admission_number"];
+if ($payfeesDetails['payment_mode'] == 'cheque') {
+    $bank_id = $payfeesDetails['cheque_bank_name'] ?? '';
+
+    if ($bank_id != '') {
+        $qry = "SELECT short_name FROM bank_creation WHERE id = '$bank_id'";
+        $res = $connect->query($qry);
+        if ($res && $row = $res->fetch()) {
+            $neft_bank_name = $row['short_name'];
+        }
+    }
+
+    $neft_ref_number = $payfeesDetails['cheque_number'] ?? '';
+} elseif ($payfeesDetails['payment_mode'] == 'neft') {
+    $bank_id = $payfeesDetails['neft_bank_name'] ?? '';
+
+    if ($bank_id != '') {
+        $qry = "SELECT short_name FROM bank_creation WHERE id = '$bank_id'";
+        $res = $connect->query($qry);
+        if ($res && $row = $res->fetch()) {
+            $neft_bank_name = $row['short_name'];
+        }
+    }
+
+    $neft_ref_number = $payfeesDetails['neft_ref_number'] ?? '';
+}
 // $web_img_path = "uploads/student_creation/" . $admission_number . "/" . $student_image;
 
 // // Define the actual server path for file_exists
@@ -180,12 +207,12 @@ function AmountInWords($amount)
                                                                                 }
                                                                                 ?>
                 </div>
-                <?php if ($payfeesDetails['payment_mode'] == 'neft') { ?>
+                <?php if ($payfeesDetails['payment_mode'] == 'neft'|| $payfeesDetails['payment_mode'] == 'cheque') { ?>
                     <div style="margin-bottom:8px;">
-                        <strong>Bank Name:</strong> <?php echo $payfeesDetails['neft_bank_name']; ?>
+                        <strong>Bank Name:</strong> <?php echo $neft_bank_name; ?>
                     </div>
                     <div style="margin-bottom:8px;">
-                        <strong>Transaction ID:</strong> <?php echo $payfeesDetails['neft_ref_number']; ?>
+                        <strong>Transaction ID:</strong> <?php echo $neft_ref_number; ?>
                     </div> <?php } ?>
             </td>
 

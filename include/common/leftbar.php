@@ -11,6 +11,7 @@ if (sizeof($getmanageuserdetails)>0) {
 	$school_update                  = $getmanageuserdetails['school_update']; 
 	$fees_master                  = $getmanageuserdetails['fees_master']; 
 	$holiday_creation                  = $getmanageuserdetails['holiday_creation']; 
+	$bank_creation                  = $getmanageuserdetails['bank_creation']; 
 	$manage_users                  = $getmanageuserdetails['manage_users']; 
 	$master_module                  = $getmanageuserdetails['master_module']; 
 	$area_master                  = $getmanageuserdetails['area_master']; 
@@ -52,6 +53,7 @@ if (sizeof($getmanageuserdetails)>0) {
 	$fee_details_sub_module                  = $getmanageuserdetails['fee_details_sub_module']; 
 	$daily_fees_collection                  = $getmanageuserdetails['daily_fees_collection']; 
 	$day_end_report                  = $getmanageuserdetails['day_end_report']; 
+	$bank_fees_report                  = $getmanageuserdetails['bank_fees_report']; 
 	$overall_scholarship_fee_details                  = $getmanageuserdetails['overall_scholarship_fee_details']; 
 	$pending_fee_details                  = $getmanageuserdetails['pending_fee_details']; 
 	$all_type_pending_fee_details                  = $getmanageuserdetails['all_type_pending_fee_details']; 
@@ -203,6 +205,10 @@ if (sizeof($getmanageuserdetails)>0) {
 						<?php } if(isset($holiday_creation) && $holiday_creation ==0){ ?>
 							<li>									
 								<a href="holiday_creation"><i class="icon-calendar"></i>Holiday Info</a>
+							</li>
+						<?php } if(isset($bank_creation) && $bank_creation ==0){ ?>
+							<li>									
+								<a href="edit_bank_creation"><i class="icon-school"></i>Bank Creation</a>
 							</li>
 						<?php } if(isset($manage_users) && $manage_users ==0){ ?>
 							<li>									
@@ -466,6 +472,10 @@ if (sizeof($getmanageuserdetails)>0) {
 									<?php } if(isset($day_end_report) && $day_end_report ==0){ ?>
 										<li>
 											<a href="day_end_report"><i class="icon-sunset"></i>Day End Report</a>	
+										</li>
+									<?php }  if(isset($bank_fees_report) && $bank_fees_report ==0){ ?>
+										<li>
+											<a href="bank_fees_report"><i class="icon-local_library"></i>Bank Fees Report</a>	
 										</li>
 									<?php } if(isset($overall_scholarship_fee_details) && $overall_scholarship_fee_details ==0){ ?>
 										<li>

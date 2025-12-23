@@ -179,7 +179,6 @@ WHERE std.status = '0' ");
             } else {
                 $extra_pending = 0;
             }
-
                        $getTransportPendingQry = $connect->query("SELECT 
     SUM(CASE WHEN is_min = 1 THEN transport_pending ELSE 0 END) AS total_transport_min,
     SUM(CASE WHEN is_max = 1 THEN transport_pending ELSE 0 END) AS total_transport_max,
@@ -207,7 +206,7 @@ FROM (
                 AND sh.standard = '$standardList->standard_id' 
                 AND sc.school_id = '$school_id' 
                 AND sh.academic_year = '$academicyear' 
-                AND sc.leaving_term NOT IN (1, 5) AND sc.status = 0 AND sc.medium = '$stdMedium'
+                AND sc.leaving_term NOT IN (1, 5) AND sc.status = 0 AND sc.medium = '$stdMedium' AND sh.transportarearefid !=''
         ) AS transport_pending,
         CASE 
             WHEN acp.particulars_id = (SELECT MIN(acp1.particulars_id) 
@@ -247,7 +246,7 @@ FROM (
             sh.standard = '$standardList->standard_id' 
             AND sh.academic_year = '$academicyear' 
             AND sc.leaving_term NOT IN (1, 5) 
-            AND sc.school_id = '$school_id' AND sc.status = 0 AND sc.medium = '$stdMedium'
+            AND sc.school_id = '$school_id' AND sc.status = 0 AND sc.medium = '$stdMedium' AND sh.transportarearefid !=''
         GROUP BY sh.transportarearefid
     ) sc 
         ON ac.area_id = sc.area_id

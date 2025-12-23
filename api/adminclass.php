@@ -106,6 +106,11 @@ class admin
 		} else {
 			$staff_creation = 1;
 		}
+		if (isset($_POST['bank_creation']) &&    $_POST['bank_creation'] == 'Yes') {
+			$bank_creation = 0;
+		} else {
+			$bank_creation = 1;
+		}
 		if (isset($_POST['student_module']) &&    $_POST['student_module'] == 'Yes') {
 			$student_module = 0;
 		} else {
@@ -272,6 +277,11 @@ class admin
 		} else {
 			$day_end_report = 1;
 		}
+		if (isset($_POST['bank_fees_report']) &&    $_POST['bank_fees_report'] == 'Yes') {
+			$bank_fees_report = 0;
+		} else {
+			$bank_fees_report = 1;
+		}
 		if (isset($_POST['overall_scholarship_fee_details']) &&    $_POST['overall_scholarship_fee_details'] == 'Yes') {
 			$overall_scholarship_fee_details = 0;
 		} else {
@@ -303,7 +313,7 @@ class admin
 			$monthwise_fees_summary = 1;
 		}
 
-		$userInsert = "INSERT INTO `user`(`firstname`, `lastname`, `fullname`, `title`, `school_id`, `emailid`, `user_name`, `user_password`, `role`, `status`, `dashboard`, `administration_module`, `trust_creation`, `school_update`, `fees_master`, `holiday_creation`, `manage_users`, `master_module`, `area_master`, `syllabus_sub_module`, `allocation`, `allocation_view`, `staff_module`, `staff_creation`, `student_module`, `temp_admission_form`, `student_creation`, `student_rollback`, `delete_student`, `certificate_sub_module`, `transfer`,`exam_module`,`exam_creation`,`student_mark_entry`,`staff_subject_allocation`, `collection_module`, `fees_concession`, `fees_collection`, `sms_module`, `birthday_wishes`, `tamil_birthday_wishes`, `student_general_message`, `staff_general_message`,`send_sms_mark`, `sms_delivery_report`,`report_module`, `student_report_sub_module`, `student_caste_report`, `class_wise_list`, `register_of_admission`, `student_transport_list`, `student_mark_list`,`roll_of_honour_list`,`fee_details_sub_module`, `daily_fees_collection`, `day_end_report`, `overall_scholarship_fee_details`, `pending_fee_details`, `all_type_pending_fee_details`, `classwise_overall_pending`, `fees_summary`, `monthwise_fees_summary`, `insert_login_id`) VALUES ('$first_name','$last_name','$full_name','$title','$school_name','$email_id','$user_name','$password','$user_role','0','$dashboard_module','$administration_module','$trust_creation','$school_update','$fees_master','$holiday_creation','$manage_users','$master_module','$area_master','$syllabus_sub_module','$allocation','$allocation_view','$staff_module','$staff_creation','$student_module','$temp_admission_form','$student_creation','$student_rollback','$delete_student','$certificate_sub_module','$transfer','$exam_module','$exam_creation','$student_mark_entry','$staff_subject_allocation','$collection_module','$fees_concession','$fees_collection', '$sms_module', '$birthday_wishes', '$tamil_birthday_wishes', '$student_general_message', '$staff_general_message','$send_sms_mark', '$sms_delivery_report','$report_module','$student_report_sub_module','$student_caste_report','$class_wise_list','$register_of_admission','$student_transport_list','$student_mark_list','$roll_of_honour_list','$fee_details_sub_module','$daily_fees_collection','$day_end_report','$overall_scholarship_fee_details','$pending_fee_details','$all_type_pending_fee_details','$classwise_overall_pending','$fees_summary','$monthwise_fees_summary', '$userid')";
+		$userInsert = "INSERT INTO `user`(`firstname`, `lastname`, `fullname`, `title`, `school_id`, `emailid`, `user_name`, `user_password`, `role`, `status`, `dashboard`, `administration_module`, `trust_creation`, `school_update`, `fees_master`, `holiday_creation`, `manage_users`, `master_module`, `area_master`, `syllabus_sub_module`, `allocation`, `allocation_view`, `staff_module`, `staff_creation`, `bank_creation`,`student_module`, `temp_admission_form`, `student_creation`, `student_rollback`, `delete_student`, `certificate_sub_module`, `transfer`,`exam_module`,`exam_creation`,`student_mark_entry`,`staff_subject_allocation`, `collection_module`, `fees_concession`, `fees_collection`, `sms_module`, `birthday_wishes`, `tamil_birthday_wishes`, `student_general_message`, `staff_general_message`,`send_sms_mark`, `sms_delivery_report`,`report_module`, `student_report_sub_module`, `student_caste_report`, `class_wise_list`, `register_of_admission`, `student_transport_list`, `student_mark_list`,`roll_of_honour_list`,`fee_details_sub_module`, `daily_fees_collection`, `day_end_report`,`bank_fees_report`, `overall_scholarship_fee_details`, `pending_fee_details`, `all_type_pending_fee_details`, `classwise_overall_pending`, `fees_summary`, `monthwise_fees_summary`, `insert_login_id`) VALUES ('$first_name','$last_name','$full_name','$title','$school_name','$email_id','$user_name','$password','$user_role','0','$dashboard_module','$administration_module','$trust_creation','$school_update','$fees_master','$holiday_creation','$manage_users','$master_module','$area_master','$syllabus_sub_module','$allocation','$allocation_view','$staff_module','$staff_creation','$bank_creation','$student_module','$temp_admission_form','$student_creation','$student_rollback','$delete_student','$certificate_sub_module','$transfer','$exam_module','$exam_creation','$student_mark_entry','$staff_subject_allocation','$collection_module','$fees_concession','$fees_collection', '$sms_module', '$birthday_wishes', '$tamil_birthday_wishes', '$student_general_message', '$staff_general_message','$send_sms_mark', '$sms_delivery_report','$report_module','$student_report_sub_module','$student_caste_report','$class_wise_list','$register_of_admission','$student_transport_list','$student_mark_list','$roll_of_honour_list','$fee_details_sub_module','$daily_fees_collection','$day_end_report','$bank_fees_report','$overall_scholarship_fee_details','$pending_fee_details','$all_type_pending_fee_details','$classwise_overall_pending','$fees_summary','$monthwise_fees_summary', '$userid')";
 		$insresult = $mysqli->query($userInsert) or die("Error " . $mysqli->error);
 	}
 
@@ -410,6 +420,11 @@ class admin
 		} else {
 			$staff_creation = 1;
 		}
+		if (isset($_POST['bank_creation']) &&    $_POST['bank_creation'] == 'Yes') {
+			$bank_creation = 0;
+		} else {
+			$bank_creation = 1;
+		}
 		if (isset($_POST['student_module']) &&    $_POST['student_module'] == 'Yes') {
 			$student_module = 0;
 		} else {
@@ -571,6 +586,11 @@ class admin
 		} else {
 			$daily_fees_collection = 1;
 		}
+		if (isset($_POST['bank_fees_report']) &&    $_POST['bank_fees_report'] == 'Yes') {
+			$bank_fees_report = 0;
+		} else {
+			$bank_fees_report = 1;
+		}
 		if (isset($_POST['day_end_report']) &&    $_POST['day_end_report'] == 'Yes') {
 			$day_end_report = 0;
 		} else {
@@ -607,7 +627,7 @@ class admin
 			$monthwise_fees_summary = 1;
 		}
 
-		$updateUserQry = "UPDATE `user` SET `firstname`='$first_name',`lastname`='$last_name',`fullname`='$full_name',`title`='$title',`school_id`='$school_name',`emailid`='$email_id',`user_name`='$user_name',`user_password`='$password',`role`='$user_role',`status`='0',`dashboard`='$dashboard_module',`administration_module`='$administration_module',`trust_creation`='$trust_creation',`school_update`='$school_update',`fees_master`='$fees_master',`holiday_creation`='$holiday_creation',`manage_users`='$manage_users',`master_module`='$master_module',`area_master`='$area_master',`syllabus_sub_module`='$syllabus_sub_module',`allocation`='$allocation',`allocation_view`='$allocation_view',`staff_module`='$staff_module',`staff_creation`='$staff_creation',`student_module`='$student_module',`temp_admission_form`='$temp_admission_form',`student_creation`='$student_creation',`student_rollback`='$student_rollback',`delete_student`='$delete_student',`certificate_sub_module`='$certificate_sub_module',`transfer`='$transfer',`exam_module`='$exam_module',`exam_creation`='$exam_creation',`student_mark_entry`='$student_mark_entry',`staff_subject_allocation`='$staff_subject_allocation',`collection_module`='$collection_module',`fees_concession`='$fees_concession',`fees_collection`='$fees_collection', `sms_module`='$sms_module',`birthday_wishes`='$birthday_wishes',`tamil_birthday_wishes`='$tamil_birthday_wishes',`student_general_message`='$student_general_message',`staff_general_message`='$staff_general_message',`send_sms_mark`='$send_sms_mark',`sms_delivery_report`='$sms_delivery_report',`report_module`='$report_module',`student_report_sub_module`='$student_report_sub_module',`student_caste_report`='$student_caste_report',`class_wise_list`='$class_wise_list',`register_of_admission`='$register_of_admission',`student_transport_list`='$student_transport_list',`student_mark_list`='$student_mark_list',`roll_of_honour_list`='$roll_of_honour_list',`fee_details_sub_module`='$fee_details_sub_module',`daily_fees_collection`='$daily_fees_collection',`day_end_report`='$day_end_report',`overall_scholarship_fee_details`='$overall_scholarship_fee_details',`pending_fee_details`='$pending_fee_details',`all_type_pending_fee_details`='$all_type_pending_fee_details',`classwise_overall_pending`='$classwise_overall_pending',`fees_summary`='$fees_summary',`monthwise_fees_summary`='$monthwise_fees_summary', `update_login_id`='$userid', `updated_date`=now() WHERE `user_id`='$manage_user_id'";
+		$updateUserQry = "UPDATE `user` SET `firstname`='$first_name',`lastname`='$last_name',`fullname`='$full_name',`title`='$title',`school_id`='$school_name',`emailid`='$email_id',`user_name`='$user_name',`user_password`='$password',`role`='$user_role',`status`='0',`dashboard`='$dashboard_module',`administration_module`='$administration_module',`trust_creation`='$trust_creation',`school_update`='$school_update',`fees_master`='$fees_master',`holiday_creation`='$holiday_creation',`manage_users`='$manage_users',`master_module`='$master_module',`area_master`='$area_master',`syllabus_sub_module`='$syllabus_sub_module',`allocation`='$allocation',`allocation_view`='$allocation_view',`staff_module`='$staff_module',`staff_creation`='$staff_creation',`bank_creation`='$bank_creation',`student_module`='$student_module',`temp_admission_form`='$temp_admission_form',`student_creation`='$student_creation',`student_rollback`='$student_rollback',`delete_student`='$delete_student',`certificate_sub_module`='$certificate_sub_module',`transfer`='$transfer',`exam_module`='$exam_module',`exam_creation`='$exam_creation',`student_mark_entry`='$student_mark_entry',`staff_subject_allocation`='$staff_subject_allocation',`collection_module`='$collection_module',`fees_concession`='$fees_concession',`fees_collection`='$fees_collection', `sms_module`='$sms_module',`birthday_wishes`='$birthday_wishes',`tamil_birthday_wishes`='$tamil_birthday_wishes',`student_general_message`='$student_general_message',`staff_general_message`='$staff_general_message',`send_sms_mark`='$send_sms_mark',`sms_delivery_report`='$sms_delivery_report',`report_module`='$report_module',`student_report_sub_module`='$student_report_sub_module',`student_caste_report`='$student_caste_report',`class_wise_list`='$class_wise_list',`register_of_admission`='$register_of_admission',`student_transport_list`='$student_transport_list',`student_mark_list`='$student_mark_list',`roll_of_honour_list`='$roll_of_honour_list',`fee_details_sub_module`='$fee_details_sub_module',`daily_fees_collection`='$daily_fees_collection',`bank_fees_report`='$bank_fees_report',`day_end_report`='$day_end_report',`overall_scholarship_fee_details`='$overall_scholarship_fee_details',`pending_fee_details`='$pending_fee_details',`all_type_pending_fee_details`='$all_type_pending_fee_details',`classwise_overall_pending`='$classwise_overall_pending',`fees_summary`='$fees_summary',`monthwise_fees_summary`='$monthwise_fees_summary', `update_login_id`='$userid', `updated_date`=now() WHERE `user_id`='$manage_user_id'";
 		$insresult = $mysqli->query($updateUserQry) or die("Error " . $mysqli->error);
 	}
 
@@ -644,6 +664,7 @@ class admin
 			$detailrecords['allocation_view']                  = $row->allocation_view;
 			$detailrecords['staff_module']                  = $row->staff_module;
 			$detailrecords['staff_creation']                  = $row->staff_creation;
+			$detailrecords['bank_creation']                  = $row->bank_creation;
 			$detailrecords['student_module']                  = $row->student_module;
 			$detailrecords['temp_admission_form']                  = $row->temp_admission_form;
 			$detailrecords['student_creation']                  = $row->student_creation;
@@ -676,6 +697,7 @@ class admin
 			$detailrecords['roll_of_honour_list']                  = $row->roll_of_honour_list;
 			$detailrecords['fee_details_sub_module']                  = $row->fee_details_sub_module;
 			$detailrecords['daily_fees_collection']                  = $row->daily_fees_collection;
+			$detailrecords['bank_fees_report']                  = $row->bank_fees_report;
 			$detailrecords['day_end_report']                  = $row->day_end_report;
 			$detailrecords['overall_scholarship_fee_details']                  = $row->overall_scholarship_fee_details;
 			$detailrecords['pending_fee_details']                  = $row->pending_fee_details;
@@ -1991,10 +2013,10 @@ class admin
 		}
 
 		$student_image = '';
-			$subdir5 = $_POST['admission_number'];
+		$subdir5 = $_POST['admission_number'];
 		//set the directory path name
 		$dir5 = ("uploads/student_creation/" . $subdir5);
-			mkdir($dir5, 0777);
+		mkdir($dir5, 0777);
 		if (!empty($_FILES['student_image']['name'])) {
 			//delete old file
 			$path = "uploads/student_creation/$admission_number/" . $_POST["updateimage"];
@@ -2769,7 +2791,7 @@ class admin
 		if (!is_dir($staffdir)) {
 			mkdir($staffdir, 0777, true); // 'true' allows recursive directory creation
 		}
-        $staff_image = '';
+		$staff_image = '';
 		if (!empty($_FILES['staff_image']['name'])) {
 			$staff_image = $_FILES['staff_image']['name'];
 			$pic_temp = $_FILES['staff_image']['tmp_name'];
@@ -3249,6 +3271,149 @@ class admin
 		return $detailrecords;
 	}
 
+	//bank creation
+	public function addBankCreation($mysqli, $userid)
+	{
+
+		if (isset($_POST['bank_name'])) {
+			$bank_name = $_POST['bank_name'];
+		}
+		if (isset($_POST['short_name'])) {
+			$short_name = $_POST['short_name'];
+		}
+		if (isset($_POST['acc_no'])) {
+			$acc_no = $_POST['acc_no'];
+		}
+		if (isset($_POST['ifsc'])) {
+			$ifsc = $_POST['ifsc'];
+		}
+		if (isset($_POST['branch'])) {
+			$branch = $_POST['branch'];
+		}
+		if (isset($_FILES['qr_code'])) {
+			$qr_code = $_FILES['qr_code']['name'];
+			$qr_code_temp = $_FILES['qr_code']['tmp_name'];
+			$qr_codefolder = "uploads/bank/" . $qr_code;
+
+			$fileExtension = pathinfo($qr_codefolder, PATHINFO_EXTENSION); //get the file extention
+			$qr_code = uniqid() . '.' . $fileExtension;
+			while (file_exists("uploads/bank/" . $qr_code)) {
+				//this loop will continue until it generates a unique file name
+				$qr_code = uniqid() . '.' . $fileExtension;
+			}
+
+			move_uploaded_file($qr_code_temp, "uploads/bank/" . $qr_code);
+		}
+		if (isset($_POST['gpay'])) {
+			$gpay = $_POST['gpay'];
+		}
+
+		$insertQry = "INSERT INTO `bank_creation`(`bank_name`,`short_name`, `acc_no`, `ifsc`, `branch`, `qr_code`, `gpay`,`insert_login_id`, `created_date`) VALUES 
+			('" . strip_tags($bank_name) . "','" . strip_tags($short_name) . "','" . strip_tags($acc_no) . "','" . strip_tags($ifsc) . "','" . strip_tags($branch) . "','" . strip_tags($qr_code) . "','" . strip_tags($gpay) . "',$userid ,now() )";
+
+		$insresult = $mysqli->query($insertQry) or die("Error " . $mysqli->error);
+	}
+
+	// Update Company
+	public function updateBankCreation($mysqli, $id, $userid)
+	{
+
+		if (isset($_POST['bank_name'])) {
+			$bank_name = $_POST['bank_name'];
+		}
+		if (isset($_POST['short_name'])) {
+			$short_name = $_POST['short_name'];
+		}
+		if (isset($_POST['acc_no'])) {
+			$acc_no = $_POST['acc_no'];
+		}
+		if (isset($_POST['ifsc'])) {
+			$ifsc = $_POST['ifsc'];
+		}
+		if (isset($_POST['branch'])) {
+			$branch = $_POST['branch'];
+		}
+		if (isset($_FILES['qr_code']) && $_FILES['qr_code']['name'] != '') {
+			//remove old file
+			if ($_POST['qr_code_name'] != '') {
+				unlink('uploads/bank/' . $_POST['qr_code_name']);
+			}
+
+			$qr_code = $_FILES['qr_code']['name'];
+			$qr_code_temp = $_FILES['qr_code']['tmp_name'];
+			$qr_codefolder = "uploads/bank/" . $qr_code;
+
+			$fileExtension = pathinfo($qr_codefolder, PATHINFO_EXTENSION); //get the file extention
+			$qr_code = uniqid() . '.' . $fileExtension;
+			while (file_exists("uploads/bank/" . $qr_code)) {
+				//this loop will continue until it generates a unique file name
+				$qr_code = uniqid() . '.' . $fileExtension;
+			}
+
+			move_uploaded_file($qr_code_temp, "uploads/bank/" . $qr_code);
+		} else {
+			$qr_code = $_POST['qr_code_name'];
+		}
+		if (isset($_POST['gpay'])) {
+			$gpay = $_POST['gpay'];
+		}
+
+		$updateQry = "UPDATE `bank_creation` SET `bank_name`='" . strip_tags($bank_name) . "',`short_name`='" . strip_tags($short_name) . "',`acc_no`='" . strip_tags($acc_no) . "',`ifsc`='" . strip_tags($ifsc) . "',
+			`branch`='" . strip_tags($branch) . "',`qr_code`='" . strip_tags($qr_code) . "',`gpay`='" . strip_tags($gpay) . "',`update_login_id`=$userid WHERE id= $id";
+		$updresult = $mysqli->query($updateQry) or die("Error in in update Query!." . $mysqli->error);
+	}
+	// Get Company
+	public function getBankCreation($mysqli, $id)
+	{
+
+		$trusteeSelect = "SELECT * FROM bank_creation WHERE id='" . mysqli_real_escape_string($mysqli, $id) . "' ";
+		$res = $mysqli->query($trusteeSelect) or die("Error in Get All Records" . $mysqli->error);
+
+		if ($row = $res->fetch_object()) {
+			$detailrecords = [
+				'id'   => $row->id,
+				'bank_name'   => $row->bank_name,
+				'short_name'   => $row->short_name,
+				'acc_no'   => $row->acc_no,
+				'ifsc'   => $row->ifsc,
+				'branch'   => $row->branch,
+				'qr_code'   => $row->qr_code,
+				'gpay'   => $row->gpay
+			];
+		} else {
+			$detailrecords = array();
+		}
+		return $detailrecords;
+	}
+
+	//  Delete Company
+	public function deleteBankCreation($mysqli, $id, $userid)
+	{
+		$deleteQry = "UPDATE bank_creation set status='1', delete_login_id='" . strip_tags($userid) . "' WHERE id  = '" . strip_tags($id) . "' ";
+		$runQry = $mysqli->query($deleteQry) or die("Error in delete query" . $mysqli->error);
+	}
+
+	public function getBankDetails($mysqli)
+	{
+		$qry = "SELECT * FROM bank_creation WHERE 1 ";
+		$res = $mysqli->query($qry) or die("Error in Get All Records" . $mysqli->error);
+		$i = 0;
+		$detailrecords = array();
+		while ($row = $res->fetch_object()) {
+			$detailrecords[$i]	 = [
+				'id'   => $row->id,
+				'bank_name'   => $row->bank_name,
+				'short_name'   => $row->short_name,
+				'acc_no'   => $row->acc_no,
+				'ifsc'   => $row->ifsc,
+				'branch'   => $row->branch,
+				'qr_code'   => $row->qr_code,
+				'gpay'   => $row->gpay
+			];
+			$i++;
+		}
+		return $detailrecords;
+	}
 	// get AreaList
 	public function getAreaList($mysqli, $school_id, $year_id)
 	{
