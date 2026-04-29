@@ -328,17 +328,28 @@ $response['html'] .= "<table class='table table-bordered subject-summary'>
 </tr></thead><tbody>";
 
 foreach ($subjectSummary as $paper => $data) {
-    $passPercent = $data['total'] > 0 ? round(($data['pass'] / $data['total']) * 100) : 0;
+    $appeared = $data['total'] - $data['absent'];
+    $passPercent = $appeared > 0 ? round(($data['pass'] / $appeared) * 100, 2) : 0;
+
     $response['html'] .= "<tr>
         <td>$paper</td><td>{$data['total']}</td><td>{$data['fail']}</td><td>{$data['pass']}</td>
         <td>{$data['absent']}</td><td>{$passPercent}%</td><td>{$data['above80']}</td>
         <td>{$data['above60']}</td><td>{$data['above40']}</td><td>{$data['faculty']}</td><td></td>
     </tr>";
 }
+$appearedStudents = 0;
+
+foreach ($studentData as $stu) {
+    if ($stu['absent_count'] == 0) {   // appeared in all subjects
+        $appearedStudents++;
+    }
+}
 
 // Final Summary Table
-$totalStudents = count($studentData);
-$passPercent = $totalStudents > 0 ? round(($allPassCount / $totalStudents) * 100, 2) . '%' : '0%';
+$passPercent = $appearedStudents > 0
+    ? round(($allPassCount / $appearedStudents) * 100, 2) . '%'
+    : '0%';
+
 
 $response['html'] .= "</tbody></table><br>";
 $response['html'] .= "<table class='table table-bordered final-summary'><tbody>";
