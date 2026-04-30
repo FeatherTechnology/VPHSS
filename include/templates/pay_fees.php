@@ -11,7 +11,7 @@ if (isset($_SESSION["userid"])) {
 if (isset($_SESSION["school_id"])) {
     $school_id = $_SESSION["school_id"];
 }
-
+    $getBankDetails = $userObj->getBankDetails($mysqli);
 if (isset($_POST['submitpayfees']) && $_POST['submitpayfees'] != '') {
     $addPayfeesCreation = $userObj->addPayFees($mysqli, $userid, $school_id);
     if ($addPayfeesCreation == '-1') { ?>
@@ -31,41 +31,41 @@ if (isset($_POST['submitpayfees']) && $_POST['submitpayfees'] != '') {
             }, 1000);
 
             function print_temp_fees(payFeesid) {
-                    // Load the content into the popup window
-                    $.ajax({
-                        url: 'ajaxFiles/pay_fees_print.php',
-                        data: {
-                            'payFeesid': payFeesid
-                        },
-                        cache: false,
-                        type: "post",
-                        success: function(html) {
-                            // Write the content to the new window
-                            var printWindow = window.open('', '_blank');
-                            if (printWindow) {
-                                printWindow.document.write(html);
-                                printWindow.document.close();
+                // Load the content into the popup window
+                $.ajax({
+                    url: 'ajaxFiles/pay_fees_print.php',
+                    data: {
+                        'payFeesid': payFeesid
+                    },
+                    cache: false,
+                    type: "post",
+                    success: function(html) {
+                        // Write the content to the new window
+                        var printWindow = window.open('', '_blank');
+                        if (printWindow) {
+                            printWindow.document.write(html);
+                            printWindow.document.close();
 
-                                // Wait for images to load before printing
-                                const images = printWindow.document.querySelectorAll('img');
-                                Promise.all(Array.from(images).map(img => new Promise(resolve => {
-                                    if (img.complete) resolve();
-                                    else img.addEventListener('load', resolve);
-                                    img.addEventListener('error', resolve);
-                                }))).then(() => {
-                                    printWindow.print();
-                                    printWindow.close();
-                                });
-                            } else {
-                                alert('Pop-up blocked. Please allow pop-ups for this site.');
-                            }
-                        },
-                        error: function() {
-                            // Handle error
-                            printWindow.close();
-                            alert('Failed to load print content.');
+                            // Wait for images to load before printing
+                            const images = printWindow.document.querySelectorAll('img');
+                            Promise.all(Array.from(images).map(img => new Promise(resolve => {
+                                if (img.complete) resolve();
+                                else img.addEventListener('load', resolve);
+                                img.addEventListener('error', resolve);
+                            }))).then(() => {
+                                printWindow.print();
+                                printWindow.close();
+                            });
+                        } else {
+                            alert('Pop-up blocked. Please allow pop-ups for this site.');
                         }
-                    });
+                    },
+                    error: function() {
+                        // Handle error
+                        printWindow.close();
+                        alert('Failed to load print content.');
+                    }
+                });
             }
         </script>
 <?php
@@ -372,7 +372,29 @@ if (isset($_GET['upd'])) {
                                             </tr>
                                             <tr>
                                                 <td>Bank Name</td>
-                                                <td><input type="text" tabindex="16" class="form-control" name="cheque_bank_name" id="cheque_bank_name"></td>
+                                                <td>
+                                                    <div class="form-group">
+                                                        <select type="text" class="form-control" id="cheque_bank_name" name="cheque_bank_name" tabindex="1">
+                                                            <option value="">Select Bank Name</option>
+                                                            <?php
+                                                            if (sizeof($getBankDetails) > 0) {
+                                                                for ($i = 0; $i < sizeof($getBankDetails); $i++) {
+                                                                    $bank_id = $getBankDetails[$i]['id'];
+                                                                    $bank_name = $getBankDetails[$i]['short_name'];
+
+                                                                    // // Check if this is the selected bank ID
+                                                                    // $selected = ($bank_id == $selected_bank_id) ? 'selected' : '';
+                                                            ?>
+                                                                    <option value="<?php echo $bank_id; ?>">
+                                                                        <?php echo $bank_name; ?>
+                                                                    </option>
+                                                            <?php
+                                                                }
+                                                            }
+                                                            ?>
+                                                        </select>
+                                                    </div>
+                                                </td>
                                             </tr>
                                             <tr>
                                                 <td>Ledger</td>
@@ -380,8 +402,6 @@ if (isset($_GET['upd'])) {
                                                     <div class="form-group">
                                                         <select tabindex="1" type="text" class="form-control" id="cheque_ledger_name" name="cheque_ledger_name" tabindex="1">
                                                             <option value="">Select ledger</option>
-                                                            <option value="2024-2025">2024 - 2025</option>
-                                                            <option value="2025-2026">2025 - 2026</option>
                                                         </select>
                                                     </div>
                                                 </td>
@@ -407,7 +427,29 @@ if (isset($_GET['upd'])) {
                                             </tr>
                                             <tr>
                                                 <td>Bank Name</td>
-                                                <td><input type="text" tabindex="16" class="form-control" name="neft_bank_name" id="neft_bank_name"></td>
+                                                 <td>
+                                                    <div class="form-group">
+                                                        <select type="text" class="form-control" id="neft_bank_name" name="neft_bank_name" tabindex="1">
+                                                            <option value="">Select Bank Name</option>
+                                                            <?php
+                                                            if (sizeof($getBankDetails) > 0) {
+                                                                for ($i = 0; $i < sizeof($getBankDetails); $i++) {
+                                                                    $bank_id = $getBankDetails[$i]['id'];
+                                                                    $bank_name = $getBankDetails[$i]['short_name'];
+
+                                                                    // // Check if this is the selected bank ID
+                                                                    // $selected = ($bank_id == $selected_bank_id) ? 'selected' : '';
+                                                            ?>
+                                                                    <option value="<?php echo $bank_id; ?>">
+                                                                        <?php echo $bank_name; ?>
+                                                                    </option>
+                                                            <?php
+                                                                }
+                                                            }
+                                                            ?>
+                                                        </select>
+                                                    </div>
+                                                </td>
                                             </tr>
                                             <tr>
                                                 <td>Ledger</td>
@@ -415,8 +457,6 @@ if (isset($_GET['upd'])) {
                                                     <div class="form-group">
                                                         <select tabindex="1" type="text" class="form-control" id="neft_ledger_name" name="neft_ledger_name" tabindex="1">
                                                             <option value="">Select Ledger</option>
-                                                            <option value="2024-2025">2024 - 2025</option>
-                                                            <option value="2025-2026">2025 - 2026</option>
                                                         </select>
                                                     </div>
                                                 </td>

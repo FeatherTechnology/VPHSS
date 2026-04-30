@@ -55,6 +55,7 @@ if ($idupd > 0) {
         $allocation_view                  = $getmanageuserdetails['allocation_view'];
         $staff_module                  = $getmanageuserdetails['staff_module'];
         $staff_creation                  = $getmanageuserdetails['staff_creation'];
+        $bank_creation                  = $getmanageuserdetails['bank_creation'];
         $student_module                  = $getmanageuserdetails['student_module'];
         $temp_admission_form                  = $getmanageuserdetails['temp_admission_form'];
         $student_creation                  = $getmanageuserdetails['student_creation'];
@@ -88,6 +89,7 @@ if ($idupd > 0) {
         $fee_details_sub_module                  = $getmanageuserdetails['fee_details_sub_module'];
         $daily_fees_collection                  = $getmanageuserdetails['daily_fees_collection'];
         $day_end_report                  = $getmanageuserdetails['day_end_report'];
+        $bank_fees_report                  = $getmanageuserdetails['bank_fees_report'];
         $overall_scholarship_fee_details                  = $getmanageuserdetails['overall_scholarship_fee_details'];
         $pending_fee_details                  = $getmanageuserdetails['pending_fee_details'];
         $all_type_pending_fee_details                  = $getmanageuserdetails['all_type_pending_fee_details'];
@@ -278,6 +280,14 @@ if ($del > 0) {
                                                                 echo 'checked';
                                                             } ?> tabindex="16" class="custom-control-input admin-checkbox" id="holiday_creation" name="holiday_creation">
                         <label class="custom-control-label" for="holiday_creation">Holiday Info</label>
+                    </div>
+                </div>
+                <div class="col-sm-6 col-md-6 col-lg-4 col-xl-3 col-12">
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" value="Yes" <?php if (isset($bank_creation) && $bank_creation == 0) {
+                                                                echo 'checked';
+                                                            } ?> tabindex="16" class="custom-control-input admin-checkbox" id="bank_creation" name="bank_creation">
+                        <label class="custom-control-label" for="bank_creation">Bank Creation</label>
                     </div>
                 </div>
 
@@ -671,6 +681,12 @@ if ($del > 0) {
                                                                 echo 'checked';
                                                             } ?> tabindex="44" class="custom-control-input feedetailsreport-sub-checkbox" id="day_end_report" name="day_end_report">
                         <label class="custom-control-label" for="day_end_report">Day End Report</label>
+                    </div>
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" value="Yes" <?php if (isset($bank_fees_report) && $bank_fees_report == 0) {
+                                                                echo 'checked';
+                                                            } ?> tabindex="44" class="custom-control-input feedetailsreport-sub-checkbox" id="bank_fees_report" name="bank_fees_report">
+                        <label class="custom-control-label" for="bank_fees_report">Bank Fees Report</label>
                     </div>
 
                     <div class="custom-control custom-checkbox">

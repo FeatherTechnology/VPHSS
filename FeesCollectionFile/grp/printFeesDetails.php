@@ -101,15 +101,15 @@ while ($row = $qry->fetch_assoc()) {
     $admission_number = $row["admission_number"];
     $standard = $row["standard"];
     $section = $row["section"];
-    $student_image = $row["student_image"];
-    $web_img_path = "uploads/student_creation/" . $admission_number . "/" . $student_image;
+    // $student_image = $row["student_image"];
+    // $web_img_path = "uploads/student_creation/" . $admission_number . "/" . $student_image;
 
-    // Define the actual server path for file_exists
-    $server_img_path = __DIR__ . "/../../" . $web_img_path;
-    // Final path logic
-    $final_img_path = (file_exists($server_img_path) && !empty($student_image))
-        ? $web_img_path
-        : 'img/No_image.png';
+    // // Define the actual server path for file_exists
+    // $server_img_path = __DIR__ . "/../../" . $web_img_path;
+    // // Final path logic
+    // $final_img_path = (file_exists($server_img_path) && !empty($student_image))
+    //     ? $web_img_path
+    //     : 'img/No_image.png';
 }
 
 $getbrc = $mysqli->query("SELECT sc.school_name, sc.district, sc.address1, sc.address2, sc.pincode, sc.contact_number, sc.email_id, sc.school_logo, stc.state FROM school_creation sc JOIN state_creation stc ON sc.state = stc.id WHERE sc.status = 0 AND school_id = '$school_id'");
@@ -159,31 +159,36 @@ while ($schoolInfo = $getbrc->fetch_assoc()) {
         </table>
         <table style="width:100%; margin-top:10px; border-collapse:collapse;">
             <tr>
-                <!-- Side: Student Details -->
+                <!-- Left Side -->
                 <td style="width:70%; vertical-align:top; padding-left:15px;">
-                    <div style="margin-bottom:12px;">
-                        <strong>Date:</strong> <?php echo $receipt_date; ?>
-                    </div>
                     <div style="margin-bottom:12px;">
                         <strong>Admission Number:</strong> <?php echo $admission_number; ?>
                     </div>
                     <div style="margin-bottom:12px;">
                         <strong>Student Name:</strong> <?php echo $student_name; ?>
                     </div>
-                    <div style="margin-bottom:12px;">
-                        <strong>Standard & Section:</strong> <?php echo $standard; ?> &amp; <?php echo $section; ?>
-                    </div>
                 </td>
 
-                <!-- Side: Student Photo -->
-                <td style="width:30%; text-align:right; vertical-align:top;">
+                <!-- Right Side -->
+                <td style="width:30%; vertical-align:top; padding-left:15px;">
+                    <!-- Side: Student Photo -->
+                    <!-- <td style="width:30%; text-align:right; vertical-align:top;">
                     <img src="<?php echo $final_img_path; ?>"
                         alt="No Image"
                         height="120px" width="120px"
                         style="border:1px solid black; object-fit:cover;">
+                </td> -->
+                    <div style="margin-bottom:12px;">
+                        <strong>Date:</strong> <?php echo $receipt_date; ?>
+                    </div>
+                    <div style="margin-bottom:12px; white-space: nowrap;">
+                        <strong>Standard &amp; Section:</strong>
+                        <?php echo $standard; ?> &amp; <?php echo $section; ?>
+                    </div>
                 </td>
             </tr>
         </table>
+
         <br /><br />
 
         <table rules="all" style="width: 100%;border-style: double;border: 1px solid black;margin: auto;margin-top:50px;">
@@ -215,7 +220,9 @@ while ($schoolInfo = $getbrc->fetch_assoc()) {
                         lfd.fee_received,
                         lfds.payment_mode,
                            lfds.neft_ref_number,
-                    lfds.neft_bank_name
+                    lfds.neft_bank_name,
+                        lfds.cheque_bank_name,
+                    lfds.cheque_number
                     FROM last_year_fees lf 
                     JOIN last_year_fees_details lfd ON lf.id = lfd.admission_fees_ref_id
                     JOIN last_year_fees_denomination lfds ON lf.id = lfds.admission_fees_ref_id 
@@ -237,7 +244,9 @@ while ($schoolInfo = $getbrc->fetch_assoc()) {
                         afd.fee_received,
                         afds.payment_mode,
                       afds.neft_ref_number,
-                    afds.neft_bank_name
+                    afds.neft_bank_name,
+                    afds.cheque_bank_name,
+                    afds.cheque_number
                     FROM admission_fees af 
                     JOIN admission_fees_details afd ON af.id = afd.admission_fees_ref_id
                     LEFT JOIN admission_fees_denomination afds ON af.id = afds.admission_fees_ref_id
@@ -260,14 +269,42 @@ while ($schoolInfo = $getbrc->fetch_assoc()) {
 
                         $totalamnt += $feesInfo['fee_received'];
                         $a++;
+                        $pay_mode = '';
+                        $neft_bank_name = '';
+                        $neft_ref_number = '';
 
                         if ($feesInfo['payment_mode'] == 'cash_payment') {
+
                             $pay_mode = 'Cash';
                         } elseif ($feesInfo['payment_mode'] == 'cheque') {
+
                             $pay_mode = 'Cheque';
+
+                            $bank_id = $feesInfo['cheque_bank_name'] ?? '';
+
+                            if ($bank_id != '') {
+                                $qry = "SELECT short_name FROM bank_creation WHERE id = '$bank_id'";
+                                $res = $connect->query($qry);
+                                if ($res && $row = $res->fetch()) {
+                                    $neft_bank_name = $row['short_name'];
+                                }
+                            }
+
+                            $neft_ref_number = $feesInfo['cheque_number'] ?? '';
                         } elseif ($feesInfo['payment_mode'] == 'neft') {
+
                             $pay_mode = 'Bank Transfer';
-                            $neft_bank_name = $feesInfo['neft_bank_name'] ?? '';
+
+                            $bank_id = $feesInfo['neft_bank_name'] ?? '';
+
+                            if ($bank_id != '') {
+                                $qry = "SELECT short_name FROM bank_creation WHERE id = '$bank_id'";
+                                $res = $connect->query($qry);
+                                if ($res && $row = $res->fetch()) {
+                                    $neft_bank_name = $row['short_name'];
+                                }
+                            }
+
                             $neft_ref_number = $feesInfo['neft_ref_number'] ?? '';
                         }
                     }
@@ -278,16 +315,16 @@ while ($schoolInfo = $getbrc->fetch_assoc()) {
                 <p style="margin-bottom:12px;white-space: nowrap;"><b>Payment Mode:</b> <?php echo $pay_mode; ?></p>
             </div>
             <div style="margin-top:-5px; margin-left: 15px;">
-                <?php if ($pay_mode == 'Bank Transfer') { ?>
+                <?php if ($pay_mode == 'Bank Transfer' || $pay_mode == 'Cheque') { ?>
                     <p style="margin-bottom:12px;white-space: nowrap;"><b>Bank Name:</b> <?php echo $neft_bank_name; ?></p>
                 <?php } ?>
             </div>
             <div style="margin-top:-3px; margin-left: 15px;">
-                <?php if ($pay_mode == 'Bank Transfer') { ?>
+                <?php if ($pay_mode == 'Bank Transfer' || $pay_mode == 'Cheque') { ?>
                     <p style="margin-bottom:12px;white-space: nowrap;"><b>Transaction ID:</b> <?php echo $neft_ref_number; ?></p>
                 <?php } ?>
             </div>
-           
+
             <tr>
                 <td></td>
                 <td style="margin-left: 5px;padding-left: 30px;text-align:left;"><b>Total</b></td>

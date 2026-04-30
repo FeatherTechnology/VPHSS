@@ -106,7 +106,58 @@
 				[10, 25, 50, "All"]
 			]
 		});
+			// bank_creation
+		var bank_creation_table = $('#bank_creation_table').DataTable({
+			"order": [[ 0, "desc" ]],
+			'processing': true,
+			'serverSide': true,
+			'serverMethod': 'post',
+			//'searching': false, // Remove default Search Control
+			'ajax': {
+				'url':'ajaxBankCreationFetch.php',
+				'data': function(data){
+					var search = $('#search').val();
+					data.search = search;
+				}
+			},
 			
+			dom: 'lBfrtip', 
+			buttons: [
+				{
+					extend:  'copy',
+					exportOptions: {
+						columns: [ 0, 1, 2 ,3, 4 ]
+					}
+				},		
+				{
+					extend:  'pdf',
+					exportOptions: {
+						columns: [ 0, 1, 2 ,3, 4 ]
+					}
+				},
+				{
+					extend:  'excel',
+					exportOptions: {
+						columns: [ 0, 1, 2 ,3, 4 ]
+					}
+				},
+				{
+					extend:  'print',
+					exportOptions: {
+						columns: [ 0, 1, 2 ,3, 4 ]
+					}
+				},
+				{		 
+					extend:'colvis',
+					collectionLayout: 'fixed four-column',
+				}
+
+			],	
+			"lengthMenu": [
+				[10, 25, 50, -1],
+				[10, 25, 50, "All"]
+			]
+		});
 		// holiday Creation
 		var temp_admission_info = $('#temp_admission_info').DataTable({
 			"order": [[ 0, "desc" ]],
@@ -771,6 +822,9 @@ if($current_page == 'student_caste_report') { ?>
 if($current_page == 'class_wise_list') { ?>
 <script src="js/class_wise_list.js"></script>
 <?php }
+if($current_page == 'bank_creation') { ?>
+<script src="js/bank_creation.js"></script>
+<?php }
 
 if($current_page == 'register_of_admission') { ?>
 <script src="js/register_of_admission.js"></script>
@@ -793,6 +847,9 @@ if($current_page == 'daily_fees_collection') { ?>
 
 if($current_page == 'day_end_report') { ?>
 <script src="js/day_end_report.js"></script>
+<?php }
+if($current_page == 'bank_fees_report') { ?>
+<script src="js/bank_fees_report.js"></script>
 <?php }
 
 if($current_page == 'overall_scholarship_fee_details') { ?>
